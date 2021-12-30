@@ -1,25 +1,20 @@
 import 'package:flame/components.dart';
-import 'package:flame/extensions.dart';
-import 'package:flame/geometry.dart';
-import 'package:flutter/material.dart';
+import 'package:flame/input.dart';
 
-class Tile extends PositionComponent with HasHitboxes, Collidable {
+class Tile extends SpriteComponent with HasGameRef {
 
-  Tile({
-    required Vector2 position,
-    required Vector2 size,
-  }) : super(position: position, size: size);
+  late double xPos;
+  late double yPos;
+
+  Tile(this.xPos, this.yPos)
+      : super(
+    size: Vector2.all(50.0)
+  );
 
   @override
   Future<void> onLoad() async {
-    await super.onLoad();
-    addHitbox(HitboxRectangle());
-  }
-
-  @override
-  void render(Canvas canvas) {
-    super.render(canvas);
-
-    renderHitboxes(canvas, paint: Paint()..color = Colors.white);
+    super.onLoad();
+    sprite = await gameRef.loadSprite('grass1.png');
+    position = Vector2(xPos, yPos);
   }
 }

@@ -8,6 +8,10 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Flame.device.setLandscape();
 
+  Flame.images.loadAll(<String>[
+    'grass1.png'
+  ]);
+
   final game = CityBuilder();
 
   runApp(GameWidget(game: game));
