@@ -29,35 +29,35 @@ class CityBuilder extends FlameGame
     super.render(canvas);
   }
 
+  Vector2 dragFrom = Vector2.zero();
+  Vector2 dragTo = Vector2.zero();
   @override
   void onTapUp(int pointer, TapUpInfo info) {
   }
 
   @override
   void onTapDown(int pointer, TapDownInfo info) {
+    // dragFrom = info.eventPosition.game;
+    // dragTo = Vector2(cameraPosition.x, cameraPosition.y);
+    // dragTo.sub(dragFrom);
   }
 
-  Vector2 dragStart = Vector2.zero();
   @override
   void onDragStart(int pointerId, DragStartInfo info) {
-    print("Drag start");
-    dragStart = info.eventPosition.game;
-    print("x: ${info.eventPosition.game.x} y: ${info.eventPosition.game.y}");
+    dragTo = Vector2(cameraPosition.x, cameraPosition.y);
+    dragFrom = info.eventPosition.game;
   }
 
   @override
   void onDragUpdate(int pointerId, DragUpdateInfo info) {
-    double distX = dragStart.x - info.eventPosition.game.x;
-    double distY = dragStart.y - info.eventPosition.game.y;
-    cameraVelocity.x += distX;
-    cameraVelocity.y += distY;
-    dragStart = info.eventPosition.game;
+    double xDiff = info.eventPosition.game.x - dragFrom.x;
+    double yDiff = info.eventPosition.game.y - dragFrom.y;
+    dragTo.sub(Vector2(xDiff, yDiff));
+    dragFrom = info.eventPosition.game;
   }
 
   @override
   void onDragEnd(int pointerId, DragEndInfo info) {
-    cameraVelocity.x = 0.0;
-    cameraVelocity.y = 0.0;
   }
 
   @override
@@ -71,6 +71,20 @@ class CityBuilder extends FlameGame
 
     cameraPosition.x = cameraPosition.x;
     cameraPosition.y = cameraPosition.y;
+
+    if ((dragTo.x - cameraPosition.x).abs() < 0.2) {
+      cameraPosition.x = dragTo.x;
+      cameraVelocity.x = 0;
+    } else {
+      cameraVelocity.x = (dragTo.x - cameraPosition.x);
+    }
+
+    if ((dragTo.y - cameraPosition.y).abs() < 0.2) {
+      cameraPosition.y = dragTo.y;
+      cameraVelocity.y = 0;
+    } else {
+      cameraVelocity.y = (dragTo.y - cameraPosition.y);
+    }
   }
 
   @override
@@ -80,15 +94,20 @@ class CityBuilder extends FlameGame
       ) {
     final isKeyDown = event is RawKeyDownEvent;
 
-    if (event.logicalKey == LogicalKeyboardKey.keyA) {
-      cameraVelocity.x = isKeyDown ? -1 : 0;
-    } else if (event.logicalKey == LogicalKeyboardKey.keyD) {
-      cameraVelocity.x = isKeyDown ? 1 : 0;
-    } else if (event.logicalKey == LogicalKeyboardKey.keyW) {
-      cameraVelocity.y = isKeyDown ? -1 : 0;
-    } else if (event.logicalKey == LogicalKeyboardKey.keyS) {
-      cameraVelocity.y = isKeyDown ? 1 : 0;
-    } else if (isKeyDown) {
+    if (isKeyDown) {
+      if (event.logicalKey == LogicalKeyboardKey.keyA) {
+        dragTo.x += 40;
+      }
+      if (event.logicalKey == LogicalKeyboardKey.keyD) {
+        dragTo.x -= 40;
+      }
+      if (event.logicalKey == LogicalKeyboardKey.keyW) {
+        dragTo.y += 40;
+      }
+      if (event.logicalKey == LogicalKeyboardKey.keyS) {
+        dragTo.y -= 40;
+      }
+
       if (event.logicalKey == LogicalKeyboardKey.keyQ) {
         camera.zoom *= 2;
       } else if (event.logicalKey == LogicalKeyboardKey.keyE) {
