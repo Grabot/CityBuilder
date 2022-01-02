@@ -7,14 +7,18 @@ import 'package:flame/input.dart';
 class Tile extends SpriteComponent with HasGameRef {
 
   late double xPos;
-  late int xCoordinate;
   late double yPos;
-  late int yCoordinate;
+  late int q;
+  late int r;
+  late int s;
 
   double xSize;
   double ySize;
 
-  Tile(this.xCoordinate, this.yCoordinate, this.xSize, this.ySize)
+  bool selected = true;
+
+  // We assume the condition r + s + q = 0 is true.
+  Tile(this.q, this.r, this.s, this.xSize, this.ySize)
       : super(
     size: Vector2(2 * xSize, (sqrt(3) * ySize))
   );
@@ -24,10 +28,8 @@ class Tile extends SpriteComponent with HasGameRef {
   Future<void> onLoad() async {
     super.onLoad();
     sprite = await gameRef.loadSprite('grassTest3.png');
-
-    xPos = (xCoordinate * (2 * xSize) * 3/4);
-    double addedY = xCoordinate * ySize * sqrt(3) / 2;
-    yPos = (yCoordinate * sqrt(3) * ySize) - addedY;
+    xPos = xSize * 3/2 * q;
+    yPos = ySize * (sqrt(3)/2 * q + sqrt(3) * r);
 
     position = Vector2(xPos, yPos);
   }
@@ -63,6 +65,13 @@ class Tile extends SpriteComponent with HasGameRef {
           point6.x, point6.y,
           point1.x, point1.y
         ]);
-    canvas.drawRawPoints(PointMode.polygon, points, paint);
+    if (selected) {
+      canvas.drawRawPoints(PointMode.polygon, points, paint);
+    }
   }
+
+  void setSelected(bool selected) {
+    this.selected = selected;
+  }
+
 }

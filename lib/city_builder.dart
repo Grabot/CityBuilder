@@ -61,6 +61,7 @@ class CityBuilder extends FlameGame
     // dragFrom = info.eventPosition.game;
     // dragTo = Vector2(cameraPosition.x, cameraPosition.y);
     // dragTo.sub(dragFrom);
+    _world.onTapDown(info);
   }
 
   Vector2 multiTouch1 = Vector2.zero();
