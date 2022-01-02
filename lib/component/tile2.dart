@@ -4,7 +4,7 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 
-class Tile extends SpriteComponent with HasGameRef {
+class Tile2 extends SpriteComponent with HasGameRef {
 
   late double xPos;
   late int xCoordinate;
@@ -14,7 +14,7 @@ class Tile extends SpriteComponent with HasGameRef {
   double xSize;
   double ySize;
 
-  Tile(this.xCoordinate, this.yCoordinate, this.xSize, this.ySize)
+  Tile2(this.xCoordinate, this.yCoordinate, this.xSize, this.ySize)
       : super(
     size: Vector2(2 * xSize, (sqrt(3) * ySize))
   );

@@ -42,7 +42,6 @@ class CityBuilder extends FlameGame
 
   @override
   void onScroll(PointerScrollInfo info) {
-    print("info ${info.raw.scrollDelta.dy}");
     double zoomIncrease = (info.raw.scrollDelta.dy/1000);
     camera.zoom *= (1 - zoomIncrease);
     if (camera.zoom <= 0.25) {
@@ -78,7 +77,6 @@ class CityBuilder extends FlameGame
     }
     dragTo = Vector2(cameraPosition.x, cameraPosition.y);
     dragFrom = info.eventPosition.game;
-    print("drag start with pointer $pointerId  x: ${dragFrom.x}  y: ${dragFrom.y}  with current zoom: ${camera.zoom}");
   }
 
   @override
@@ -97,7 +95,6 @@ class CityBuilder extends FlameGame
       }
     } else {
       // The user is zooming, so not moving around
-
       if (movementBlock <= 0) {
         dragTo.sub(info.eventPosition.game - dragFrom);
         dragFrom = info.eventPosition.game;
@@ -137,14 +134,15 @@ class CityBuilder extends FlameGame
     multiPointer2 = Vector2.zero();
     multiPointerDist = 0.0;
     // Check if it crossed the game boundaries and put it back if that is the case.
-    if (dragTo.x < 0) {
-      dragTo.x = 0;
+    // TODO: Improve boundaries with zoom added.
+    if (dragTo.x < -1000) {
+      dragTo.x = -1000;
     } else if (dragTo.x > 1000) {
       dragTo.x = 1000;
     }
 
-    if (dragTo.y < 0) {
-      dragTo.y = 0;
+    if (dragTo.y < -1000) {
+      dragTo.y = -1000;
     } else if (dragTo.y > 1000) {
       dragTo.y = 1000;
     }
