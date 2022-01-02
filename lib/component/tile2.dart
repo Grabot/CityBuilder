@@ -7,14 +7,16 @@ import 'package:flame/input.dart';
 class Tile2 extends SpriteComponent with HasGameRef {
 
   late double xPos;
-  late int xCoordinate;
   late double yPos;
-  late int yCoordinate;
+  late int q;
+  late int r;
+  late int s;
 
   double xSize;
   double ySize;
 
-  Tile2(this.xCoordinate, this.yCoordinate, this.xSize, this.ySize)
+  // We assume the condition r + s + q = 0 is true.
+  Tile2(this.q, this.r, this.s, this.xSize, this.ySize)
       : super(
     size: Vector2(2 * xSize, (sqrt(3) * ySize))
   );
@@ -24,10 +26,8 @@ class Tile2 extends SpriteComponent with HasGameRef {
   Future<void> onLoad() async {
     super.onLoad();
     sprite = await gameRef.loadSprite('grassTest3.png');
-
-    xPos = (xCoordinate * (2 * xSize) * 3/4);
-    double addedY = xCoordinate * ySize * sqrt(3) / 2;
-    yPos = (yCoordinate * sqrt(3) * ySize) - addedY;
+    xPos = xSize * 3/2 * q;
+    yPos = ySize * (sqrt(3)/2 * q + sqrt(3) * r);
 
     position = Vector2(xPos, yPos);
   }

@@ -32,7 +32,7 @@ class CityBuilder extends FlameGame
   Future<void> onLoad() async {
     await super.onLoad();
     add(_world);
-    camera.followVector2(cameraPosition, relativeOffset: Anchor.topLeft);
+    camera.followVector2(cameraPosition, relativeOffset: Anchor.center);
   }
 
   @override
