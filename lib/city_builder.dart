@@ -17,6 +17,17 @@ class CityBuilder extends FlameGame
 
   final World _world = World();
 
+  Vector2 dragFrom = Vector2.zero();
+  Vector2 dragTo = Vector2.zero();
+  bool singleTap = false;
+  bool multiTap = false;
+  int multiPointer1Id = -1;
+  int multiPointer2Id = -1;
+  Vector2 multiPointer1 = Vector2.zero();
+  Vector2 multiPointer2 = Vector2.zero();
+  double multiPointerDist = 0.0;
+  int movementBlock = 0;
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -29,8 +40,18 @@ class CityBuilder extends FlameGame
     super.render(canvas);
   }
 
-  Vector2 dragFrom = Vector2.zero();
-  Vector2 dragTo = Vector2.zero();
+  @override
+  void onScroll(PointerScrollInfo info) {
+    print("info ${info.raw.scrollDelta.dy}");
+    double zoomIncrease = (info.raw.scrollDelta.dy/1000);
+    camera.zoom *= (1 - zoomIncrease);
+    if (camera.zoom <= 0.25) {
+      camera.zoom = 0.25;
+    } else if (camera.zoom >= 4) {
+      camera.zoom = 4;
+    }
+  }
+
   @override
   void onTapUp(int pointer, TapUpInfo info) {
   }
@@ -43,20 +64,78 @@ class CityBuilder extends FlameGame
     // dragTo.sub(dragFrom);
   }
 
+  Vector2 multiTouch1 = Vector2.zero();
+  Vector2 multiTouch2 = Vector2.zero();
+
   @override
   void onDragStart(int pointerId, DragStartInfo info) {
+    if (singleTap) {
+      multiTap = true;
+      multiPointer2Id = pointerId;
+    } else {
+      singleTap = true;
+      multiPointer1Id = pointerId;
+    }
     dragTo = Vector2(cameraPosition.x, cameraPosition.y);
     dragFrom = info.eventPosition.game;
+    print("drag start with pointer $pointerId  x: ${dragFrom.x}  y: ${dragFrom.y}  with current zoom: ${camera.zoom}");
   }
 
   @override
   void onDragUpdate(int pointerId, DragUpdateInfo info) {
-    dragTo.sub(info.eventPosition.game-dragFrom);
-    dragFrom = info.eventPosition.game;
+
+    if (multiTap) {
+      if (pointerId == multiPointer1Id) {
+        multiPointer1 = info.eventPosition.game;
+      } else if (pointerId == multiPointer2Id) {
+        multiPointer2 = info.eventPosition.game;
+      } else {
+        // A third finger is touching the screen?
+      }
+      if ((multiPointer1.x != 0 && multiPointer1.y != 0) && (multiPointer2.x != 0 && multiPointer2.y != 0))  {
+        handlePinchZoom();
+      }
+    } else {
+      // The user is zooming, so not moving around
+
+      if (movementBlock <= 0) {
+        dragTo.sub(info.eventPosition.game - dragFrom);
+        dragFrom = info.eventPosition.game;
+      }
+    }
+  }
+
+  void handlePinchZoom() {
+    double currentDistance = multiPointer1.distanceTo(multiPointer2);
+    double zoomIncrease = (currentDistance - multiPointerDist);
+    print("zoom increase: $zoomIncrease");
+    double cameraZoom = 1;
+    if (zoomIncrease > -50 && zoomIncrease <= -1) {
+      cameraZoom += (zoomIncrease / 400);
+    } else if (zoomIncrease < 50 && zoomIncrease >= 1) {
+      cameraZoom += (zoomIncrease / 400);
+    }
+    camera.zoom *= cameraZoom;
+    if (camera.zoom <= 0.25) {
+      camera.zoom = 0.25;
+    } else if (camera.zoom >= 4) {
+      camera.zoom = 4;
+    }
+    multiPointerDist = currentDistance;
   }
 
   @override
   void onDragEnd(int pointerId, DragEndInfo info) {
+    singleTap = false;
+    if (multiTap) {
+      multiTap = false;
+      movementBlock = 20;
+    }
+    multiPointer1Id = -1;
+    multiPointer2Id = -1;
+    multiPointer1 = Vector2.zero();
+    multiPointer2 = Vector2.zero();
+    multiPointerDist = 0.0;
     // Check if it crossed the game boundaries and put it back if that is the case.
     if (dragTo.x < 0) {
       dragTo.x = 0;
@@ -72,19 +151,19 @@ class CityBuilder extends FlameGame
   }
 
   @override
-  void onScroll(PointerScrollInfo info) {
-    print("scrolling!");
-  }
-
-  @override
   void update(double dt) {
     super.update(dt);
     cameraPosition.add(cameraVelocity * dt * 10);
 
     cameraPosition.x = cameraPosition.x;
     cameraPosition.y = cameraPosition.y;
-
     updateMapScroll();
+
+    if (movementBlock > 0) {
+      movementBlock -= 1;
+    } else {
+      movementBlock = 0;
+    }
   }
 
   void updateMapScroll() {
@@ -128,6 +207,11 @@ class CityBuilder extends FlameGame
         camera.zoom *= 2;
       } else if (event.logicalKey == LogicalKeyboardKey.keyE) {
         camera.zoom /= 2;
+      }
+      if (camera.zoom <= 0.25) {
+        camera.zoom = 0.25;
+      } else if (camera.zoom >= 4) {
+        camera.zoom = 4;
       }
     }
 
