@@ -14,6 +14,9 @@ class World extends Component with HasGameRef {
   final Tile _tile7 = Tile(0.0, 100.0);
   final Tile _tile8 = Tile(50.0, 100.0);
   final Tile _tile9 = Tile(100.0, 100.0);
+  final Tile _tile10 = Tile(1000.0, 0.0);
+  final Tile _tile11 = Tile(1000.0, 1000.0);
+  final Tile _tile12 = Tile(0.0, 1000.0);
 
   World()
       : super(
@@ -31,6 +34,9 @@ class World extends Component with HasGameRef {
     add(_tile7);
     add(_tile8);
     add(_tile9);
+    add(_tile10);
+    add(_tile11);
+    add(_tile12);
   }
 
   @override

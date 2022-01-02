@@ -37,6 +37,10 @@ class CityBuilder extends FlameGame
 
   @override
   void onTapDown(int pointer, TapDownInfo info) {
+    // Move camera point (0, 0) (top left) to the clicked position
+    // dragFrom = info.eventPosition.game;
+    // dragTo = Vector2(cameraPosition.x, cameraPosition.y);
+    // dragTo.sub(dragFrom);
   }
 
   @override
@@ -53,6 +57,18 @@ class CityBuilder extends FlameGame
 
   @override
   void onDragEnd(int pointerId, DragEndInfo info) {
+    // Check if it crossed the game boundaries and put it back if that is the case.
+    if (dragTo.x < 0) {
+      dragTo.x = 0;
+    } else if (dragTo.x > 1000) {
+      dragTo.x = 1000;
+    }
+
+    if (dragTo.y < 0) {
+      dragTo.y = 0;
+    } else if (dragTo.y > 1000) {
+      dragTo.y = 1000;
+    }
   }
 
   @override
