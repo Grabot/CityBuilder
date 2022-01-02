@@ -1,9 +1,9 @@
+import 'package:city_builder/world/world.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'component/tile.dart';
 
 class CityBuilder extends FlameGame
     with
@@ -15,12 +15,12 @@ class CityBuilder extends FlameGame
   Vector2 cameraPosition = Vector2.zero();
   Vector2 cameraVelocity = Vector2.zero();
 
-  final Tile _tile1 = Tile(0.0, 0.0);
+  final World _world = World();
 
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    add(_tile1);
+    add(_world);
     camera.followVector2(cameraPosition, relativeOffset: Anchor.topLeft);
   }
 
@@ -37,9 +37,6 @@ class CityBuilder extends FlameGame
 
   @override
   void onTapDown(int pointer, TapDownInfo info) {
-    // dragFrom = info.eventPosition.game;
-    // dragTo = Vector2(cameraPosition.x, cameraPosition.y);
-    // dragTo.sub(dragFrom);
   }
 
   @override
@@ -50,9 +47,7 @@ class CityBuilder extends FlameGame
 
   @override
   void onDragUpdate(int pointerId, DragUpdateInfo info) {
-    double xDiff = info.eventPosition.game.x - dragFrom.x;
-    double yDiff = info.eventPosition.game.y - dragFrom.y;
-    dragTo.sub(Vector2(xDiff, yDiff));
+    dragTo.sub(info.eventPosition.game-dragFrom);
     dragFrom = info.eventPosition.game;
   }
 
@@ -62,6 +57,7 @@ class CityBuilder extends FlameGame
 
   @override
   void onScroll(PointerScrollInfo info) {
+    print("scrolling!");
   }
 
   @override
@@ -72,6 +68,10 @@ class CityBuilder extends FlameGame
     cameraPosition.x = cameraPosition.x;
     cameraPosition.y = cameraPosition.y;
 
+    updateMapScroll();
+  }
+
+  void updateMapScroll() {
     if ((dragTo.x - cameraPosition.x).abs() < 0.2) {
       cameraPosition.x = dragTo.x;
       cameraVelocity.x = 0;
