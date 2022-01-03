@@ -10,6 +10,7 @@ class CityBuilder extends FlameGame
         MultiTouchTapDetector,
         MultiTouchDragDetector,
         ScrollDetector,
+        MouseMovementDetector,
         KeyboardEvents {
 
   Vector2 cameraPosition = Vector2.zero();
@@ -41,6 +42,11 @@ class CityBuilder extends FlameGame
   }
 
   @override
+  void onMouseMove(PointerHoverInfo info) {
+    _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);
+  }
+
+  @override
   void onScroll(PointerScrollInfo info) {
     double zoomIncrease = (info.raw.scrollDelta.dy/1000);
     camera.zoom *= (1 - zoomIncrease);
@@ -53,6 +59,7 @@ class CityBuilder extends FlameGame
 
   @override
   void onTapUp(int pointer, TapUpInfo info) {
+    _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);
   }
 
   @override
@@ -61,7 +68,7 @@ class CityBuilder extends FlameGame
     // dragFrom = info.eventPosition.game;
     // dragTo = Vector2(cameraPosition.x, cameraPosition.y);
     // dragTo.sub(dragFrom);
-    _world.onTapDown(info);
+    // _world.onTapDown(info);
   }
 
   Vector2 multiTouch1 = Vector2.zero();

@@ -15,14 +15,13 @@ class Tile extends SpriteComponent with HasGameRef {
   double xSize;
   double ySize;
 
-  bool selected = true;
+  bool selected = false;
 
   // We assume the condition r + s + q = 0 is true.
   Tile(this.q, this.r, this.s, this.xSize, this.ySize)
       : super(
     size: Vector2(2 * xSize, (sqrt(3) * ySize))
   );
-
 
   @override
   Future<void> onLoad() async {
@@ -31,7 +30,8 @@ class Tile extends SpriteComponent with HasGameRef {
     xPos = xSize * 3/2 * q;
     yPos = ySize * (sqrt(3)/2 * q + sqrt(3) * r);
 
-    position = Vector2(xPos, yPos);
+    // We want to center 0, 0 in the middle of the tile. so we subtract the size
+    position = Vector2(xPos - xSize, yPos - ySize);
   }
 
   Vector2 pointyHexCorner(double i) {
@@ -72,6 +72,10 @@ class Tile extends SpriteComponent with HasGameRef {
 
   void setSelected(bool selected) {
     this.selected = selected;
+  }
+
+  Vector2 getPos() {
+    return Vector2(xPos, yPos);
   }
 
 }
