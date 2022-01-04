@@ -64,12 +64,12 @@ class CityBuilder extends FlameGame
   }
 
   @override
-  void onTapUp(int pointer, TapUpInfo info) {
+  void onTapUp(int pointerId, TapUpInfo info) {
     _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);
   }
 
   @override
-  void onTapDown(int pointer, TapDownInfo info) {
+  void onTapDown(int pointerId, TapDownInfo info) {
   }
 
   Vector2 multiTouch1 = Vector2.zero();

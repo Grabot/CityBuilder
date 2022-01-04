@@ -1,6 +1,3 @@
-import 'dart:math';
-import 'dart:typed_data';
-import 'dart:ui';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
 
