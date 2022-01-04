@@ -1,73 +1,52 @@
 import 'dart:math';
+import 'dart:typed_data';
 import 'dart:ui';
-
-import 'package:city_builder/component/tile.dart';
 import 'package:flame/components.dart';
+import '../component/tile.dart';
 
 class World extends Component with HasGameRef {
 
-  final double xSize = 40;
-  final double ySize = 40;
+  final double xSize = 32;
+  final double ySize = 16;
 
   late List<List<Tile?>> tiles;
+  Tile? selectedTile;
 
   World() : super();
+
+  late Sprite grassSprite;
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
 
+    grassSprite = await gameRef.loadSprite('tile_test_3.png');
+
     tiles = List.generate(
-        200,
-        (_) => List.filled(200, null),
+        2000,
+        (_) => List.filled(2000, null),
         growable: false);
 
-    for (int q = -5; q <= 5; q++) {
-      for (int r = -5; r <= 5; r++) {
+    for (int q = -639; q <= 640; q++) {
+      for (int r = -639; r <= 640; r++) {
         int s = (q + r) * -1;
-        Tile tile = Tile(q, r, s, xSize, ySize);
-        int qArray = q + 100;
-        int rArray = r + 100;
-        tiles[qArray][rArray] = tile;
-      }
-    }
-    // tiles[97][97] = null;
-    // tiles[98][97] = null;
-    // tiles[97][98] = null;
-    // tiles[99][97] = null;
-    // tiles[98][98] = null;
-    // tiles[97][99] = null;
-    //
-    // tiles[103][103] = null;
-    // tiles[102][103] = null;
-    // tiles[103][102] = null;
-    // tiles[101][103] = null;
-    // tiles[102][102] = null;
-    // tiles[103][101] = null;
+        double xPos = xSize * 3/2 * q;
+        double yPos = ySize * (sqrt(3)/2 * q + sqrt(3) * r);
+        Tile tile = Tile(q, r, s, Vector2(xPos, yPos));
 
-    for(int q = 0; q < tiles.length; q++) {
-      for(int r = 0; r < tiles[q].length; r++) {
-        if (tiles[q][r] != null) {
-          add(tiles[q][r]!);
-        }
+        int qArray = q + 1000;
+        int rArray = r + 1000;
+        tiles[qArray][rArray] = tile;
       }
     }
   }
 
   void tappedWorld(double mouseX, double mouseY) {
-    for (int q = -5; q <= 5; q++) {
-      for (int r = -5; r <= 5; r++) {
-        int qArray = q + 100;
-        int rArray = r + 100;
-        if (tiles[qArray][rArray] != null) {
-          tiles[qArray][rArray]!.setSelected(false);
-        }
-      }
-    }
     double xTranslate = (2/3 * mouseX);
     double qDetailed = xTranslate / xSize;
-    double yTranslate = (-1/3 * mouseX) + (sqrt(3) / 3 * mouseY);
-    double rDetailed = yTranslate / ySize;
+    double yTranslate1 = (-1/3 * mouseX);
+    double yTranslate2 = (sqrt(3) / 3 * mouseY);
+    double rDetailed = (yTranslate1 / xSize) + (yTranslate2 / ySize);
     double sDetailed = (qDetailed + rDetailed) * -1;
 
     int q = qDetailed.round();
@@ -86,11 +65,60 @@ class World extends Component with HasGameRef {
       s = -q - r;
     }
 
-    tiles[q+100][r+100]!.setSelected(true);
+    if (tiles[q+100][r+100] != null) {
+      selectedTile = tiles[q+100][r+100];
+    }
+  }
+
+  void clearSelectedTile() {
+    selectedTile = null;
+  }
+
+  Vector2 pointyHexCorner(double i) {
+    double angleDeg = 60 * i;
+    double angleRad = pi/180 * angleDeg;
+    double pointX = (xSize * cos(angleRad)) + xSize;
+    double pointY = (ySize * sin(angleRad)) + ((sqrt(3) * ySize) / 2);
+    return Vector2(pointX, pointY);
   }
 
   @override
   void render(Canvas canvas) {
     super.render(canvas);
+    for (int q = -16; q <= 16; q++) {
+      for (int r = -16; r <= 16; r++) {
+        int qArray = q + 1000;
+        int rArray = r + 1000;
+        grassSprite.render(
+          canvas,
+          position: tiles[qArray][rArray]!.position,
+          size: Vector2(2 * xSize, (sqrt(3) * ySize))
+        );
+      }
+    }
+
+
+    Paint paint = Paint();
+    paint.style = PaintingStyle.fill;
+    paint.color = Color.fromRGBO(255, 0, 0, 1.0);
+
+    Vector2 point1 = pointyHexCorner(0);
+    Vector2 point2 = pointyHexCorner(1);
+    Vector2 point3 = pointyHexCorner(2);
+    Vector2 point4 = pointyHexCorner(3);
+    Vector2 point5 = pointyHexCorner(4);
+    Vector2 point6 = pointyHexCorner(5);
+    var points = Float32List.fromList(
+        [
+          point1.x, point1.y,
+          point2.x, point2.y,
+          point3.x, point3.y,
+          point4.x, point4.y,
+          point5.x, point5.y,
+          point6.x, point6.y,
+          point1.x, point1.y
+        ]);
+    canvas.drawRawPoints(PointMode.polygon, points, paint);
+
   }
 }

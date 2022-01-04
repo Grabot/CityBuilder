@@ -2,6 +2,7 @@ import 'package:city_builder/world/world.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
+import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -29,6 +30,11 @@ class CityBuilder extends FlameGame
   double multiPointerDist = 0.0;
   int movementBlock = 0;
 
+  static final _borderPaint = Paint()
+    ..style = PaintingStyle.stroke
+    ..strokeWidth = 2
+    ..color = BasicPalette.red.color;
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -39,11 +45,11 @@ class CityBuilder extends FlameGame
   @override
   void render(Canvas canvas) {
     super.render(canvas);
+    canvas.drawRect(canvasSize.toRect(), _borderPaint);
   }
 
   @override
   void onMouseMove(PointerHoverInfo info) {
-    _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);
   }
 
   @override
@@ -64,11 +70,6 @@ class CityBuilder extends FlameGame
 
   @override
   void onTapDown(int pointer, TapDownInfo info) {
-    // Move camera point (0, 0) (top left) to the clicked position
-    // dragFrom = info.eventPosition.game;
-    // dragTo = Vector2(cameraPosition.x, cameraPosition.y);
-    // dragTo.sub(dragFrom);
-    // _world.onTapDown(info);
   }
 
   Vector2 multiTouch1 = Vector2.zero();
@@ -85,6 +86,7 @@ class CityBuilder extends FlameGame
     }
     dragTo = Vector2(cameraPosition.x, cameraPosition.y);
     dragFrom = info.eventPosition.game;
+    _world.clearSelectedTile();
   }
 
   @override
@@ -156,9 +158,19 @@ class CityBuilder extends FlameGame
     }
   }
 
+  double frameTimes = 0.0;
+  int frames = 0;
   @override
   void update(double dt) {
     super.update(dt);
+    frameTimes += dt;
+    frames += 1;
+    if (frameTimes > 1) {
+      print("fps: $frames");
+      frameTimes = 0;
+      frames = 0;
+    }
+
     cameraPosition.add(cameraVelocity * dt * 10);
 
     cameraPosition.x = cameraPosition.x;
