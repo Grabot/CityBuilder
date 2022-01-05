@@ -65,6 +65,7 @@ flutter:
     - assets/images/grassTest3.png
     - assets/images/tile_test_2.png
     - assets/images/tile_test_3.png
+    - assets/images/tile_test_top_3.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

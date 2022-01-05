@@ -1,24 +1,30 @@
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
-import 'package:city_builder/component/tile_temp.dart';
 import 'package:flame/components.dart';
 import '../component/tile.dart';
 
-class World extends Component with HasGameRef {
+class WorldPointTop extends Component {
 
-  final double xSize = 32;
-  final double ySize = 16;
+  // size = 16.
+  // height = 2 * size / 2   divided by 2 to give the isometric view
+  // width = sqrt(3) * size
+  final double xSize = sqrt(3) * 16;
+  final double ySize = 32 / 2;
 
-  late List<List<TileTemp?>> tiles;
-  late List<List<Tile?>> tilesTest;
+  late List<List<Tile?>> tiles;
   Tile? selectedTile;
 
-  World() : super();
+  WorldPointTop() : super();
 
   late Sprite grassSprite;
 
   Paint selectedPaint = Paint();
+  Paint borderPaint = Paint();
+
+  void loadWorld(Sprite grassSprite) {
+    this.grassSprite = grassSprite;
+  }
 
   @override
   Future<void> onLoad() async {
@@ -27,57 +33,41 @@ class World extends Component with HasGameRef {
     selectedPaint.style = PaintingStyle.fill;
     selectedPaint.color = const Color.fromRGBO(255, 0, 0, 1.0);
 
-    grassSprite = await gameRef.loadSprite('tile_test_3.png');
+    borderPaint.style = PaintingStyle.stroke;
+    borderPaint.strokeWidth = 5;
+    borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
 
     tiles = List.generate(
         2000,
         (_) => List.filled(2000, null),
         growable: false);
-    tilesTest = List.generate(
-        2000,
-            (_) => List.filled(2000, null),
-        growable: false);
-
-    for (int q = -16; q <= -6; q++) {
-      for (int r = -16; r <= 6; r++) {
-        int s = (q + r) * -1;
-        // double xPos = xSize * 3/2 * q;
-        // double yPos = ySize * (sqrt(3)/2 * q + sqrt(3) * r);
-        TileTemp tile = TileTemp(q, r, s, xSize, ySize);
-
-        int qArray = q + 1000;
-        int rArray = r + 1000;
-        tiles[qArray][rArray] = tile;
-        add(tile);
-      }
-    }
-    // TileTemp tile = TileTemp(0, 0, 0, xSize, ySize);
-    // tiles[1000][1000] = tile;
-    // add(tile);
 
     for (int q = -800; q <= 800; q++) {
       for (int r = -800; r <= 800; r++) {
         int s = (q + r) * -1;
-        if (q == 0) {
-          double xPos = xSize * 3 / 2 * q - xSize;
-          // double yPos = 0 - ySize * (sqrt(3) / 2 * q - sqrt(3) * r) - ySize;
-          double yPos = ySize * (sqrt(3) / 2 * q - sqrt(3) * r) - ySize;
-          Vector2 position = Vector2(xPos, yPos);
-          Tile tile = Tile(q, r, s, position);
-          int qArray = q + 1000;
-          int rArray = r + 1000;
-          tilesTest[qArray][rArray] = tile;
-        }
+        double xPos = xSize * (sqrt(3) * q + sqrt(3) / 2 * r) - xSize;
+        double yPos = ySize * 3 / 2 * r;
+        yPos *= -1;
+        yPos -= ySize;
+        Vector2 position = Vector2(xPos, yPos);
+        Tile tile = Tile(q, r, s, position);
+        int qArray = q + 1000;
+        int rArray = r + 1000;
+        tiles[qArray][rArray] = tile;
       }
     }
   }
 
   void tappedWorld(double mouseX, double mouseY) {
-    double xTranslate = (2/3 * mouseX);
-    double qDetailed = xTranslate / xSize;
-    double yTranslate1 = (-1/3 * mouseX);
-    double yTranslate2 = (sqrt(3) / 3 * mouseY);
-    double rDetailed = (yTranslate1 / xSize) + (yTranslate2 / ySize);
+
+    double xTranslate1 = (-1/3 * mouseY);
+    xTranslate1 *= -1;
+    double xTranslate2 = (sqrt(3) / 3 * mouseX);
+    double qDetailed = (xTranslate1 / ySize) + (xTranslate2 / xSize);
+
+    double yTranslate = (2/3 * mouseY);
+    yTranslate *= -1;
+    double rDetailed = yTranslate / ySize;
     double sDetailed = (qDetailed + rDetailed) * -1;
 
     int q = qDetailed.round();
@@ -96,11 +86,9 @@ class World extends Component with HasGameRef {
       s = -q - r;
     }
 
+    print("q: $q  r: $r  s: $s");
     if (tiles[q+1000][r+1000] != null) {
-      tiles[q+1000][r+1000]!.setSelected(true);
-    }
-    if (tilesTest[q+1000][r+1000] != null) {
-      selectedTile = tilesTest[q+1000][r+1000];
+      selectedTile = tiles[q+1000][r+1000];
     }
   }
 
@@ -109,7 +97,7 @@ class World extends Component with HasGameRef {
   }
 
   Vector2 pointyHexCorner(double i, Vector2 center) {
-    double angleDeg = 60 * i;
+    double angleDeg = 60 * i - 30;
     double angleRad = pi/180 * angleDeg;
     double pointX = center.x + (xSize * cos(angleRad)) + xSize;
     double pointY = center.y + (ySize * sin(angleRad)) + ySize;
@@ -120,13 +108,13 @@ class World extends Component with HasGameRef {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    for (int q = -6; q <= 6; q++) {
-      for (int r = -6; r <= 6; r++) {
-        if (tilesTest[q+1000][r+1000] != null) {
+    for (int q = -4; q <= 4; q++) {
+      for (int r = -4; r <= 4; r++) {
+        if (tiles[q + 1000][r + 1000] != null) {
           grassSprite.render(
               canvas,
-              position: tilesTest[q + 1000][r + 1000]!.getPos(),
-              size: Vector2(2 * xSize, (sqrt(3) * ySize))
+              position: tiles[q + 1000][r + 1000]!.getPos(),
+              size: Vector2(sqrt(3) * xSize, 2 * ySize)
           );
         }
       }
@@ -154,5 +142,20 @@ class World extends Component with HasGameRef {
           points,
           selectedPaint);
     }
+
+    Rect worldRect = Rect.fromLTRB(left, top, right, bottom);
+    canvas.drawRect(worldRect, borderPaint);
+  }
+
+  double left = 0.0;
+  double right = 0.0;
+  double top = 0.0;
+  double bottom = 0.0;
+  void updateWorld(Vector2 cameraPosition, Vector2 size) {
+    left = cameraPosition.x - (size.x / 2) + 20;
+    right = cameraPosition.x + (size.x / 2) - 20;
+    top = cameraPosition.y - (size.y / 2) + 20;
+    bottom = cameraPosition.y + (size.y / 2) - 20;
+
   }
 }

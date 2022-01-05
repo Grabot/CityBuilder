@@ -1,4 +1,5 @@
-import 'package:city_builder/world/world.dart';
+import 'package:city_builder/world/world_flat_top_tiles.dart';
+import 'package:city_builder/world/world_point_top_tiles.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
@@ -14,10 +15,13 @@ class CityBuilder extends FlameGame
         MouseMovementDetector,
         KeyboardEvents {
 
+  // The camera position will always be in the center of the screen
   Vector2 cameraPosition = Vector2.zero();
   Vector2 cameraVelocity = Vector2.zero();
+  // double width = 0.0;
+  // double height = 0.0;
 
-  final World _world = World();
+  final WorldPointTop _world = WorldPointTop();
 
   Vector2 dragFrom = Vector2.zero();
   Vector2 dragTo = Vector2.zero();
@@ -30,22 +34,18 @@ class CityBuilder extends FlameGame
   double multiPointerDist = 0.0;
   int movementBlock = 0;
 
-  static final _borderPaint = Paint()
-    ..style = PaintingStyle.stroke
-    ..strokeWidth = 2
-    ..color = BasicPalette.red.color;
-
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    add(_world);
+    // _world.loadWorld(await loadSprite('tile_test_3.png'));
+    _world.loadWorld(await loadSprite('tile_test_top_3.png'));
     camera.followVector2(cameraPosition, relativeOffset: Anchor.center);
+    add(_world);
   }
 
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    canvas.drawRect(canvasSize.toRect(), _borderPaint);
   }
 
   @override
@@ -170,6 +170,7 @@ class CityBuilder extends FlameGame
       frameTimes = 0;
       frames = 0;
     }
+    _world.updateWorld(cameraPosition, size);
 
     cameraPosition.add(cameraVelocity * dt * 10);
 
