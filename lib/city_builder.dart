@@ -21,7 +21,7 @@ class CityBuilder extends FlameGame
   // double width = 0.0;
   // double height = 0.0;
 
-  final WorldPointTop _world = WorldPointTop();
+  final WorldFlatTop _world = WorldFlatTop();
 
   Vector2 dragFrom = Vector2.zero();
   Vector2 dragTo = Vector2.zero();
@@ -37,8 +37,8 @@ class CityBuilder extends FlameGame
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    // _world.loadWorld(await loadSprite('tile_test_3.png'));
-    _world.loadWorld(await loadSprite('tile_test_top_3.png'));
+    _world.loadWorld(await loadSprite('tile_test_3.png'));
+    // _world.loadWorld(await loadSprite('tile_test_top_3.png'));
     camera.followVector2(cameraPosition, relativeOffset: Anchor.center);
     add(_world);
   }

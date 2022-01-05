@@ -26,6 +26,9 @@ class WorldFlatTop extends Component {
     this.grassSprite = grassSprite;
   }
 
+  // We will use this to help with the storing in the array
+  int qSizeHalf = -1;
+  int rSizeHalf = -1;
   @override
   Future<void> onLoad() async {
     super.onLoad();
@@ -38,12 +41,14 @@ class WorldFlatTop extends Component {
     borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
 
     tiles = List.generate(
-        2000,
-        (_) => List.filled(2000, null),
+        256,
+        (_) => List.filled(256, null),
         growable: false);
+    qSizeHalf = (tiles.length / 2).round();
+    rSizeHalf = (tiles[0].length / 2).round();
 
-    for (int q = -800; q <= 800; q++) {
-      for (int r = -800; r <= 800; r++) {
+    for (int q = -qSizeHalf; q <= qSizeHalf-1; q++) {
+      for (int r = -rSizeHalf; r <= rSizeHalf-1; r++) {
         int s = (q + r) * -1;
         double xPos = xSize * 3 / 2 * q - xSize;
         double yTr1 = ySize * (sqrt(3) / 2 * q);
@@ -53,8 +58,8 @@ class WorldFlatTop extends Component {
         double yPos = yTr1 + yTr2 - ySize;
         Vector2 position = Vector2(xPos, yPos);
         Tile tile = Tile(q, r, s, position);
-        int qArray = q + 1000;
-        int rArray = r + 1000;
+        int qArray = q + qSizeHalf;
+        int rArray = r + rSizeHalf;
         tiles[qArray][rArray] = tile;
       }
     }
@@ -85,8 +90,8 @@ class WorldFlatTop extends Component {
       s = -q - r;
     }
 
-    if (tiles[q+1000][r+1000] != null) {
-      selectedTile = tiles[q+1000][r+1000];
+    if (tiles[q+qSizeHalf][r+rSizeHalf] != null) {
+      selectedTile = tiles[q+qSizeHalf][r+rSizeHalf];
     }
   }
 
@@ -106,14 +111,19 @@ class WorldFlatTop extends Component {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    for (int q = -32; q <= 32; q++) {
-      for (int r = -32; r <= 32; r++) {
-        if (tiles[q + 1000][r + 1000] != null) {
-          grassSprite.render(
-              canvas,
-              position: tiles[q + 1000][r + 1000]!.getPos(),
-              size: Vector2(2 * xSize, sqrt(3) * ySize)
-          );
+    for (int q = -qSizeHalf; q <= qSizeHalf - 1; q++) {
+      for (int r = -rSizeHalf; r <= rSizeHalf - 1; r++) {
+        if (tiles[q + qSizeHalf][r + rSizeHalf] != null) {
+          if (tiles[q + qSizeHalf][r + rSizeHalf]!.position.x > left &&
+              tiles[q + qSizeHalf][r + rSizeHalf]!.position.x < right) {
+            if (tiles[q + qSizeHalf][r + rSizeHalf]!.position.y > top &&
+                tiles[q + qSizeHalf][r + rSizeHalf]!.position.y < bottom) {
+              grassSprite.render(canvas,
+                  position: tiles[q + qSizeHalf][r + rSizeHalf]!.getPos(),
+                  size: Vector2(2 * xSize, sqrt(3) * ySize)
+              );
+            }
+          }
         }
       }
     }
@@ -150,10 +160,11 @@ class WorldFlatTop extends Component {
   double top = 0.0;
   double bottom = 0.0;
   void updateWorld(Vector2 cameraPosition, Vector2 size) {
-    left = cameraPosition.x - (size.x / 2) + 20;
-    right = cameraPosition.x + (size.x / 2) - 20;
-    top = cameraPosition.y - (size.y / 2) + 20;
-    bottom = cameraPosition.y + (size.y / 2) - 20;
+    double borderOffset = 50;
+    left = cameraPosition.x - (size.x / 2) + borderOffset;
+    right = cameraPosition.x + (size.x / 2) - borderOffset;
+    top = cameraPosition.y - (size.y / 2) + borderOffset;
+    bottom = cameraPosition.y + (size.y / 2) - borderOffset;
 
   }
 }

@@ -86,7 +86,6 @@ class WorldPointTop extends Component {
       s = -q - r;
     }
 
-    print("q: $q  r: $r  s: $s");
     if (tiles[q+1000][r+1000] != null) {
       selectedTile = tiles[q+1000][r+1000];
     }
@@ -108,8 +107,8 @@ class WorldPointTop extends Component {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    for (int q = -4; q <= 4; q++) {
-      for (int r = -4; r <= 4; r++) {
+    for (int q = -32; q <= 32; q++) {
+      for (int r = -32; r <= 32; r++) {
         if (tiles[q + 1000][r + 1000] != null) {
           grassSprite.render(
               canvas,
@@ -152,10 +151,11 @@ class WorldPointTop extends Component {
   double top = 0.0;
   double bottom = 0.0;
   void updateWorld(Vector2 cameraPosition, Vector2 size) {
-    left = cameraPosition.x - (size.x / 2) + 20;
-    right = cameraPosition.x + (size.x / 2) - 20;
-    top = cameraPosition.y - (size.y / 2) + 20;
-    bottom = cameraPosition.y + (size.y / 2) - 20;
+    double borderOffset = 100;
+    left = cameraPosition.x - (size.x / 2) + borderOffset;
+    right = cameraPosition.x + (size.x / 2) - borderOffset;
+    top = cameraPosition.y - (size.y / 2) + borderOffset;
+    bottom = cameraPosition.y + (size.y / 2) - borderOffset;
 
   }
 }
