@@ -1,3 +1,4 @@
+import 'package:city_builder/world/world.dart';
 import 'package:city_builder/world/world_flat_top_tiles.dart';
 import 'package:city_builder/world/world_point_top_tiles.dart';
 import 'package:flame/components.dart';
@@ -21,7 +22,7 @@ class CityBuilder extends FlameGame
   // double width = 0.0;
   // double height = 0.0;
 
-  final WorldFlatTop _world = WorldFlatTop();
+  late final World _world;
 
   Vector2 dragFrom = Vector2.zero();
   Vector2 dragTo = Vector2.zero();
@@ -37,8 +38,11 @@ class CityBuilder extends FlameGame
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    _world.loadWorld(await loadSprite('tile_test_3.png'));
-    // _world.loadWorld(await loadSprite('tile_test_top_3.png'));
+    Sprite grassTileFlat = await loadSprite('tile_test_3.png');
+    Sprite grassTileTop = await loadSprite('tile_test_top_3.png');
+    _world = World();
+    // _world.loadWorld(grassTileTop);
+    _world.loadWorld(grassTileFlat, grassTileTop);
     camera.followVector2(cameraPosition, relativeOffset: Anchor.center);
     add(_world);
   }

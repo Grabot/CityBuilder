@@ -57,7 +57,8 @@ class WorldFlatTop extends Component {
         yTr2 *= -1;  // The y axis gets positive going down, so we flip it.
         double yPos = yTr1 + yTr2 - ySize;
         Vector2 position = Vector2(xPos, yPos);
-        Tile tile = Tile(q, r, s, position);
+        Tile tile = Tile(q, r, s);
+        tile.setPositionPoint(position);
         int qArray = q + qSizeHalf;
         int rArray = r + rSizeHalf;
         tiles[qArray][rArray] = tile;
@@ -114,12 +115,12 @@ class WorldFlatTop extends Component {
     for (int q = -qSizeHalf; q <= qSizeHalf - 1; q++) {
       for (int r = -rSizeHalf; r <= rSizeHalf - 1; r++) {
         if (tiles[q + qSizeHalf][r + rSizeHalf] != null) {
-          if (tiles[q + qSizeHalf][r + rSizeHalf]!.position.x > left &&
-              tiles[q + qSizeHalf][r + rSizeHalf]!.position.x < right) {
-            if (tiles[q + qSizeHalf][r + rSizeHalf]!.position.y > top &&
-                tiles[q + qSizeHalf][r + rSizeHalf]!.position.y < bottom) {
+          if (tiles[q + qSizeHalf][r + rSizeHalf]!.getPosFlat().x > left &&
+              tiles[q + qSizeHalf][r + rSizeHalf]!.getPosFlat().x < right) {
+            if (tiles[q + qSizeHalf][r + rSizeHalf]!.getPosFlat().y > top &&
+                tiles[q + qSizeHalf][r + rSizeHalf]!.getPosFlat().y < bottom) {
               grassSprite.render(canvas,
-                  position: tiles[q + qSizeHalf][r + rSizeHalf]!.getPos(),
+                  position: tiles[q + qSizeHalf][r + rSizeHalf]!.getPosFlat(),
                   size: Vector2(2 * xSize, sqrt(3) * ySize)
               );
             }
@@ -129,12 +130,12 @@ class WorldFlatTop extends Component {
     }
 
     if (selectedTile != null) {
-      Vector2 point1 = pointyHexCorner(0, selectedTile!.getPos());
-      Vector2 point2 = pointyHexCorner(1, selectedTile!.getPos());
-      Vector2 point3 = pointyHexCorner(2, selectedTile!.getPos());
-      Vector2 point4 = pointyHexCorner(3, selectedTile!.getPos());
-      Vector2 point5 = pointyHexCorner(4, selectedTile!.getPos());
-      Vector2 point6 = pointyHexCorner(5, selectedTile!.getPos());
+      Vector2 point1 = pointyHexCorner(0, selectedTile!.getPosFlat());
+      Vector2 point2 = pointyHexCorner(1, selectedTile!.getPosFlat());
+      Vector2 point3 = pointyHexCorner(2, selectedTile!.getPosFlat());
+      Vector2 point4 = pointyHexCorner(3, selectedTile!.getPosFlat());
+      Vector2 point5 = pointyHexCorner(4, selectedTile!.getPosFlat());
+      Vector2 point6 = pointyHexCorner(5, selectedTile!.getPosFlat());
       var points = Float32List.fromList(
           [
             point1.x, point1.y,

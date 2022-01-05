@@ -50,7 +50,8 @@ class WorldPointTop extends Component {
         yPos *= -1;
         yPos -= ySize;
         Vector2 position = Vector2(xPos, yPos);
-        Tile tile = Tile(q, r, s, position);
+        Tile tile = Tile(q, r, s);
+        tile.setPositionPoint(position);
         int qArray = q + 1000;
         int rArray = r + 1000;
         tiles[qArray][rArray] = tile;
@@ -112,7 +113,7 @@ class WorldPointTop extends Component {
         if (tiles[q + 1000][r + 1000] != null) {
           grassSprite.render(
               canvas,
-              position: tiles[q + 1000][r + 1000]!.getPos(),
+              position: tiles[q + 1000][r + 1000]!.getPosPoint(),
               size: Vector2(sqrt(3) * xSize, 2 * ySize)
           );
         }
@@ -120,12 +121,12 @@ class WorldPointTop extends Component {
     }
 
     if (selectedTile != null) {
-      Vector2 point1 = pointyHexCorner(0, selectedTile!.getPos());
-      Vector2 point2 = pointyHexCorner(1, selectedTile!.getPos());
-      Vector2 point3 = pointyHexCorner(2, selectedTile!.getPos());
-      Vector2 point4 = pointyHexCorner(3, selectedTile!.getPos());
-      Vector2 point5 = pointyHexCorner(4, selectedTile!.getPos());
-      Vector2 point6 = pointyHexCorner(5, selectedTile!.getPos());
+      Vector2 point1 = pointyHexCorner(0, selectedTile!.getPosPoint());
+      Vector2 point2 = pointyHexCorner(1, selectedTile!.getPosPoint());
+      Vector2 point3 = pointyHexCorner(2, selectedTile!.getPosPoint());
+      Vector2 point4 = pointyHexCorner(3, selectedTile!.getPosPoint());
+      Vector2 point5 = pointyHexCorner(4, selectedTile!.getPosPoint());
+      Vector2 point6 = pointyHexCorner(5, selectedTile!.getPosPoint());
       var points = Float32List.fromList(
           [
             point1.x, point1.y,
