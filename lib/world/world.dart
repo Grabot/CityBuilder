@@ -9,14 +9,6 @@ import 'tile_positions.dart';
 
 class World extends Component {
 
-  // size = 16.
-  // width = 2 * size
-  // height = sqrt(3) * size / 2   divided by 2 to give the isometric view
-  double xSize = 16 * 2;
-  double ySize = sqrt(3) * 16 / 2;
-  // double xSize = sqrt(3) * 16;
-  // double ySize = 32 / 2;
-
   late List<List<Tile?>> tiles;
   Tile? selectedTile;
 
@@ -69,20 +61,10 @@ class World extends Component {
   }
 
   void tappedWorld(double mouseX, double mouseY) {
-    int q = 0;
-    int r = 0;
-    int s = 0;
-    if (rotate == 0) {
-      List<int> tileProperties = tappedMapFlat(tiles, xSize, ySize, mouseX, mouseY);
-      q = tileProperties[0];
-      r = tileProperties[1];
-      s = tileProperties[2];
-    } else if (rotate == 1) {
-      List<int> tileProperties = tappedMapPoint(tiles, xSize, ySize, mouseX, mouseY);
-      q = tileProperties[0];
-      r = tileProperties[1];
-      s = tileProperties[2];
-    }
+    List<int> tileProperties = tappedMap(tiles, mouseX, mouseY, rotate);
+    int q = tileProperties[0];
+    int r = tileProperties[1];
+    int s = tileProperties[2];
 
     // This is used to make the map. So if it does not hold the user clicked out of bounds.
     int qArray = q + (tiles.length / 2).ceil();
@@ -119,7 +101,7 @@ class World extends Component {
     }
 
     if (selectedTile != null) {
-      tileSelected(selectedTile!, xSize, ySize, rotate, canvas);
+      tileSelected(selectedTile!, selectedTile!.getXSize(rotate), selectedTile!.getYSize(rotate), rotate, canvas);
     }
 
     Rect worldRect = Rect.fromLTRB(left, top, right, bottom);

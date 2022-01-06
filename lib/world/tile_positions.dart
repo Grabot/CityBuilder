@@ -25,7 +25,6 @@ List<List<Tile?>> setTileDetails(List<List<Tile?>> tiles, Sprite grassFlat, Spri
   for (int q = -(tiles.length/2).ceil(); q < (tiles.length/2).floor(); q++) {
     for (int r = -(tiles[0].length/2).ceil(); r < (tiles[0].length/2).floor(); r++) {
       // Simple check to ensure the map is hexagonal. It makes the map rotations look better
-      print("r: $r  q: $q");
       if (((q + r) >= -((tiles.length/2).ceil() + 1)) && ((q + r) < (tiles.length/2).floor() - 1)) {
         int s = (q + r) * -1;
         int qArray = q + (tiles.length / 2).ceil();

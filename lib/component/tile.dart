@@ -57,15 +57,28 @@ class Tile {
     return positionPoint;
   }
 
+  double getXSize(int rotate) {
+    if (rotate == 0) {
+      return xSizeFlat;
+    } else {
+      return xSizePoint;
+    }
+  }
+
+  double getYSize(int rotate) {
+    if (rotate == 0) {
+      return ySizeFlat;
+    } else {
+      return ySizePoint;
+    }
+  }
+
   renderTile(Canvas canvas, int rotate) {
-    print("render");
   }
 
   setSpriteFlat(Sprite sprite) {
-    print("setting sprite flat");
   }
 
   setSpritePoint(Sprite sprite) {
-    print("setting sprite point");
   }
 }
