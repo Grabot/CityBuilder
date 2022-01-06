@@ -1,7 +1,6 @@
 import 'dart:math';
 import 'dart:typed_data';
 import 'dart:ui';
-import 'package:city_builder/world/render_tiles.dart';
 import 'package:city_builder/world/selected_tile.dart';
 import 'package:city_builder/world/tapped_map.dart';
 import 'package:flame/components.dart';
@@ -45,14 +44,6 @@ class World extends Component {
 
     rotate = 0;
 
-    if (rotate == 0) {
-      xSize = 16 * 2;
-      ySize = sqrt(3) * 16 / 2;
-    } else if (rotate == 1) {
-      xSize = sqrt(3) * 16;
-      ySize = 32 / 2;
-    }
-
     borderPaint.style = PaintingStyle.stroke;
     borderPaint.strokeWidth = 5;
     borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
@@ -61,9 +52,11 @@ class World extends Component {
         11,
             (_) => List.filled(11, null),
         growable: false);
+    print("tile length test");
+    print("length: ${tiles.length}");
+    print("length: ${tiles[0].length}");
 
-    tiles = setTilePositionsFlat(tiles, xSize, ySize);
-    tiles = setTilePositionsPoint(tiles, xSize, ySize);
+    tiles = setTileDetails(tiles, grassSpriteFlat, dirtSpriteFlat, waterSpriteFlat, grassSpritePoint, dirtSpritePoint, waterSpritePoint);
   }
 
   void loadSprites(Sprite grassFlat, Sprite grassPoint, Sprite dirtFlat, Sprite dirtPoint, Sprite waterFlat, Sprite waterPoint) {
@@ -92,9 +85,9 @@ class World extends Component {
     }
 
     // This is used to make the map. So if it does not hold the user clicked out of bounds.
-    if (((q + r) >= -((tiles.length/2).ceil() + 1)) && ((q + r) < (tiles.length/2).floor() - 1)) {
-      int qArray = q + (tiles.length / 2).ceil();
-      int rArray = r + (tiles[0].length / 2).ceil();
+    int qArray = q + (tiles.length / 2).ceil();
+    int rArray = r + (tiles[0].length / 2).ceil();
+    if (qArray >= 0 && qArray < tiles.length && rArray >= 0 && rArray < tiles[0].length) {
       if (tiles[qArray][rArray] != null) {
         selectedTile = tiles[qArray][rArray];
       }
@@ -109,32 +102,20 @@ class World extends Component {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    if (rotate == 0) {
-      renderTilesFlat(
-          tiles,
-          xSize,
-          ySize,
-          canvas,
-          waterSpriteFlat,
-          dirtSpriteFlat,
-          grassSpriteFlat,
-          left,
-          right,
-          top,
-          bottom);
-    } else if (rotate == 1) {
-      renderTilesPoint(
-          tiles,
-          xSize,
-          ySize,
-          canvas,
-          waterSpritePoint,
-          dirtSpritePoint,
-          grassSpritePoint,
-          left,
-          right,
-          top,
-          bottom);
+    for (int q = -(tiles.length/2).ceil(); q < (tiles.length/2).floor(); q++) {
+      for (int r = -(tiles[0].length/2).ceil(); r < (tiles[0].length/2).floor(); r++) {
+        int qArray = q + (tiles.length/2).ceil();
+        int rArray = r + (tiles[0].length/2).ceil();
+        if (tiles[qArray][rArray] != null) {
+          if (tiles[qArray][rArray]!.getPos(rotate).x > left &&
+              tiles[qArray][rArray]!.getPos(rotate).x < right) {
+            if (tiles[qArray][rArray]!.getPos(rotate).y > top &&
+                tiles[qArray][rArray]!.getPos(rotate).y < bottom) {
+              tiles[qArray][rArray]!.renderTile(canvas, rotate);
+            }
+          }
+        }
+      }
     }
 
     if (selectedTile != null) {
