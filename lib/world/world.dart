@@ -24,14 +24,15 @@ class World extends Component {
   World() : super();
 
   late Sprite grassSpriteFlat;
-  late Sprite grassSpriteTop;
+  late Sprite grassSpritePoint;
+  late Sprite dirtSpriteFlat;
+  late Sprite dirtSpritePoint;
+  late Sprite waterSpriteFlat;
+  late Sprite waterSpritePoint;
 
   Paint borderPaint = Paint();
 
-  // We will use this to help with the storing in the array
-  int qSizeHalf = -1;
-  int rSizeHalf = -1;
-  int rotate = 0;
+  int rotate = -1;
 
   double left = 0.0;
   double right = 0.0;
@@ -57,18 +58,21 @@ class World extends Component {
     borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
 
     tiles = List.generate(
-        256,
-            (_) => List.filled(256, null),
+        11,
+            (_) => List.filled(11, null),
         growable: false);
-    qSizeHalf = (tiles.length / 2).round();
-    rSizeHalf = (tiles[0].length / 2).round();
-    tiles = setTilePositionsFlat(tiles, xSize, ySize, qSizeHalf, rSizeHalf);
-    tiles = setTilePositionsPoint(tiles, xSize, ySize, qSizeHalf, rSizeHalf);
+
+    tiles = setTilePositionsFlat(tiles, xSize, ySize);
+    tiles = setTilePositionsPoint(tiles, xSize, ySize);
   }
 
-  void loadWorld(Sprite grassFlat, Sprite grassTop) {
+  void loadSprites(Sprite grassFlat, Sprite grassPoint, Sprite dirtFlat, Sprite dirtPoint, Sprite waterFlat, Sprite waterPoint) {
     grassSpriteFlat = grassFlat;
-    grassSpriteTop = grassTop;
+    grassSpritePoint = grassPoint;
+    dirtSpriteFlat = dirtFlat;
+    dirtSpritePoint = dirtPoint;
+    waterSpriteFlat = waterFlat;
+    waterSpritePoint = waterPoint;
   }
 
   void tappedWorld(double mouseX, double mouseY) {
@@ -87,8 +91,13 @@ class World extends Component {
       s = tileProperties[2];
     }
 
-    if (tiles[q+qSizeHalf][r+rSizeHalf] != null) {
-      selectedTile = tiles[q+qSizeHalf][r+rSizeHalf];
+    // This is used to make the map. So if it does not hold the user clicked out of bounds.
+    if (((q + r) >= -((tiles.length/2).ceil() + 1)) && ((q + r) < (tiles.length/2).floor() - 1)) {
+      int qArray = q + (tiles.length / 2).ceil();
+      int rArray = r + (tiles[0].length / 2).ceil();
+      if (tiles[qArray][rArray] != null) {
+        selectedTile = tiles[qArray][rArray];
+      }
     }
   }
 
@@ -105,9 +114,9 @@ class World extends Component {
           tiles,
           xSize,
           ySize,
-          qSizeHalf,
-          rSizeHalf,
           canvas,
+          waterSpriteFlat,
+          dirtSpriteFlat,
           grassSpriteFlat,
           left,
           right,
@@ -118,10 +127,10 @@ class World extends Component {
           tiles,
           xSize,
           ySize,
-          qSizeHalf,
-          rSizeHalf,
           canvas,
-          grassSpriteTop,
+          waterSpritePoint,
+          dirtSpritePoint,
+          grassSpritePoint,
           left,
           right,
           top,
