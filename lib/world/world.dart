@@ -23,7 +23,7 @@ class World extends Component {
 
   Paint borderPaint = Paint();
 
-  int rotate = -1;
+  late int rotate;
 
   double left = 0.0;
   double right = 0.0;
@@ -33,6 +33,8 @@ class World extends Component {
   @override
   Future<void> onLoad() async {
     super.onLoad();
+    // https://github.com/flame-engine/flame/blob/main/examples/lib/stories/sprites/spritebatch_example.dart
+    // Check out sprite batch for possible performance improvement.
 
     rotate = 0;
 
@@ -44,9 +46,6 @@ class World extends Component {
         11,
             (_) => List.filled(11, null),
         growable: false);
-    print("tile length test");
-    print("length: ${tiles.length}");
-    print("length: ${tiles[0].length}");
 
     tiles = setTileDetails(tiles, grassSpriteFlat, dirtSpriteFlat, waterSpriteFlat, grassSpritePoint, dirtSpritePoint, waterSpritePoint);
   }
@@ -108,11 +107,19 @@ class World extends Component {
     canvas.drawRect(worldRect, borderPaint);
   }
 
-  void updateWorld(Vector2 cameraPosition, Vector2 size) {
+  updateWorld(Vector2 cameraPosition, Vector2 size) {
     double borderOffset = 50;
     left = cameraPosition.x - (size.x / 2) + borderOffset;
     right = cameraPosition.x + (size.x / 2) - borderOffset;
     top = cameraPosition.y - (size.y / 2) + borderOffset;
     bottom = cameraPosition.y + (size.y / 2) - borderOffset;
+  }
+
+  rotateWorld() {
+    if (rotate == 0) {
+      rotate = 1;
+    } else {
+      rotate = 0;
+    }
   }
 }

@@ -1,12 +1,11 @@
 import 'package:city_builder/world/world.dart';
-import 'package:city_builder/world/world_flat_top_tiles.dart';
-import 'package:city_builder/world/world_point_top_tiles.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
 import 'package:flame/palette.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
 
 class CityBuilder extends FlameGame
     with
@@ -19,8 +18,6 @@ class CityBuilder extends FlameGame
   // The camera position will always be in the center of the screen
   Vector2 cameraPosition = Vector2.zero();
   Vector2 cameraVelocity = Vector2.zero();
-  // double width = 0.0;
-  // double height = 0.0;
 
   late final World _world;
 
@@ -35,6 +32,9 @@ class CityBuilder extends FlameGame
   double multiPointerDist = 0.0;
   int movementBlock = 0;
 
+  Vector2 multiTouch1 = Vector2.zero();
+  Vector2 multiTouch2 = Vector2.zero();
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -45,15 +45,32 @@ class CityBuilder extends FlameGame
     Sprite waterTileFlat = await loadSprite('tile_water_flat.png');
     Sprite waterTileTop = await loadSprite('tile_water_point.png');
     _world = World();
-    // _world.loadWorld(grassTileTop);
     _world.loadSprites(grassTileFlat, grassTileTop, dirtTileFlat, dirtTileTop, waterTileFlat, waterTileTop);
     camera.followVector2(cameraPosition, relativeOffset: Anchor.center);
     add(_world);
   }
 
+  static final _text = TextPaint(
+    style: TextStyle(color: BasicPalette.red.color, fontSize: 12),
+  );
+
   @override
   void render(Canvas canvas) {
     super.render(canvas);
+
+    Paint buttonPaint = Paint();
+    buttonPaint.style = PaintingStyle.fill;
+    buttonPaint.color = const Color.fromRGBO(126, 0, 255, 1.0);
+
+    Rect worldRect = Rect.fromLTRB(0, 0, 50, 50);
+    canvas.drawRect(worldRect, buttonPaint);
+    _text.render(
+      canvas,
+      "rotate",
+      Vector2(25, 25),
+      anchor: Anchor.center
+    );
+
   }
 
   @override
@@ -73,15 +90,17 @@ class CityBuilder extends FlameGame
 
   @override
   void onTapUp(int pointerId, TapUpInfo info) {
-    _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);
+    if (info.eventPosition.global.x < 50 && info.eventPosition.global.y < 50) {
+      print("pressed ugly button thing");
+      _world.rotateWorld();
+    } else {
+      _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);
+    }
   }
 
   @override
   void onTapDown(int pointerId, TapDownInfo info) {
   }
-
-  Vector2 multiTouch1 = Vector2.zero();
-  Vector2 multiTouch2 = Vector2.zero();
 
   @override
   void onDragStart(int pointerId, DragStartInfo info) {
