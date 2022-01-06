@@ -26,12 +26,22 @@ class WaterTile extends Tile {
   renderTile(Canvas canvas, int rotate) {
     if (rotate == 0) {
       spriteFlat.render(canvas,
-          position: getPosFlat(),
+          position: Vector2(positionFlat.x, positionFlat.y),
           size: Vector2(2 * xSizeFlat, sqrt(3) * ySizeFlat)
       );
     } else if (rotate == 1) {
       spritePoint.render(canvas,
-          position: getPosPoint(),
+          position: Vector2(positionPoint.x, positionPoint.y),
+          size: Vector2(2 * xSizePoint, sqrt(3) * ySizePoint)
+      );
+    } else if (rotate == 2) {
+      spriteFlat.render(canvas,
+          position: Vector2(-positionFlat.x, -positionFlat.y),
+          size: Vector2(2 * xSizeFlat, sqrt(3) * ySizeFlat)
+      );
+    } else if (rotate == 3) {
+      spritePoint.render(canvas,
+          position: Vector2(-positionPoint.x, -positionPoint.y),
           size: Vector2(2 * xSizePoint, sqrt(3) * ySizePoint)
       );
     }

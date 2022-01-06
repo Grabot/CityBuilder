@@ -118,6 +118,10 @@ class World extends Component {
   rotateWorld() {
     if (rotate == 0) {
       rotate = 1;
+    } else if (rotate == 1) {
+      rotate = 2;
+    } else if (rotate == 2) {
+      rotate = 3;
     } else {
       rotate = 0;
     }

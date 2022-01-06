@@ -45,20 +45,17 @@ class Tile {
   Vector2 getPos(int rotate) {
     if (rotate == 0) {
       return positionFlat;
-    } else {
+    } else if (rotate == 1) {
       return positionPoint;
+    } else if (rotate == 2) {
+      return Vector2(-positionFlat.x, -positionFlat.y);
+    } else {
+      return Vector2(-positionPoint.x, -positionPoint.y);
     }
-  }
-  Vector2 getPosFlat() {
-    return positionFlat;
-  }
-
-  Vector2 getPosPoint() {
-    return positionPoint;
   }
 
   double getXSize(int rotate) {
-    if (rotate == 0) {
+    if (rotate == 0 || rotate == 2) {
       return xSizeFlat;
     } else {
       return xSizePoint;
@@ -66,7 +63,7 @@ class Tile {
   }
 
   double getYSize(int rotate) {
-    if (rotate == 0) {
+    if (rotate == 0 || rotate == 2) {
       return ySizeFlat;
     } else {
       return ySizePoint;
