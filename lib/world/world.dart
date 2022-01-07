@@ -41,6 +41,13 @@ class World extends Component {
     // final spriteBatch = await SpriteBatch.load('boom.png');
 
     spriteBatch = await SpriteBatch.load('flat_sheet.png');
+    // full
+    // Rect.fromLTWH(0, 0, 768, 54)
+    // single (first)
+    // Rect.fromLTWH(0, 0, 128, 54)
+    // single (second)
+    // Rect.fromLTWH(128, 0, 128, 54)
+    // etc
 
     rotate = 0;
 
@@ -50,12 +57,6 @@ class World extends Component {
 
     tiles = setTileDetails(grassSpriteFlat, dirtSpriteFlat, waterSpriteFlat, grassSpritePoint, dirtSpritePoint, waterSpritePoint);
 
-    // add(
-    //   SpriteBatchComponent(
-    //     spriteBatch: spriteBatch,
-    //     blendMode: BlendMode.srcOver,
-    //   ),
-    // );
   }
 
   void loadSprites(Sprite grassFlat, Sprite grassPoint, Sprite dirtFlat, Sprite dirtPoint, Sprite waterFlat, Sprite waterPoint) {
@@ -91,6 +92,7 @@ class World extends Component {
   void render(Canvas canvas) {
     super.render(canvas);
 
+    spriteBatch.clear();
     for (int q = -(tiles.length/2).ceil(); q < (tiles.length/2).floor(); q++) {
       for (int r = -(tiles[0].length/2).ceil(); r < (tiles[0].length/2).floor(); r++) {
         int qArray = q + (tiles.length/2).ceil();
@@ -100,12 +102,22 @@ class World extends Component {
               tiles[qArray][rArray]!.getPos(rotate).x < right) {
             if (tiles[qArray][rArray]!.getPos(rotate).y > top &&
                 tiles[qArray][rArray]!.getPos(rotate).y < bottom) {
-              tiles[qArray][rArray]!.renderTile(canvas, rotate);
+              // tiles[qArray][rArray]!.renderTile(canvas, rotate);
             }
           }
         }
       }
     }
+
+    spriteBatch.add(
+        source: Rect.fromLTWH(256, 0, 128, 54),
+        offset: Vector2(0, 0)
+    );
+
+    spriteBatch.render(
+        canvas,
+        blendMode: BlendMode.srcOver
+    );
 
     if (selectedTile != null) {
       tileSelected(selectedTile!, rotate, canvas);

@@ -31,4 +31,9 @@ class DirtTile extends Tile {
       );
     }
   }
+
+  @override
+  int getTileType() {
+    return 2;
+  }
 }

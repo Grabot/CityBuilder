@@ -1,30 +1,14 @@
-import 'dart:math';
 import 'package:city_builder/component/grass_tile.dart';
 import 'package:city_builder/component/water_tile.dart';
 import 'package:flame/components.dart';
 import '../component/dirt_tile.dart';
 import '../component/tile.dart';
+import 'map_details/map_details_small.dart';
 
-
-List<List<int>> worldDetail = [
-  [-1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0],
-  [-1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [-1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [-1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [-1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [-1, 0, 0, 0, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 1, 2, 2, 2, 2, 1, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 1, 2, 2, 2, 2, 1, 0, 0, 0, 0, -1],
-  [0, 0, 0, 0, 1, 2, 2, 1, 1, 1, 0, 0, 0, -1, -1],
-  [0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0, 0, -1, -1, -1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1],
-  [0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1]
-];
 
 List<List<Tile?>> setTileDetails(Sprite grassFlat, Sprite dirtFlat, Sprite waterFlat, Sprite grassPoint, Sprite dirtPoint, Sprite waterPoint) {
+
+  List<List<int>> worldDetail = worldDetailSmall;
 
   List<List<Tile?>> tiles = List.generate(
       worldDetail.length,

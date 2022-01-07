@@ -31,4 +31,9 @@ class GrassTile extends Tile {
       );
     }
   }
+
+  @override
+  int getTileType() {
+    return 1;
+  }
 }

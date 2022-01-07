@@ -31,4 +31,9 @@ class WaterTile extends Tile {
       );
     }
   }
+
+  @override
+  int getTileType() {
+    return 0;
+  }
 }

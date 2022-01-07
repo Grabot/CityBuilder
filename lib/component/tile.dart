@@ -52,6 +52,10 @@ class Tile {
     }
   }
 
+  int getTileType() {
+    return -1;
+  }
+
   renderTile(Canvas canvas, int rotate) {
   }
 
