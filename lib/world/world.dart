@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:city_builder/world/selected_tile.dart';
 import 'package:city_builder/world/tapped_map.dart';
 import 'package:flame/components.dart';
+import 'package:flame/sprite.dart';
 import '../component/tile.dart';
 import 'tile_positions.dart';
 
@@ -30,11 +31,16 @@ class World extends Component {
   double top = 0.0;
   double bottom = 0.0;
 
+  late SpriteBatch spriteBatch;
+
   @override
   Future<void> onLoad() async {
     super.onLoad();
     // https://github.com/flame-engine/flame/blob/main/examples/lib/stories/sprites/spritebatch_example.dart
     // Check out sprite batch for possible performance improvement.
+    // final spriteBatch = await SpriteBatch.load('boom.png');
+
+    spriteBatch = await SpriteBatch.load('flat_sheet.png');
 
     rotate = 0;
 
@@ -43,6 +49,13 @@ class World extends Component {
     borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
 
     tiles = setTileDetails(grassSpriteFlat, dirtSpriteFlat, waterSpriteFlat, grassSpritePoint, dirtSpritePoint, waterSpritePoint);
+
+    // add(
+    //   SpriteBatchComponent(
+    //     spriteBatch: spriteBatch,
+    //     blendMode: BlendMode.srcOver,
+    //   ),
+    // );
   }
 
   void loadSprites(Sprite grassFlat, Sprite grassPoint, Sprite dirtFlat, Sprite dirtPoint, Sprite waterFlat, Sprite waterPoint) {

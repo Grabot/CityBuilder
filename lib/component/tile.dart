@@ -4,8 +4,7 @@ import 'package:flame/extensions.dart';
 
 class Tile {
 
-  late Vector2 positionFlat;
-  late Vector2 positionPoint;
+  late Vector2 position;
   late int q;
   late int r;
   late int s;
@@ -23,25 +22,18 @@ class Tile {
     double yTr2 = ySize * (sqrt(3) * r);
     yTr2 *= -1; // The y axis gets positive going down, so we flip it.
     double yPosFlat = yTr1 + yTr2 - ySize;
-    positionFlat = Vector2(xPosFlat, yPosFlat);
-
-    double xPosPoint = xSize * (sqrt(3) * q + sqrt(3) / 2 * r) - xSize;
-    double yPosPoint = ySize * 3 / 2 * r;
-    yPosPoint *= -1;
-    yPosPoint -= ySize;
-    // We only have to update the sprites and position for the points.
-    positionPoint = Vector2(xPosPoint, yPosPoint);
+    position = Vector2(xPosFlat, yPosFlat);
   }
 
   Vector2 getPos(int rotate) {
     if (rotate == 0) {
-      return Vector2(positionFlat.x, positionFlat.y);
+      return Vector2(position.x, position.y);
     } else if (rotate == 1) {
-      return Vector2(-positionFlat.y * 2, positionFlat.x / 2);
+      return Vector2(-position.y * 2, position.x / 2);
     } else if (rotate == 2) {
-      return Vector2(-positionFlat.x, -positionFlat.y);
+      return Vector2(-position.x, -position.y);
     } else {
-      return Vector2(positionFlat.y * 2, -positionFlat.x / 2);
+      return Vector2(position.y * 2, -position.x / 2);
     }
   }
 

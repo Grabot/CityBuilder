@@ -60,12 +60,13 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    - assets/images/tile_dirt_flat.png
-    - assets/images/tile_dirt_point.png
-    - assets/images/tile_grass_flat.png
-    - assets/images/tile_grass_point.png
-    - assets/images/tile_water_flat.png
-    - assets/images/tile_water_point.png
+    - assets/images/flat_dirt_1.png
+    - assets/images/point_dirt_1.png
+    - assets/images/flat_grass_1.png
+    - assets/images/point_grass_1.png
+    - assets/images/flat_water_1.png
+    - assets/images/point_water_1.png
+    - assets/images/flat_sheet.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.
