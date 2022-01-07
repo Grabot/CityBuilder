@@ -4,11 +4,13 @@ import 'dart:ui';
 import 'package:flame/components.dart';
 import '../component/tile.dart';
 
+// Don't forget to update these size if you update the sizes in the tile object.
+double xSize = 16;
+double ySize = 8;
 
-
-Vector2 pointyHexCorner(double i, Vector2 center, double xSize, double ySize, int rotate) {
+Vector2 pointyHexCorner(double i, Vector2 center, int rotate) {
   double angleDeg = 60 * i;
-  if (rotate == 1) {
+  if (rotate == 1 || rotate == 3) {
     angleDeg = 60 * i - 30;
   }
   double angleRad = pi/180 * angleDeg;
@@ -17,13 +19,13 @@ Vector2 pointyHexCorner(double i, Vector2 center, double xSize, double ySize, in
   return Vector2(pointX, pointY);
 }
 
-tileSelected(Tile selectedTile, double xSize, double ySize, int rotate, Canvas canvas) {
-  Vector2 point1 = pointyHexCorner(0, selectedTile.getPos(rotate), xSize, ySize, rotate);
-  Vector2 point2 = pointyHexCorner(1, selectedTile.getPos(rotate), xSize, ySize, rotate);
-  Vector2 point3 = pointyHexCorner(2, selectedTile.getPos(rotate), xSize, ySize, rotate);
-  Vector2 point4 = pointyHexCorner(3, selectedTile.getPos(rotate), xSize, ySize, rotate);
-  Vector2 point5 = pointyHexCorner(4, selectedTile.getPos(rotate), xSize, ySize, rotate);
-  Vector2 point6 = pointyHexCorner(5, selectedTile.getPos(rotate), xSize, ySize, rotate);
+tileSelected(Tile selectedTile, int rotate, Canvas canvas) {
+  Vector2 point1 = pointyHexCorner(0, selectedTile.getPos(rotate), rotate);
+  Vector2 point2 = pointyHexCorner(1, selectedTile.getPos(rotate), rotate);
+  Vector2 point3 = pointyHexCorner(2, selectedTile.getPos(rotate), rotate);
+  Vector2 point4 = pointyHexCorner(3, selectedTile.getPos(rotate), rotate);
+  Vector2 point5 = pointyHexCorner(4, selectedTile.getPos(rotate), rotate);
+  Vector2 point6 = pointyHexCorner(5, selectedTile.getPos(rotate), rotate);
 
   var points = Float32List.fromList(
       [

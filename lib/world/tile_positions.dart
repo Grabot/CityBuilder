@@ -7,20 +7,29 @@ import '../component/tile.dart';
 
 
 List<List<int>> worldDetail = [
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0],
-  [0, 0, 1, 2, 2, 1, 2, 1, 1, 0, 0],
-  [0, 0, 1, 1, 2, 2, 2, 2, 1, 0, 0],
-  [0, 0, 1, 2, 2, 2, 2, 2, 2, 0, 0],
-  [0, 0, 0, 1, 2, 2, 2, 2, 1, 0, 0],
-  [0, 0, 0, 0, 1, 2, 2, 2, 1, 0, 0],
-  [0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+  [-1, -1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0],
+  [-1, -1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [-1, -1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [-1, -1, -1, -1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+  [-1, -1, -1, 0, 0, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0],
+  [-1, -1, 0, 0, 1, 2, 2, 1, 2, 1, 1, 0, 0, 0, 0],
+  [-1, 0, 0, 0, 1, 1, 2, 2, 2, 2, 1, 0, 0, 0, 0],
+  [0, 0, 0, 0, 1, 2, 2, 2, 2, 2, 2, 0, 0, 0, 0],
+  [0, 0, 0, 0, 0, 1, 2, 2, 2, 2, 1, 0, 0, 0, -1],
+  [0, 0, 0, 0, 0, 0, 1, 2, 2, 2, 1, 0, 0, -1, -1],
+  [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, -1, -1, -1],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1],
+  [0, 0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1],
+  [0, 0, 0, 0, 0, 0, 0, 0, -1, -1, -1, -1, -1, -1, -1]
 ];
 
-List<List<Tile?>> setTileDetails(List<List<Tile?>> tiles, Sprite grassFlat, Sprite dirtFlat, Sprite waterFlat, Sprite grassPoint, Sprite dirtPoint, Sprite waterPoint) {
+List<List<Tile?>> setTileDetails(Sprite grassFlat, Sprite dirtFlat, Sprite waterFlat, Sprite grassPoint, Sprite dirtPoint, Sprite waterPoint) {
+
+  List<List<Tile?>> tiles = List.generate(
+      worldDetail.length,
+          (_) => List.filled(worldDetail[0].length, null),
+      growable: false);
 
   for (int q = -(tiles.length/2).ceil(); q < (tiles.length/2).floor(); q++) {
     for (int r = -(tiles[0].length/2).ceil(); r < (tiles[0].length/2).floor(); r++) {

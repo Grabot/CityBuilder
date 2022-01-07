@@ -42,12 +42,7 @@ class World extends Component {
     borderPaint.strokeWidth = 5;
     borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
 
-    tiles = List.generate(
-        11,
-            (_) => List.filled(11, null),
-        growable: false);
-
-    tiles = setTileDetails(tiles, grassSpriteFlat, dirtSpriteFlat, waterSpriteFlat, grassSpritePoint, dirtSpritePoint, waterSpritePoint);
+    tiles = setTileDetails(grassSpriteFlat, dirtSpriteFlat, waterSpriteFlat, grassSpritePoint, dirtSpritePoint, waterSpritePoint);
   }
 
   void loadSprites(Sprite grassFlat, Sprite grassPoint, Sprite dirtFlat, Sprite dirtPoint, Sprite waterFlat, Sprite waterPoint) {
@@ -100,7 +95,7 @@ class World extends Component {
     }
 
     if (selectedTile != null) {
-      tileSelected(selectedTile!, selectedTile!.getXSize(rotate), selectedTile!.getYSize(rotate), rotate, canvas);
+      tileSelected(selectedTile!, rotate, canvas);
     }
 
     Rect worldRect = Rect.fromLTRB(left, top, right, bottom);
