@@ -1,6 +1,6 @@
 import 'dart:ui';
 import 'package:city_builder/component/tile.dart';
-import 'package:flame/components.dart';
+import 'package:flame/sprite.dart';
 
 class GrassTile extends Tile {
 
@@ -8,26 +8,18 @@ class GrassTile extends Tile {
       : super(q, r, s);
 
   @override
-  setSpriteFlat(Sprite sprite) {
-    spriteFlat = sprite;
-  }
-
-  @override
-  setSpritePoint(Sprite sprite) {
-    spritePoint = sprite;
-  }
-
-  @override
-  renderTile(Canvas canvas, int rotate) {
+  renderTile(SpriteBatch spriteBatch, int rotate) {
     if (rotate == 0 || rotate == 2) {
-      spriteFlat.render(canvas,
-          position: getPos(rotate),
-          size: getSize(rotate)
+      spriteBatch.add(
+          source: Rect.fromLTWH(128, 0, 128, 54),
+          offset: getPos(rotate),
+          scale: scale
       );
     } else {
-      spritePoint.render(canvas,
-          position: getPos(rotate),
-          size: getSize(rotate)
+      spriteBatch.add(
+          source: Rect.fromLTWH(112, 0, 112, 64),
+          offset: getPos(rotate),
+          scale: scale
       );
     }
   }

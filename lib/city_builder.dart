@@ -38,14 +38,7 @@ class CityBuilder extends FlameGame
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    Sprite grassTileFlat = await loadSprite('flat_grass_1.png');
-    Sprite grassTileTop = await loadSprite('point_grass_1.png');
-    Sprite dirtTileFlat = await loadSprite('flat_dirt_1.png');
-    Sprite dirtTileTop = await loadSprite('point_dirt_1.png');
-    Sprite waterTileFlat = await loadSprite('flat_water_1.png');
-    Sprite waterTileTop = await loadSprite('point_water_1.png');
     _world = World();
-    _world.loadSprites(grassTileFlat, grassTileTop, dirtTileFlat, dirtTileTop, waterTileFlat, waterTileTop);
     camera.followVector2(cameraPosition, relativeOffset: Anchor.center);
     add(_world);
   }

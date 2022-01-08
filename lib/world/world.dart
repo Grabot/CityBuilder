@@ -1,5 +1,3 @@
-import 'dart:math';
-import 'dart:typed_data';
 import 'dart:ui';
 import 'package:city_builder/world/selected_tile.dart';
 import 'package:city_builder/world/tapped_map.dart';
@@ -15,13 +13,6 @@ class World extends Component {
 
   World() : super();
 
-  late Sprite grassSpriteFlat;
-  late Sprite grassSpritePoint;
-  late Sprite dirtSpriteFlat;
-  late Sprite dirtSpritePoint;
-  late Sprite waterSpriteFlat;
-  late Sprite waterSpritePoint;
-
   Paint borderPaint = Paint();
 
   late int rotate;
@@ -31,23 +22,21 @@ class World extends Component {
   double top = 0.0;
   double bottom = 0.0;
 
-  late SpriteBatch spriteBatch;
+  // late SpriteBatch spriteBatchFlatAll0;
+  late SpriteBatch spriteBatchFlatClose0;
+  late SpriteBatch spriteBatchFlatClose2;
+  // late SpriteBatch spriteBatchPointAll1;
+  late SpriteBatch spriteBatchPointClose1;
+  late SpriteBatch spriteBatchPointClose3;
 
   @override
   Future<void> onLoad() async {
     super.onLoad();
-    // https://github.com/flame-engine/flame/blob/main/examples/lib/stories/sprites/spritebatch_example.dart
-    // Check out sprite batch for possible performance improvement.
-    // final spriteBatch = await SpriteBatch.load('boom.png');
 
-    spriteBatch = await SpriteBatch.load('flat_sheet.png');
-    // full
-    // Rect.fromLTWH(0, 0, 768, 54)
-    // single (first)
-    // Rect.fromLTWH(0, 0, 128, 54)
-    // single (second)
-    // Rect.fromLTWH(128, 0, 128, 54)
-    // etc
+    spriteBatchFlatClose0 = await SpriteBatch.load('flat_sheet.png');
+    spriteBatchPointClose1 = await SpriteBatch.load('point_sheet.png');
+    spriteBatchFlatClose2 = await SpriteBatch.load('flat_sheet.png');
+    spriteBatchPointClose3 = await SpriteBatch.load('point_sheet.png');
 
     rotate = 0;
 
@@ -55,17 +44,32 @@ class World extends Component {
     borderPaint.strokeWidth = 5;
     borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
 
-    tiles = setTileDetails(grassSpriteFlat, dirtSpriteFlat, waterSpriteFlat, grassSpritePoint, dirtSpritePoint, waterSpritePoint);
+    tiles = setTileDetails();
 
-  }
+    for (int q = -(tiles.length/2).ceil(); q < (tiles.length/2).floor(); q++) {
+      for (int r = -(tiles[0].length/2).ceil(); r < (tiles[0].length/2).floor(); r++) {
+        int qArray = q + (tiles.length/2).ceil();
+        int rArray = r + (tiles[0].length/2).ceil();
+        if (tiles[qArray][rArray] != null) {
+            // This seems to give much better performance.
+            // The idea would be to divide the map in quadrants that the sprite batches will draw
+            // If the user is playing on a certain part of the map, the other parts don't have to be drawn
+            // If the user zooms out we will draw them all, if the user zooms in we will stop drawing certain quadrants.
+            // The batches are only for the tiles, which will not change position or main type.
+            if (tiles[qArray][rArray]!.getPos(rotate).x > -1000 &&
+                tiles[qArray][rArray]!.getPos(rotate).x < 1000) {
+              if (tiles[qArray][rArray]!.getPos(rotate).y > -500 &&
+                  tiles[qArray][rArray]!.getPos(rotate).y < 500) {
+                tiles[qArray][rArray]!.renderTile(spriteBatchFlatClose0, 0);
+                tiles[qArray][rArray]!.renderTile(spriteBatchPointClose1, 1);
+                tiles[qArray][rArray]!.renderTile(spriteBatchFlatClose2, 2);
+                tiles[qArray][rArray]!.renderTile(spriteBatchPointClose3, 3);
+              }
+            }
+        }
+      }
+    }
 
-  void loadSprites(Sprite grassFlat, Sprite grassPoint, Sprite dirtFlat, Sprite dirtPoint, Sprite waterFlat, Sprite waterPoint) {
-    grassSpriteFlat = grassFlat;
-    grassSpritePoint = grassPoint;
-    dirtSpriteFlat = dirtFlat;
-    dirtSpritePoint = dirtPoint;
-    waterSpriteFlat = waterFlat;
-    waterSpritePoint = waterPoint;
   }
 
   void tappedWorld(double mouseX, double mouseY) {
@@ -74,6 +78,7 @@ class World extends Component {
     int r = tileProperties[1];
     int s = tileProperties[2];
 
+    print("q: $q  r: $r  s: $s");
     // This is used to make the map. So if it does not hold the user clicked out of bounds.
     int qArray = q + (tiles.length / 2).ceil();
     int rArray = r + (tiles[0].length / 2).ceil();
@@ -92,32 +97,31 @@ class World extends Component {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    spriteBatch.clear();
-    for (int q = -(tiles.length/2).ceil(); q < (tiles.length/2).floor(); q++) {
-      for (int r = -(tiles[0].length/2).ceil(); r < (tiles[0].length/2).floor(); r++) {
-        int qArray = q + (tiles.length/2).ceil();
-        int rArray = r + (tiles[0].length/2).ceil();
-        if (tiles[qArray][rArray] != null) {
-          if (tiles[qArray][rArray]!.getPos(rotate).x > left &&
-              tiles[qArray][rArray]!.getPos(rotate).x < right) {
-            if (tiles[qArray][rArray]!.getPos(rotate).y > top &&
-                tiles[qArray][rArray]!.getPos(rotate).y < bottom) {
-              tiles[qArray][rArray]!.renderTile(canvas, rotate);
-            }
-          }
-        }
-      }
+    if (rotate == 0) {
+      spriteBatchFlatClose0.render(
+          canvas,
+          blendMode: BlendMode.srcOver,
+          cullRect: Rect.fromLTRB(left, top, right, bottom)
+      );
+    } else if (rotate == 1) {
+      spriteBatchPointClose1.render(
+          canvas,
+          blendMode: BlendMode.srcOver,
+          cullRect: Rect.fromLTRB(left, top, right, bottom)
+      );
+    } else if (rotate == 2) {
+      spriteBatchFlatClose2.render(
+          canvas,
+          blendMode: BlendMode.srcOver,
+          cullRect: Rect.fromLTRB(left, top, right, bottom)
+      );
+    } else if (rotate == 3) {
+      spriteBatchPointClose3.render(
+          canvas,
+          blendMode: BlendMode.srcOver,
+          cullRect: Rect.fromLTRB(left, top, right, bottom)
+      );
     }
-
-    // spriteBatch.add(
-    //     source: Rect.fromLTWH(256, 0, 128, 54),
-    //     offset: Vector2(0, 0)
-    // );
-    //
-    // spriteBatch.render(
-    //     canvas,
-    //     blendMode: BlendMode.srcOver
-    // );
 
     if (selectedTile != null) {
       tileSelected(selectedTile!, rotate, canvas);

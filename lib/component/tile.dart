@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
+import 'package:flame/sprite.dart';
 
 class Tile {
 
@@ -12,8 +13,8 @@ class Tile {
   double xSize = 16;
   double ySize = 8;
 
-  late Sprite spriteFlat;
-  late Sprite spritePoint;
+  double scale = 0.27;
+
   // We assume the condition r + s + q = 0 is true.
   Tile(this.q, this.r, this.s) {
     double xPosFlat = xSize * 3 / 2 * q - xSize;
@@ -56,12 +57,7 @@ class Tile {
     return -1;
   }
 
-  renderTile(Canvas canvas, int rotate) {
+  renderTile(SpriteBatch spriteBatch, int rotate) {
   }
 
-  setSpriteFlat(Sprite sprite) {
-  }
-
-  setSpritePoint(Sprite sprite) {
-  }
 }

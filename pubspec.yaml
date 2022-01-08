@@ -67,6 +67,7 @@ flutter:
     - assets/images/flat_water_1.png
     - assets/images/point_water_1.png
     - assets/images/flat_sheet.png
+    - assets/images/point_sheet.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

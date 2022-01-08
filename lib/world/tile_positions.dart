@@ -1,14 +1,13 @@
 import 'package:city_builder/component/grass_tile.dart';
 import 'package:city_builder/component/water_tile.dart';
-import 'package:flame/components.dart';
+import 'package:city_builder/world/map_details/map_details_medium.dart';
 import '../component/dirt_tile.dart';
 import '../component/tile.dart';
-import 'map_details/map_details_normal.dart';
 
 
-List<List<Tile?>> setTileDetails(Sprite grassFlat, Sprite dirtFlat, Sprite waterFlat, Sprite grassPoint, Sprite dirtPoint, Sprite waterPoint) {
+List<List<Tile?>> setTileDetails() {
 
-  List<List<int>> worldDetail = worldDetailNormal;
+  List<List<int>> worldDetail = worldDetailMedium;
 
   List<List<Tile?>> tiles = List.generate(
       worldDetail.length,
@@ -22,18 +21,12 @@ List<List<Tile?>> setTileDetails(Sprite grassFlat, Sprite dirtFlat, Sprite water
       int rArray = r + (tiles[0].length / 2).ceil();
       if (worldDetail[qArray][rArray] == 0) {
         WaterTile tile = WaterTile(q, r, s);
-        tile.setSpriteFlat(waterFlat);
-        tile.setSpritePoint(waterPoint);
         tiles[qArray][rArray] = tile;
       } else if (worldDetail[qArray][rArray] == 1) {
         DirtTile tile = DirtTile(q, r, s);
-        tile.setSpriteFlat(dirtFlat);
-        tile.setSpritePoint(dirtPoint);
         tiles[qArray][rArray] = tile;
       } else if (worldDetail[qArray][rArray] == 2) {
         GrassTile tile = GrassTile(q, r, s);
-        tile.setSpriteFlat(grassFlat);
-        tile.setSpritePoint(grassPoint);
         tiles[qArray][rArray] = tile;
       }
     }
