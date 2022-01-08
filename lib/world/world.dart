@@ -102,22 +102,22 @@ class World extends Component {
               tiles[qArray][rArray]!.getPos(rotate).x < right) {
             if (tiles[qArray][rArray]!.getPos(rotate).y > top &&
                 tiles[qArray][rArray]!.getPos(rotate).y < bottom) {
-              // tiles[qArray][rArray]!.renderTile(canvas, rotate);
+              tiles[qArray][rArray]!.renderTile(canvas, rotate);
             }
           }
         }
       }
     }
 
-    spriteBatch.add(
-        source: Rect.fromLTWH(256, 0, 128, 54),
-        offset: Vector2(0, 0)
-    );
-
-    spriteBatch.render(
-        canvas,
-        blendMode: BlendMode.srcOver
-    );
+    // spriteBatch.add(
+    //     source: Rect.fromLTWH(256, 0, 128, 54),
+    //     offset: Vector2(0, 0)
+    // );
+    //
+    // spriteBatch.render(
+    //     canvas,
+    //     blendMode: BlendMode.srcOver
+    // );
 
     if (selectedTile != null) {
       tileSelected(selectedTile!, rotate, canvas);

@@ -3,12 +3,12 @@ import 'package:city_builder/component/water_tile.dart';
 import 'package:flame/components.dart';
 import '../component/dirt_tile.dart';
 import '../component/tile.dart';
-import 'map_details/map_details_small.dart';
+import 'map_details/map_details_normal.dart';
 
 
 List<List<Tile?>> setTileDetails(Sprite grassFlat, Sprite dirtFlat, Sprite waterFlat, Sprite grassPoint, Sprite dirtPoint, Sprite waterPoint) {
 
-  List<List<int>> worldDetail = worldDetailSmall;
+  List<List<int>> worldDetail = worldDetailNormal;
 
   List<List<Tile?>> tiles = List.generate(
       worldDetail.length,
