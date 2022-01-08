@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:city_builder/world/selected_tile.dart';
 import 'package:city_builder/world/tapped_map.dart';
+import 'package:city_builder/world/update_tile_data.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import '../component/tile.dart';
@@ -22,10 +23,10 @@ class World extends Component {
   double top = 0.0;
   double bottom = 0.0;
 
-  // late SpriteBatch spriteBatchFlatAll0;
+  late List<SpriteBatch> mapSpriteBatches;
+
   late SpriteBatch spriteBatchFlatClose0;
   late SpriteBatch spriteBatchFlatClose2;
-  // late SpriteBatch spriteBatchPointAll1;
   late SpriteBatch spriteBatchPointClose1;
   late SpriteBatch spriteBatchPointClose3;
 
@@ -45,31 +46,8 @@ class World extends Component {
     borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
 
     tiles = setTileDetails();
-
-    for (int q = -(tiles.length/2).ceil(); q < (tiles.length/2).floor(); q++) {
-      for (int r = -(tiles[0].length/2).ceil(); r < (tiles[0].length/2).floor(); r++) {
-        int qArray = q + (tiles.length/2).ceil();
-        int rArray = r + (tiles[0].length/2).ceil();
-        if (tiles[qArray][rArray] != null) {
-            // This seems to give much better performance.
-            // The idea would be to divide the map in quadrants that the sprite batches will draw
-            // If the user is playing on a certain part of the map, the other parts don't have to be drawn
-            // If the user zooms out we will draw them all, if the user zooms in we will stop drawing certain quadrants.
-            // The batches are only for the tiles, which will not change position or main type.
-            if (tiles[qArray][rArray]!.getPos(rotate).x > -1000 &&
-                tiles[qArray][rArray]!.getPos(rotate).x < 1000) {
-              if (tiles[qArray][rArray]!.getPos(rotate).y > -500 &&
-                  tiles[qArray][rArray]!.getPos(rotate).y < 500) {
-                tiles[qArray][rArray]!.renderTile(spriteBatchFlatClose0, 0);
-                tiles[qArray][rArray]!.renderTile(spriteBatchPointClose1, 1);
-                tiles[qArray][rArray]!.renderTile(spriteBatchFlatClose2, 2);
-                tiles[qArray][rArray]!.renderTile(spriteBatchPointClose3, 3);
-              }
-            }
-        }
-      }
-    }
-
+    SpriteBatch spriteBatchMap = updateTileData(tiles, 0, spriteBatchFlatClose0);
+    mapSpriteBatches.add(spriteBatchMap);
   }
 
   void tappedWorld(double mouseX, double mouseY) {
@@ -97,31 +75,11 @@ class World extends Component {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    if (rotate == 0) {
-      spriteBatchFlatClose0.render(
-          canvas,
-          blendMode: BlendMode.srcOver,
-          cullRect: Rect.fromLTRB(left, top, right, bottom)
-      );
-    } else if (rotate == 1) {
-      spriteBatchPointClose1.render(
-          canvas,
-          blendMode: BlendMode.srcOver,
-          cullRect: Rect.fromLTRB(left, top, right, bottom)
-      );
-    } else if (rotate == 2) {
-      spriteBatchFlatClose2.render(
-          canvas,
-          blendMode: BlendMode.srcOver,
-          cullRect: Rect.fromLTRB(left, top, right, bottom)
-      );
-    } else if (rotate == 3) {
-      spriteBatchPointClose3.render(
-          canvas,
-          blendMode: BlendMode.srcOver,
-          cullRect: Rect.fromLTRB(left, top, right, bottom)
-      );
-    }
+    mapSpriteBatches[0].render(
+        canvas,
+        blendMode: BlendMode.srcOver,
+        cullRect: Rect.fromLTRB(left, top, right, bottom)
+    );
 
     if (selectedTile != null) {
       tileSelected(selectedTile!, rotate, canvas);
@@ -140,13 +98,22 @@ class World extends Component {
   }
 
   rotateWorld() {
+    mapSpriteBatches[0].clear();
     if (rotate == 0) {
+      spriteBatchPointClose1.clear();
+      mapSpriteBatches[0] = updateTileData(tiles, 1, spriteBatchPointClose1);
       rotate = 1;
     } else if (rotate == 1) {
+      spriteBatchFlatClose2.clear();
+      mapSpriteBatches[0] = updateTileData(tiles, 2, spriteBatchFlatClose2);
       rotate = 2;
     } else if (rotate == 2) {
+      spriteBatchPointClose3.clear();
+      mapSpriteBatches[0] = updateTileData(tiles, 3, spriteBatchPointClose3);
       rotate = 3;
     } else {
+      spriteBatchFlatClose0.clear();
+      mapSpriteBatches[0] = updateTileData(tiles, 0, spriteBatchFlatClose0);
       rotate = 0;
     }
   }

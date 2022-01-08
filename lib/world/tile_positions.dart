@@ -1,13 +1,13 @@
 import 'package:city_builder/component/grass_tile.dart';
 import 'package:city_builder/component/water_tile.dart';
-import 'package:city_builder/world/map_details/map_details_medium.dart';
+import 'package:city_builder/world/map_details/map_details_normal.dart';
 import '../component/dirt_tile.dart';
 import '../component/tile.dart';
 
 
 List<List<Tile?>> setTileDetails() {
 
-  List<List<int>> worldDetail = worldDetailMedium;
+  List<List<int>> worldDetail = worldDetailNormal;
 
   List<List<Tile?>> tiles = List.generate(
       worldDetail.length,
