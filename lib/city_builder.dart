@@ -165,17 +165,17 @@ class CityBuilder extends FlameGame
     multiPointerDist = 0.0;
     // Check if it crossed the game boundaries and put it back if that is the case.
     // TODO: Improve boundaries with zoom added.
-    if (dragTo.x < -1000) {
-      dragTo.x = -1000;
-    } else if (dragTo.x > 1000) {
-      dragTo.x = 1000;
-    }
-
-    if (dragTo.y < -1000) {
-      dragTo.y = -1000;
-    } else if (dragTo.y > 1000) {
-      dragTo.y = 1000;
-    }
+    // if (dragTo.x < -1000) {
+    //   dragTo.x = -1000;
+    // } else if (dragTo.x > 1000) {
+    //   dragTo.x = 1000;
+    // }
+    //
+    // if (dragTo.y < -1000) {
+    //   dragTo.y = -1000;
+    // } else if (dragTo.y > 1000) {
+    //   dragTo.y = 1000;
+    // }
   }
 
   double frameTimes = 0.0;

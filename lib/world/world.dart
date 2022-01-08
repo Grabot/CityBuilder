@@ -46,8 +46,10 @@ class World extends Component {
     borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
 
     tiles = setTileDetails();
-    SpriteBatch spriteBatchMap = updateTileData(tiles, 0, spriteBatchFlatClose0);
-    mapSpriteBatches.add(spriteBatchMap);
+    mapSpriteBatches = [];
+    updateTileData(tiles, 0).then((value) {
+      mapSpriteBatches = value;
+    });
   }
 
   void tappedWorld(double mouseX, double mouseY) {
@@ -75,7 +77,14 @@ class World extends Component {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    mapSpriteBatches[0].render(
+    // for (SpriteBatch spriteBatch in mapSpriteBatches) {
+    //   spriteBatch.render(
+    //       canvas,
+    //       blendMode: BlendMode.srcOver,
+    //       cullRect: Rect.fromLTRB(left, top, right, bottom)
+    //   );
+    // }
+    mapSpriteBatches[6].render(
         canvas,
         blendMode: BlendMode.srcOver,
         cullRect: Rect.fromLTRB(left, top, right, bottom)
@@ -98,23 +107,23 @@ class World extends Component {
   }
 
   rotateWorld() {
-    mapSpriteBatches[0].clear();
-    if (rotate == 0) {
-      spriteBatchPointClose1.clear();
-      mapSpriteBatches[0] = updateTileData(tiles, 1, spriteBatchPointClose1);
-      rotate = 1;
-    } else if (rotate == 1) {
-      spriteBatchFlatClose2.clear();
-      mapSpriteBatches[0] = updateTileData(tiles, 2, spriteBatchFlatClose2);
-      rotate = 2;
-    } else if (rotate == 2) {
-      spriteBatchPointClose3.clear();
-      mapSpriteBatches[0] = updateTileData(tiles, 3, spriteBatchPointClose3);
-      rotate = 3;
-    } else {
-      spriteBatchFlatClose0.clear();
-      mapSpriteBatches[0] = updateTileData(tiles, 0, spriteBatchFlatClose0);
-      rotate = 0;
-    }
+    // mapSpriteBatches = [];
+    // if (rotate == 0) {
+    //   spriteBatchPointClose1.clear();
+    //   mapSpriteBatches = updateTileData(tiles, 1, spriteBatchPointClose1);
+    //   rotate = 1;
+    // } else if (rotate == 1) {
+    //   spriteBatchFlatClose2.clear();
+    //   mapSpriteBatches = updateTileData(tiles, 2, spriteBatchFlatClose2);
+    //   rotate = 2;
+    // } else if (rotate == 2) {
+    //   spriteBatchPointClose3.clear();
+    //   mapSpriteBatches = updateTileData(tiles, 3, spriteBatchPointClose3);
+    //   rotate = 3;
+    // } else {
+    //   spriteBatchFlatClose0.clear();
+    //   mapSpriteBatches = updateTileData(tiles, 0, spriteBatchFlatClose0);
+    //   rotate = 0;
+    // }
   }
 }
