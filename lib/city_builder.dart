@@ -79,6 +79,7 @@ class CityBuilder extends FlameGame
     } else if (camera.zoom >= 4) {
       camera.zoom = 4;
     }
+    print("current zoom: ${camera.zoom}");
   }
 
   @override
@@ -190,7 +191,7 @@ class CityBuilder extends FlameGame
       frameTimes = 0;
       frames = 0;
     }
-    _world.updateWorld(cameraPosition, size);
+    _world.updateWorld(cameraPosition, camera.zoom, size);
 
     cameraPosition.add(cameraVelocity * dt * 10);
 
@@ -240,17 +241,6 @@ class CityBuilder extends FlameGame
       }
       if (event.logicalKey == LogicalKeyboardKey.keyS) {
         dragTo.y -= 40;
-      }
-
-      if (event.logicalKey == LogicalKeyboardKey.keyQ) {
-        camera.zoom *= 2;
-      } else if (event.logicalKey == LogicalKeyboardKey.keyE) {
-        camera.zoom /= 2;
-      }
-      if (camera.zoom <= 0.25) {
-        camera.zoom = 0.25;
-      } else if (camera.zoom >= 4) {
-        camera.zoom = 4;
       }
     }
 

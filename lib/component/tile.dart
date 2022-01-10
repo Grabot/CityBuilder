@@ -1,4 +1,5 @@
 import 'dart:math';
+import 'package:city_builder/component/map_quadrant.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/sprite.dart';
@@ -14,6 +15,8 @@ class Tile {
   double ySize = 8;
 
   double scale = 0.27;
+
+  late MapQuadrant mapQuadrant;
 
   // We assume the condition r + s + q = 0 is true.
   Tile(this.q, this.r, this.s) {
@@ -58,6 +61,10 @@ class Tile {
   }
 
   renderTile(SpriteBatch spriteBatch, int rotate) {
+  }
+
+  setQuadrant(MapQuadrant mapQuadrantOfTile) {
+    mapQuadrant = mapQuadrantOfTile;
   }
 
 }

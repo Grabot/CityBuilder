@@ -1,4 +1,5 @@
 import 'dart:ui';
+import 'package:city_builder/component/map_quadrant.dart';
 import 'package:city_builder/world/selected_tile.dart';
 import 'package:city_builder/world/tapped_map.dart';
 import 'package:city_builder/world/update_tile_data.dart';
@@ -18,18 +19,15 @@ class World extends Component {
 
   late int rotate;
 
-  double left = 0.0;
-  double right = 0.0;
-  double top = 0.0;
-  double bottom = 0.0;
-
-  late List<SpriteBatch> mapSpriteBatches;
-
   late SpriteBatch spriteBatchFlatClose0;
   late SpriteBatch spriteBatchFlatClose2;
   late SpriteBatch spriteBatchPointClose1;
   late SpriteBatch spriteBatchPointClose3;
 
+  late List<List<MapQuadrant?>> mapQuadrants;
+  late Vector2 cameraPosition;
+  late double zoom;
+  
   @override
   Future<void> onLoad() async {
     super.onLoad();
@@ -46,9 +44,9 @@ class World extends Component {
     borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
 
     tiles = setTileDetails();
-    mapSpriteBatches = [];
-    updateTileData(tiles, 0).then((value) {
-      mapSpriteBatches = value;
+    getMapQuadrants(tiles).then((value) {
+      mapQuadrants = value;
+      setTilesToQuadrants(tiles, mapQuadrants);
     });
   }
 
@@ -65,6 +63,7 @@ class World extends Component {
     if (qArray >= 0 && qArray < tiles.length && rArray >= 0 && rArray < tiles[0].length) {
       if (tiles[qArray][rArray] != null) {
         selectedTile = tiles[qArray][rArray];
+        print("position selected tile: ${selectedTile!.getPos(0)}");
       }
     }
   }
@@ -77,33 +76,35 @@ class World extends Component {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    // for (SpriteBatch spriteBatch in mapSpriteBatches) {
-    //   spriteBatch.render(
-    //       canvas,
-    //       blendMode: BlendMode.srcOver,
-    //       cullRect: Rect.fromLTRB(left, top, right, bottom)
-    //   );
-    // }
-    mapSpriteBatches[6].render(
-        canvas,
-        blendMode: BlendMode.srcOver,
-        cullRect: Rect.fromLTRB(left, top, right, bottom)
-    );
+    for (int x = 0; x < mapQuadrants.length; x++) {
+      for (int y = 0; y < mapQuadrants[x].length; y++) {
+        if (mapQuadrants[x][y] != null) {
+          if (cameraPosition.x >= mapQuadrants[x][y]!.fromX && cameraPosition.x < mapQuadrants[x][y]!.toX) {
+            if (cameraPosition.y >= mapQuadrants[x][y]!.fromY && cameraPosition.y < mapQuadrants[x][y]!.toY) {
+              // The quadrant that the camera is on right now.
+              renderQuadrants(canvas, mapQuadrants, x, y, cameraPosition);
+            }
+          }
+        }
+      }
+    }
 
     if (selectedTile != null) {
       tileSelected(selectedTile!, rotate, canvas);
     }
 
-    Rect worldRect = Rect.fromLTRB(left, top, right, bottom);
-    canvas.drawRect(worldRect, borderPaint);
+    // Rect worldRect = Rect.fromLTRB(left, top, right, bottom);
+    // canvas.drawRect(worldRect, borderPaint);
   }
 
-  updateWorld(Vector2 cameraPosition, Vector2 size) {
-    double borderOffset = 50;
-    left = cameraPosition.x - (size.x / 2) + borderOffset;
-    right = cameraPosition.x + (size.x / 2) - borderOffset;
-    top = cameraPosition.y - (size.y / 2) + borderOffset;
-    bottom = cameraPosition.y + (size.y / 2) - borderOffset;
+  updateWorld(Vector2 cameraPos, double zoomLevel, Vector2 size) {
+    cameraPosition = cameraPos;
+    zoom = zoomLevel;
+    // double borderOffset = 50;
+    // left = cameraPosition.x - (size.x / 2) + borderOffset;
+    // right = cameraPosition.x + (size.x / 2) - borderOffset;
+    // top = cameraPosition.y - (size.y / 2) + borderOffset;
+    // bottom = cameraPosition.y + (size.y / 2) - borderOffset;
   }
 
   rotateWorld() {
