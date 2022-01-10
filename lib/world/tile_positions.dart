@@ -78,88 +78,15 @@ Future<List<List<MapQuadrant?>>> getMapQuadrants(List<List<Tile?>> tiles) async 
   return mapQuadrants;
 }
 
-renderQuadrants(Canvas canvas, List<List<MapQuadrant?>> mapQuadrants, int x, int y, Vector2 cameraPos) {
-
-  // We render (for now) the quadrant the camera is currently and and the 8 next to it.
-  mapQuadrants[x][y]!.spriteBatchFlat.render(canvas, blendMode: BlendMode.srcOver);
-  // 1
-  if ((x - 1) >= 0 && (y - 1) >= 0) {
-    double distanceX = (cameraPos.x - mapQuadrants[x - 1][y - 1]!.center.x).abs();
-    double distanceY = (cameraPos.y - mapQuadrants[x - 1][y - 1]!.center.y).abs();
-    if (distanceX < quadrantSizeX && distanceY < quadrantSizeY) {
-      mapQuadrants[x - 1][y - 1]!
-          .spriteBatchFlat
-          .render(canvas, blendMode: BlendMode.srcOver);
-    }
-  }
-  // 2
-  if ((x - 1) >= 0) {
-    double distanceX = (cameraPos.x - mapQuadrants[x - 1][y]!.center.x).abs();
-    double distanceY = (cameraPos.y - mapQuadrants[x - 1][y]!.center.y).abs();
-    if (distanceX < quadrantSizeX && distanceY < quadrantSizeY) {
-      mapQuadrants[x - 1][y]!
-          .spriteBatchFlat
-          .render(canvas, blendMode: BlendMode.srcOver);
-    }
-  }
-  // 3
-  if ((x - 1) >= 0 && (y + 1) < mapQuadrants[x].length) {
-    double distanceX = (cameraPos.x - mapQuadrants[x - 1][y + 1]!.center.x).abs();
-    double distanceY = (cameraPos.y - mapQuadrants[x - 1][y + 1]!.center.y).abs();
-    if (distanceX < quadrantSizeX && distanceY < quadrantSizeY) {
-      mapQuadrants[x - 1][y + 1]!
-          .spriteBatchFlat
-          .render(canvas, blendMode: BlendMode.srcOver);
-    }
-  }
-  // 4
-  if ((y - 1) >= 0) {
-    double distanceX = (cameraPos.x - mapQuadrants[x][y - 1]!.center.x).abs();
-    double distanceY = (cameraPos.y - mapQuadrants[x][y - 1]!.center.y).abs();
-    if (distanceX < quadrantSizeX && distanceY < quadrantSizeY) {
-      mapQuadrants[x][y - 1]!
-          .spriteBatchFlat
-          .render(canvas, blendMode: BlendMode.srcOver);
-    }
-  }
-  // 5
-  if ((y + 1) < mapQuadrants[x].length) {
-    double distanceX = (cameraPos.x - mapQuadrants[x][y + 1]!.center.x).abs();
-    double distanceY = (cameraPos.y - mapQuadrants[x][y + 1]!.center.y).abs();
-    if (distanceX < quadrantSizeX && distanceY < quadrantSizeY) {
-      mapQuadrants[x][y + 1]!
-          .spriteBatchFlat
-          .render(canvas, blendMode: BlendMode.srcOver);
-    }
-  }
-  // 6
-  if ((x + 1) < mapQuadrants.length && (y - 1) >= 0) {
-    double distanceX = (cameraPos.x - mapQuadrants[x + 1][y - 1]!.center.x).abs();
-    double distanceY = (cameraPos.y - mapQuadrants[x + 1][y - 1]!.center.y).abs();
-    if (distanceX < quadrantSizeX && distanceY < quadrantSizeY) {
-      mapQuadrants[x + 1][y - 1]!
-          .spriteBatchFlat
-          .render(canvas, blendMode: BlendMode.srcOver);
-    }
-  }
-  // 7
-  if ((x + 1) < mapQuadrants.length) {
-    double distanceX = (cameraPos.x - mapQuadrants[x + 1][y]!.center.x).abs();
-    double distanceY = (cameraPos.y - mapQuadrants[x + 1][y]!.center.y).abs();
-    if (distanceX < quadrantSizeX && distanceY < quadrantSizeY) {
-      mapQuadrants[x + 1][y]!
-          .spriteBatchFlat
-          .render(canvas, blendMode: BlendMode.srcOver);
-    }
-  }
-  // 8
-  if ((x + 1) < mapQuadrants.length && (y + 1) < mapQuadrants[x].length) {
-    double distanceX = (cameraPos.x - mapQuadrants[x + 1][y + 1]!.center.x).abs();
-    double distanceY = (cameraPos.y - mapQuadrants[x + 1][y + 1]!.center.y).abs();
-    if (distanceX < quadrantSizeX && distanceY < quadrantSizeY) {
-      mapQuadrants[x + 1][y + 1]!
-          .spriteBatchFlat
-          .render(canvas, blendMode: BlendMode.srcOver);
+renderQuadrants(Canvas canvas, List<List<MapQuadrant?>> mapQuadrants, int x, int y, double leftScreen, double rightScreen, double topScreen, double bottomScreen) {
+  for (int x = 0; x < mapQuadrants.length; x++) {
+    for (int y = 0; y < mapQuadrants[x].length; y++) {
+      // If the quadrant is within the screen, draw it.
+      if (mapQuadrants[x][y]!.toX > leftScreen && mapQuadrants[x][y]!.fromX < rightScreen) {
+        if (mapQuadrants[x][y]!.toY > topScreen && mapQuadrants[x][y]!.fromY < bottomScreen) {
+          mapQuadrants[x][y]!.spriteBatchFlat.render(canvas, blendMode: BlendMode.srcOver);
+        }
+      }
     }
   }
 }

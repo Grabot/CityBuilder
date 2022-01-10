@@ -74,8 +74,8 @@ class CityBuilder extends FlameGame
   void onScroll(PointerScrollInfo info) {
     double zoomIncrease = (info.raw.scrollDelta.dy/1000);
     camera.zoom *= (1 - zoomIncrease);
-    if (camera.zoom <= 0.25) {
-      camera.zoom = 0.25;
+    if (camera.zoom <= 0.5) {
+      camera.zoom = 0.5;
     } else if (camera.zoom >= 4) {
       camera.zoom = 4;
     }
@@ -144,8 +144,8 @@ class CityBuilder extends FlameGame
       cameraZoom += (zoomIncrease / 400);
     }
     camera.zoom *= cameraZoom;
-    if (camera.zoom <= 0.25) {
-      camera.zoom = 0.25;
+    if (camera.zoom <= 0.5) {
+      camera.zoom = 0.5;
     } else if (camera.zoom >= 4) {
       camera.zoom = 4;
     }
@@ -184,6 +184,9 @@ class CityBuilder extends FlameGame
   @override
   void update(double dt) {
     super.update(dt);
+    dragTo.x += dragAccelerate.x;
+    dragTo.y += dragAccelerate.y;
+
     frameTimes += dt;
     frames += 1;
     if (frameTimes > 1) {
@@ -204,6 +207,7 @@ class CityBuilder extends FlameGame
     } else {
       movementBlock = 0;
     }
+
   }
 
   void updateMapScroll() {
@@ -222,6 +226,7 @@ class CityBuilder extends FlameGame
     }
   }
 
+  Vector2 dragAccelerate = Vector2.zero();
   @override
   KeyEventResult onKeyEvent(
       RawKeyEvent event,
@@ -229,19 +234,14 @@ class CityBuilder extends FlameGame
       ) {
     final isKeyDown = event is RawKeyDownEvent;
 
-    if (isKeyDown) {
-      if (event.logicalKey == LogicalKeyboardKey.keyA) {
-        dragTo.x += 40;
-      }
-      if (event.logicalKey == LogicalKeyboardKey.keyD) {
-        dragTo.x -= 40;
-      }
-      if (event.logicalKey == LogicalKeyboardKey.keyW) {
-        dragTo.y += 40;
-      }
-      if (event.logicalKey == LogicalKeyboardKey.keyS) {
-        dragTo.y -= 40;
-      }
+    if (event.logicalKey == LogicalKeyboardKey.keyA) {
+      dragAccelerate.x = isKeyDown ? -10 : 0;
+    } else if (event.logicalKey == LogicalKeyboardKey.keyD) {
+      dragAccelerate.x = isKeyDown ? 10 : 0;
+    } else if (event.logicalKey == LogicalKeyboardKey.keyW) {
+      dragAccelerate.y = isKeyDown ? -10 : 0;
+    } else if (event.logicalKey == LogicalKeyboardKey.keyS) {
+      dragAccelerate.y = isKeyDown ? 10 : 0;
     }
 
     return KeyEventResult.handled;

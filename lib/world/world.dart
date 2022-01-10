@@ -76,13 +76,19 @@ class World extends Component {
   void render(Canvas canvas) {
     super.render(canvas);
 
+    // We draw the border a bit further than what you're seeing, this is so the sections load before you scroll on them.
+    double borderOffset = 100;
+    double leftScreen = cameraPosition.x - (worldSize.x / 2) - borderOffset;
+    double rightScreen = cameraPosition.x + (worldSize.x / 2) + borderOffset;
+    double topScreen = cameraPosition.y - (worldSize.y / 2) - borderOffset;
+    double bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset;
     for (int x = 0; x < mapQuadrants.length; x++) {
       for (int y = 0; y < mapQuadrants[x].length; y++) {
         if (mapQuadrants[x][y] != null) {
           if (cameraPosition.x >= mapQuadrants[x][y]!.fromX && cameraPosition.x < mapQuadrants[x][y]!.toX) {
             if (cameraPosition.y >= mapQuadrants[x][y]!.fromY && cameraPosition.y < mapQuadrants[x][y]!.toY) {
               // The quadrant that the camera is on right now.
-              renderQuadrants(canvas, mapQuadrants, x, y, cameraPosition);
+              renderQuadrants(canvas, mapQuadrants, x, y, leftScreen, rightScreen, topScreen, bottomScreen);
             }
           }
         }
@@ -93,18 +99,13 @@ class World extends Component {
       tileSelected(selectedTile!, rotate, canvas);
     }
 
-    // Rect worldRect = Rect.fromLTRB(left, top, right, bottom);
-    // canvas.drawRect(worldRect, borderPaint);
   }
 
+  late Vector2 worldSize;
   updateWorld(Vector2 cameraPos, double zoomLevel, Vector2 size) {
     cameraPosition = cameraPos;
+    worldSize = size;
     zoom = zoomLevel;
-    // double borderOffset = 50;
-    // left = cameraPosition.x - (size.x / 2) + borderOffset;
-    // right = cameraPosition.x + (size.x / 2) - borderOffset;
-    // top = cameraPosition.y - (size.y / 2) + borderOffset;
-    // bottom = cameraPosition.y + (size.y / 2) - borderOffset;
   }
 
   rotateWorld() {
