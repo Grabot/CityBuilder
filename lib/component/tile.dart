@@ -20,13 +20,13 @@ class Tile {
 
   // We assume the condition r + s + q = 0 is true.
   Tile(this.q, this.r, this.s) {
-    double xPosFlat = xSize * 3 / 2 * q - xSize;
+    double xPos = xSize * 3 / 2 * q - xSize;
     double yTr1 = ySize * (sqrt(3) / 2 * q);
     yTr1 *= -1; // The y axis gets positive going down, so we flip it.
     double yTr2 = ySize * (sqrt(3) * r);
     yTr2 *= -1; // The y axis gets positive going down, so we flip it.
-    double yPosFlat = yTr1 + yTr2 - ySize;
-    position = Vector2(xPosFlat, yPosFlat);
+    double yPos = yTr1 + yTr2 - ySize;
+    position = Vector2(xPos, yPos);
   }
 
   Vector2 getPos(int rotate) {

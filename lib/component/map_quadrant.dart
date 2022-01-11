@@ -12,11 +12,11 @@ class MapQuadrant {
 
   late Vector2 center;
 
-  late SpriteBatch spriteBatchFlat;
+  late SpriteBatch spriteBatch;
 
   List<Tile> quadrantTiles = [];
 
-  MapQuadrant(this.spriteBatchFlat, this.fromX, this.toX, this.fromY, this.toY, this.center);
+  MapQuadrant(this.spriteBatch, this.fromX, this.toX, this.fromY, this.toY, this.center);
 
   addTileToQuadrant(Tile tile) {
     quadrantTiles.add(tile);

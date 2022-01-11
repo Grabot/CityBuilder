@@ -10,6 +10,7 @@ import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import '../component/dirt_tile.dart';
 import '../component/tile.dart';
+import 'map_details/map_details_tiny.dart';
 
 
 // quadranten (these can be fairly high, they are x, y values not tile amounts
@@ -18,7 +19,7 @@ int quadrantSizeY = 540; // 1080/2 (standard monitor height)
 
 List<List<Tile?>> setTileDetails() {
 
-  List<List<int>> worldDetail = worldDetailSmall;
+  List<List<int>> worldDetail = worldDetailTiny;
 
   List<List<Tile?>> tiles = List.generate(
       worldDetail.length,
@@ -45,17 +46,17 @@ List<List<Tile?>> setTileDetails() {
   return tiles;
 }
 
-Future<List<List<MapQuadrant?>>> getMapQuadrants(List<List<Tile?>> tiles) async {
+Future<List<List<MapQuadrant?>>> getMapQuadrants(List<List<Tile?>> tiles, int rotate) async {
   // flat total width
-  double left = tiles[0][(tiles.length / 2).round()]!.getPos(0).x;
+  double left = tiles[0][(tiles.length / 2).round()]!.getPos(rotate).x;
   double right =
-      tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(0).x;
+      tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).x;
   double totalWidth = left.abs() + right.abs();
 
   // flat total height
-  double top = tiles[(tiles.length / 2).round()][0]!.getPos(0).y;
+  double top = tiles[(tiles.length / 2).round()][0]!.getPos(rotate).y;
   double bottom =
-      tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(0).y;
+      tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).y;
   double totalHeight = top.abs() + bottom.abs();
 
   int quadrantsX = (totalWidth / quadrantSizeX).ceil();
@@ -70,9 +71,17 @@ Future<List<List<MapQuadrant?>>> getMapQuadrants(List<List<Tile?>> tiles) async 
       double fromY = bottom + (y * quadrantSizeY);
       double toY = bottom + ((y + 1) * quadrantSizeY);
       Vector2 quadrantCenter = Vector2((fromX + (quadrantSizeX/2)), (fromY + (quadrantSizeY/2)));
-      MapQuadrant mapQuadrant = MapQuadrant(
-          await SpriteBatch.load('flat_sheet.png'), fromX, toX, fromY, toY, quadrantCenter);
-      mapQuadrants[x][y] = mapQuadrant;
+      if (rotate == 0 || rotate == 2) {
+        MapQuadrant mapQuadrant = MapQuadrant(
+            await SpriteBatch.load('flat_sheet.png'), fromX, toX, fromY, toY,
+            quadrantCenter);
+        mapQuadrants[x][y] = mapQuadrant;
+      } else {
+        MapQuadrant mapQuadrant = MapQuadrant(
+            await SpriteBatch.load('point_sheet.png'), fromX, toX, fromY, toY,
+            quadrantCenter);
+        mapQuadrants[x][y] = mapQuadrant;
+      }
     }
   }
   return mapQuadrants;
@@ -84,7 +93,7 @@ renderQuadrants(Canvas canvas, List<List<MapQuadrant?>> mapQuadrants, int x, int
       // If the quadrant is within the screen, draw it.
       if (mapQuadrants[x][y]!.toX > leftScreen && mapQuadrants[x][y]!.fromX < rightScreen) {
         if (mapQuadrants[x][y]!.toY > topScreen && mapQuadrants[x][y]!.fromY < bottomScreen) {
-          mapQuadrants[x][y]!.spriteBatchFlat.render(canvas, blendMode: BlendMode.srcOver);
+          mapQuadrants[x][y]!.spriteBatch.render(canvas, blendMode: BlendMode.srcOver);
         }
       }
     }
