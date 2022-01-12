@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:city_builder/component/tile.dart';
+import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 
 class GrassTile extends Tile {
@@ -11,15 +12,32 @@ class GrassTile extends Tile {
   renderTile(SpriteBatch spriteBatch, int rotate) {
     if (rotate == 0 || rotate == 2) {
       spriteBatch.add(
-          source: Rect.fromLTWH(128, 0, 128, 54),
+          source: Rect.fromLTWH(0, 56, 128, 56),
           offset: getPos(rotate),
-          scale: scale
+          scale: scaleX
       );
     } else {
       spriteBatch.add(
-          source: Rect.fromLTWH(112, 0, 112, 64),
+          source: Rect.fromLTWH(0, 64, 112, 64),
           offset: getPos(rotate),
-          scale: scale
+          scale: scaleY
+      );
+    }
+  }
+
+  @override
+  renderAttribute(SpriteBatch spriteBatch, int rotate) {
+    if (rotate == 0 || rotate == 2) {
+      spriteBatch.add(
+          source: const Rect.fromLTWH(0, 112, 321, 349),
+          offset: getPos(rotate) + Vector2(8, -12),
+          scale: 0.06
+      );
+    } else {
+      spriteBatch.add(
+          source: const Rect.fromLTWH(0, 128, 321, 349),
+          offset: getPos(rotate) + Vector2(5, -8),
+          scale: 0.06
       );
     }
   }

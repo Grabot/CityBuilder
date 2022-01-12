@@ -11,17 +11,21 @@ class DirtTile extends Tile {
   renderTile(SpriteBatch spriteBatch, int rotate) {
     if (rotate == 0 || rotate == 2) {
       spriteBatch.add(
-          source: Rect.fromLTWH(0, 0, 128, 54),
+          source: Rect.fromLTWH(0, 0, 128, 56),
           offset: getPos(rotate),
-          scale: scale
+          scale: scaleX
       );
     } else {
       spriteBatch.add(
           source: Rect.fromLTWH(0, 0, 112, 64),
           offset: getPos(rotate),
-          scale: scale
+          scale: scaleY
       );
     }
+  }
+
+  @override
+  renderAttribute(SpriteBatch spriteBatch, int rotate) {
   }
 
   @override

@@ -9,8 +9,6 @@ Future<void> main() async {
   await Flame.device.setLandscape();
 
   Flame.images.loadAll(<String>[
-    'flat_sheet.png',
-    'point_sheet.png'
   ]);
 
   final game = CityBuilder();

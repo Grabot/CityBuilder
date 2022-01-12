@@ -35,5 +35,17 @@ List<List<MapQuadrant?>> setTilesToQuadrants(List<List<Tile?>> tiles, List<List<
       }
     }
   }
+  // We will now draw the things on top of the tile (trees, houses etc.)
+  for (int x = 0; x < mapQuadrants.length; x++) {
+    for (int y = 0; y < mapQuadrants[x].length; y++) {
+      MapQuadrant? mapQuadrant = mapQuadrants[x][y];
+      if (mapQuadrant != null) {
+        mapQuadrant.sortTiles();
+        for (Tile tile in mapQuadrant.quadrantTiles) {
+          tile.renderAttribute(mapQuadrant.spriteBatch, rotate);
+        }
+      }
+    }
+  }
   return mapQuadrants;
 }

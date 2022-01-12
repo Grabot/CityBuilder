@@ -1,5 +1,4 @@
 import 'dart:ui';
-
 import 'package:city_builder/component/grass_tile.dart';
 import 'package:city_builder/component/map_quadrant.dart';
 import 'package:city_builder/component/water_tile.dart';
@@ -19,7 +18,7 @@ int quadrantSizeY = 540; // 1080/2 (standard monitor height)
 
 List<List<Tile?>> setTileDetails() {
 
-  List<List<int>> worldDetail = worldDetailTiny;
+  List<List<int>> worldDetail = worldDetailSmall;
 
   List<List<Tile?>> tiles = List.generate(
       worldDetail.length,
@@ -47,16 +46,30 @@ List<List<Tile?>> setTileDetails() {
 }
 
 Future<List<List<MapQuadrant?>>> getMapQuadrants(List<List<Tile?>> tiles, int rotate) async {
-  // flat total width
-  double left = tiles[0][(tiles.length / 2).round()]!.getPos(rotate).x;
-  double right =
-      tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).x;
-  double totalWidth = left.abs() + right.abs();
 
-  // flat total height
+  double left = tiles[0][(tiles.length / 2).floor()]!.getPos(rotate).x;
+  double right = tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).x;
   double top = tiles[(tiles.length / 2).round()][0]!.getPos(rotate).y;
-  double bottom =
-      tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).y;
+  double bottom = tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).y;
+
+  if (rotate == 1) {
+    top = tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).y;
+    bottom = tiles[0][(tiles.length / 2).round()]!.getPos(rotate).y;
+    left = tiles[(tiles.length / 2).floor()][0]!.getPos(rotate).x;
+    right = tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).x;
+  } else if (rotate == 2) {
+    right = tiles[0][(tiles.length / 2).round()]!.getPos(rotate).x;
+    left = tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).x;
+    bottom = tiles[(tiles.length / 2).floor()][0]!.getPos(rotate).y;
+    top = tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).y;
+  } else if (rotate == 3) {
+    bottom = tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).y;
+    top = tiles[0][(tiles.length / 2).round()]!.getPos(rotate).y;
+    right = tiles[(tiles.length / 2).floor()][0]!.getPos(rotate).x;
+    left = tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).x;
+  }
+
+  double totalWidth = left.abs() + right.abs();
   double totalHeight = top.abs() + bottom.abs();
 
   int quadrantsX = (totalWidth / quadrantSizeX).ceil();
@@ -73,13 +86,13 @@ Future<List<List<MapQuadrant?>>> getMapQuadrants(List<List<Tile?>> tiles, int ro
       Vector2 quadrantCenter = Vector2((fromX + (quadrantSizeX/2)), (fromY + (quadrantSizeY/2)));
       if (rotate == 0 || rotate == 2) {
         MapQuadrant mapQuadrant = MapQuadrant(
-            await SpriteBatch.load('flat_sheet.png'), fromX, toX, fromY, toY,
-            quadrantCenter);
+            await SpriteBatch.load('flat_1.png'), fromX, toX, fromY, toY,
+            quadrantCenter, rotate);
         mapQuadrants[x][y] = mapQuadrant;
       } else {
         MapQuadrant mapQuadrant = MapQuadrant(
-            await SpriteBatch.load('point_sheet.png'), fromX, toX, fromY, toY,
-            quadrantCenter);
+            await SpriteBatch.load('point_1.png'), fromX, toX, fromY, toY,
+            quadrantCenter, rotate);
         mapQuadrants[x][y] = mapQuadrant;
       }
     }
@@ -87,7 +100,7 @@ Future<List<List<MapQuadrant?>>> getMapQuadrants(List<List<Tile?>> tiles, int ro
   return mapQuadrants;
 }
 
-renderQuadrants(Canvas canvas, List<List<MapQuadrant?>> mapQuadrants, int x, int y, double leftScreen, double rightScreen, double topScreen, double bottomScreen) {
+renderQuadrants(Canvas canvas, List<List<MapQuadrant?>> mapQuadrants, double leftScreen, double rightScreen, double topScreen, double bottomScreen) {
   for (int x = 0; x < mapQuadrants.length; x++) {
     for (int y = 0; y < mapQuadrants[x].length; y++) {
       // If the quadrant is within the screen, draw it.

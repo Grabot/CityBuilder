@@ -19,11 +19,6 @@ class World extends Component {
 
   late int rotate;
 
-  late SpriteBatch spriteBatchFlatClose0;
-  late SpriteBatch spriteBatchFlatClose2;
-  late SpriteBatch spriteBatchPointClose1;
-  late SpriteBatch spriteBatchPointClose3;
-
   late List<List<List<MapQuadrant?>>> mapQuadrants;
   late Vector2 cameraPosition;
   late double zoom;
@@ -31,11 +26,6 @@ class World extends Component {
   @override
   Future<void> onLoad() async {
     super.onLoad();
-
-    spriteBatchFlatClose0 = await SpriteBatch.load('flat_sheet.png');
-    spriteBatchPointClose1 = await SpriteBatch.load('point_sheet.png');
-    spriteBatchFlatClose2 = await SpriteBatch.load('flat_sheet.png');
-    spriteBatchPointClose3 = await SpriteBatch.load('point_sheet.png');
 
     rotate = 1;
 
@@ -52,7 +42,9 @@ class World extends Component {
     for (int rot = 0; rot < 4; rot++) {
       print("rot $rot");
       getMapQuadrants(tiles, rot).then((mapQuad) {
+        print("value $rot");
         mapQuad = setTilesToQuadrants(tiles, mapQuad, rot);
+        print("set tiles $rot");
         mapQuadrants[rot] = mapQuad;
       });
     }
@@ -65,13 +57,12 @@ class World extends Component {
     int s = tileProperties[2];
 
     print("q: $q  r: $r  s: $s");
-    // This is used to make the map. So if it does not hold the user clicked out of bounds.
     int qArray = q + (tiles.length / 2).ceil();
     int rArray = r + (tiles[0].length / 2).ceil();
     if (qArray >= 0 && qArray < tiles.length && rArray >= 0 && rArray < tiles[0].length) {
       if (tiles[qArray][rArray] != null) {
         selectedTile = tiles[qArray][rArray];
-        print("position selected tile: ${selectedTile!.getPos(0)}");
+        print("position selected tile: ${selectedTile!.getPos(rotate)}");
       }
     }
   }
@@ -90,18 +81,7 @@ class World extends Component {
     double rightScreen = cameraPosition.x + (worldSize.x / 2) + borderOffset;
     double topScreen = cameraPosition.y - (worldSize.y / 2) - borderOffset;
     double bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset;
-    for (int x = 0; x < mapQuadrants[rotate].length; x++) {
-      for (int y = 0; y < mapQuadrants[rotate][x].length; y++) {
-        if (mapQuadrants[rotate][x][y] != null) {
-          if (cameraPosition.x >= mapQuadrants[rotate][x][y]!.fromX && cameraPosition.x < mapQuadrants[rotate][x][y]!.toX) {
-            if (cameraPosition.y >= mapQuadrants[rotate][x][y]!.fromY && cameraPosition.y < mapQuadrants[rotate][x][y]!.toY) {
-              // The quadrant that the camera is on right now.
-              renderQuadrants(canvas, mapQuadrants[rotate], x, y, leftScreen, rightScreen, topScreen, bottomScreen);
-            }
-          }
-        }
-      }
-    }
+    renderQuadrants(canvas, mapQuadrants[rotate], leftScreen, rightScreen, topScreen, bottomScreen);
 
     if (selectedTile != null) {
       tileSelected(selectedTile!, rotate, canvas);
@@ -117,28 +97,14 @@ class World extends Component {
   }
 
   rotateWorld() {
-    // if (rotate == 0) {
-    //   for (int x = 0; x < mapQuadrants.length; x++) {
-    //     for (int y = 0; y < mapQuadrants[x].length; y++) {
-    //       MapQuadrant? mapQuadrant = mapQuadrants[x][y];
-    //       if (mapQuadrant != null) {
-    //         mapQuadrants
-    //       }
-    //     }
-    //   }
-    //   rotate = 1;
-    // } else if (rotate == 1) {
-    //   spriteBatchFlatClose2.clear();
-    //   mapSpriteBatches = updateTileData(tiles, 2, spriteBatchFlatClose2);
-    //   rotate = 2;
-    // } else if (rotate == 2) {
-    //   spriteBatchPointClose3.clear();
-    //   mapSpriteBatches = updateTileData(tiles, 3, spriteBatchPointClose3);
-    //   rotate = 3;
-    // } else {
-    //   spriteBatchFlatClose0.clear();
-    //   mapSpriteBatches = updateTileData(tiles, 0, spriteBatchFlatClose0);
-    //   rotate = 0;
-    // }
+    if (rotate == 0) {
+      rotate = 1;
+    } else if (rotate == 1) {
+      rotate = 2;
+    } else if (rotate == 2) {
+      rotate = 3;
+    } else {
+      rotate = 0;
+    }
   }
 }
