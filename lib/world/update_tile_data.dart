@@ -21,8 +21,6 @@ List<List<MapQuadrant?>> setTilesToQuadrants(List<List<Tile?>> tiles, List<List<
                   mapQuadrant.addTileToQuadrant(tile);
                   tile.setQuadrant(mapQuadrant);
                   tileFound = true;
-
-                  tile.renderTile(mapQuadrant.spriteBatch, rotate, 0);
                   break;
                 }
               }
@@ -42,6 +40,7 @@ List<List<MapQuadrant?>> setTilesToQuadrants(List<List<Tile?>> tiles, List<List<
       if (mapQuadrant != null) {
         mapQuadrant.sortTiles();
         for (Tile tile in mapQuadrant.quadrantTiles) {
+          tile.renderTile(mapQuadrant.spriteBatch, rotate, 0);
           tile.renderAttribute(mapQuadrant.spriteBatch, rotate);
         }
       }

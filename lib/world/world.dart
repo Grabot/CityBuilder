@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:city_builder/component/map_quadrant.dart';
+import 'package:city_builder/component/selected_tile.dart';
 import 'package:city_builder/world/selected_tile.dart';
 import 'package:city_builder/world/tapped_map.dart';
 import 'package:city_builder/world/update_tile_data.dart';
@@ -11,7 +12,6 @@ import 'tile_positions.dart';
 class World extends Component {
 
   late List<List<Tile?>> tiles;
-  Tile? selectedTile;
 
   World() : super();
 
@@ -30,6 +30,8 @@ class World extends Component {
   double rightScreen = 0;
   double topScreen = 0;
   double bottomScreen = 0;
+
+  late SelectedTile selectedTile;
 
   @override
   Future<void> onLoad() async {
@@ -56,6 +58,7 @@ class World extends Component {
         mapQuadrants[rot] = mapQuad;
       });
     }
+    selectedTile = SelectedTile();
   }
 
   void tappedWorld(double mouseX, double mouseY) {
@@ -69,14 +72,15 @@ class World extends Component {
     int rArray = r + (tiles[0].length / 2).ceil();
     if (qArray >= 0 && qArray < tiles.length && rArray >= 0 && rArray < tiles[0].length) {
       if (tiles[qArray][rArray] != null) {
-        selectedTile = tiles[qArray][rArray];
-        print("position selected tile: ${selectedTile!.getPos(rotate)}");
+        selectedTile.setPosition(tiles[qArray][rArray]!.getPos(rotate));
+        print("position selected tile: ${tiles[qArray][rArray]!.getPos(rotate)}");
       }
     }
   }
 
   void clearSelectedTile() {
-    selectedTile = null;
+    // TODO: Remove selection when moving
+    // selectedTile = null;
   }
 
   @override
@@ -84,10 +88,6 @@ class World extends Component {
     super.render(canvas);
 
     renderQuadrants(canvas, mapQuadrants[rotate], leftScreen, rightScreen, topScreen, bottomScreen);
-
-    if (selectedTile != null) {
-      tileSelected(selectedTile!, rotate, canvas);
-    }
 
   }
 
@@ -103,7 +103,7 @@ class World extends Component {
     topScreen = cameraPosition.y - (worldSize.y / 2) - borderOffset;
     bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset;
 
-    if (updateIndex == 20) {
+    if (updateIndex == 30) {
       updateIndex = 0;
       updateQuadrants(mapQuadrants[rotate], leftScreen, rightScreen, topScreen, bottomScreen, rotate, currentVariant);
       if (currentVariant == 1) {

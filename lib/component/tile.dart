@@ -14,8 +14,8 @@ class Tile {
   double xSize = 16;
   double ySize = 8;
 
-  double scaleX = 1;
-  double scaleY = 1;
+  double scaleX = 0.99;
+  double scaleY = 0.99;
 
   late MapQuadrant mapQuadrant;
 
@@ -73,4 +73,7 @@ class Tile {
     mapQuadrant = mapQuadrantOfTile;
   }
 
+  tileSelected() {
+
+  }
 }
