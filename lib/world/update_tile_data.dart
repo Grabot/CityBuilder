@@ -22,7 +22,7 @@ List<List<MapQuadrant?>> setTilesToQuadrants(List<List<Tile?>> tiles, List<List<
                   tile.setQuadrant(mapQuadrant);
                   tileFound = true;
 
-                  tile.renderTile(mapQuadrant.spriteBatch, rotate);
+                  tile.renderTile(mapQuadrant.spriteBatch, rotate, 0);
                   break;
                 }
               }

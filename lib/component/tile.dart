@@ -14,8 +14,8 @@ class Tile {
   double xSize = 16;
   double ySize = 8;
 
-  double scaleX = 0.252;
-  double scaleY = 0.262;
+  double scaleX = 1;
+  double scaleY = 1;
 
   late MapQuadrant mapQuadrant;
 
@@ -34,7 +34,7 @@ class Tile {
     if (rotate == 0) {
       return Vector2(position.x, position.y);
     } else if (rotate == 1) {
-      return Vector2(-position.y * 2, position.x / 2) + Vector2(-5, -5);
+      return Vector2(-position.y * 2, position.x / 2);
     } else if (rotate == 2) {
       return Vector2(-position.x, -position.y);
     } else {
@@ -52,8 +52,10 @@ class Tile {
   Vector2 getSize(int rotate) {
     if (rotate == 0 || rotate == 2) {
       return Vector2(2 * xSize, sqrt(3) * ySize);
+      // return Vector2(128, 56);
     } else {
       return Vector2(sqrt(3) * xSize, 2 * ySize);
+      // return Vector2(111, 64);
     }
   }
 
@@ -61,7 +63,7 @@ class Tile {
     return -1;
   }
 
-  renderTile(SpriteBatch spriteBatch, int rotate) {
+  renderTile(SpriteBatch spriteBatch, int rotate, int variant) {
   }
 
   renderAttribute(SpriteBatch spriteBatch, int rotate) {

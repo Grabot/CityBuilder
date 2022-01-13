@@ -8,16 +8,16 @@ class DirtTile extends Tile {
       : super(q, r, s);
 
   @override
-  renderTile(SpriteBatch spriteBatch, int rotate) {
+  renderTile(SpriteBatch spriteBatch, int rotate, int variant) {
     if (rotate == 0 || rotate == 2) {
       spriteBatch.add(
-          source: Rect.fromLTWH(0, 0, 128, 56),
+          source: const Rect.fromLTWH(0, 0, 32, 14),
           offset: getPos(rotate),
           scale: scaleX
       );
     } else {
       spriteBatch.add(
-          source: Rect.fromLTWH(0, 0, 112, 64),
+          source: const Rect.fromLTWH(0, 0, 28, 16),
           offset: getPos(rotate),
           scale: scaleY
       );

@@ -22,12 +22,20 @@ class World extends Component {
   late List<List<List<MapQuadrant?>>> mapQuadrants;
   late Vector2 cameraPosition;
   late double zoom;
-  
+
+  late Vector2 worldSize;
+  int updateIndex = 0;
+  int currentVariant = 0;
+  double leftScreen = 0;
+  double rightScreen = 0;
+  double topScreen = 0;
+  double bottomScreen = 0;
+
   @override
   Future<void> onLoad() async {
     super.onLoad();
 
-    rotate = 1;
+    rotate = 0;
 
     borderPaint.style = PaintingStyle.stroke;
     borderPaint.strokeWidth = 5;
@@ -75,12 +83,6 @@ class World extends Component {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    // We draw the border a bit further than what you're seeing, this is so the sections load before you scroll on them.
-    double borderOffset = 100;
-    double leftScreen = cameraPosition.x - (worldSize.x / 2) - borderOffset;
-    double rightScreen = cameraPosition.x + (worldSize.x / 2) + borderOffset;
-    double topScreen = cameraPosition.y - (worldSize.y / 2) - borderOffset;
-    double bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset;
     renderQuadrants(canvas, mapQuadrants[rotate], leftScreen, rightScreen, topScreen, bottomScreen);
 
     if (selectedTile != null) {
@@ -89,11 +91,29 @@ class World extends Component {
 
   }
 
-  late Vector2 worldSize;
   updateWorld(Vector2 cameraPos, double zoomLevel, Vector2 size) {
     cameraPosition = cameraPos;
     worldSize = size;
     zoom = zoomLevel;
+
+    // We draw the border a bit further than what you're seeing, this is so the sections load before you scroll on them.
+    double borderOffset = 100;
+    leftScreen = cameraPosition.x - (worldSize.x / 2) - borderOffset;
+    rightScreen = cameraPosition.x + (worldSize.x / 2) + borderOffset;
+    topScreen = cameraPosition.y - (worldSize.y / 2) - borderOffset;
+    bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset;
+
+    if (updateIndex == 20) {
+      updateIndex = 0;
+      updateQuadrants(mapQuadrants[rotate], leftScreen, rightScreen, topScreen, bottomScreen, rotate, currentVariant);
+      if (currentVariant == 1) {
+        currentVariant = 0;
+      } else {
+        currentVariant += 1;
+      }
+    } else {
+      updateIndex += 1;
+    }
   }
 
   rotateWorld() {

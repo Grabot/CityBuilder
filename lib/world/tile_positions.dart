@@ -112,3 +112,22 @@ renderQuadrants(Canvas canvas, List<List<MapQuadrant?>> mapQuadrants, double lef
     }
   }
 }
+
+updateQuadrants(List<List<MapQuadrant?>> mapQuadrants, double leftScreen, double rightScreen, double topScreen, double bottomScreen, int rotate, int currentVariant) {
+  for (int x = 0; x < mapQuadrants.length; x++) {
+    for (int y = 0; y < mapQuadrants[x].length; y++) {
+      // If the quadrant is within the screen, draw it.
+      MapQuadrant? mapQuadrant = mapQuadrants[x][y];
+      if (mapQuadrant != null) {
+        if (mapQuadrant.toX > leftScreen && mapQuadrant.fromX < rightScreen) {
+          if (mapQuadrant.toY > topScreen && mapQuadrant.fromY < bottomScreen) {
+            mapQuadrant.spriteBatch.clear();
+            for (Tile tile in mapQuadrant.quadrantTiles) {
+              tile.renderTile(mapQuadrant.spriteBatch, rotate, currentVariant);
+            }
+          }
+        }
+      }
+    }
+  }
+}

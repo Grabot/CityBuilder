@@ -8,16 +8,24 @@ class WaterTile extends Tile {
       : super(q, r, s);
 
   @override
-  renderTile(SpriteBatch spriteBatch, int rotate) {
+  renderTile(SpriteBatch spriteBatch, int rotate, int variant) {
     if (rotate == 0 || rotate == 2) {
-      spriteBatch.add(
-          source: Rect.fromLTWH(128, 56, 128, 56),
+      if (variant == 0) {
+        spriteBatch.add(
+            source: const Rect.fromLTWH(128, 0, 32, 14),
+            offset: getPos(rotate),
+            scale: scaleX
+        );
+      } else {
+        spriteBatch.add(
+          source: const Rect.fromLTWH(160, 0, 32, 14),
           offset: getPos(rotate),
           scale: scaleX
-      );
+        );
+      }
     } else {
       spriteBatch.add(
-          source: Rect.fromLTWH(112, 64, 112, 64),
+          source: const Rect.fromLTWH(112, 0, 28, 16),
           offset: getPos(rotate),
           scale: scaleY
       );
