@@ -1,13 +1,10 @@
 import 'dart:ui';
 import 'package:city_builder/component/map_quadrant.dart';
 import 'package:city_builder/component/selected_tile.dart';
-import 'package:city_builder/component/selected_tile_flat.dart';
-import 'package:city_builder/component/selected_tile_point.dart';
-import 'package:city_builder/world/selected_tile.dart';
+import 'package:city_builder/component/sprite_button.dart';
 import 'package:city_builder/world/tapped_map.dart';
 import 'package:city_builder/world/update_tile_data.dart';
 import 'package:flame/components.dart';
-import 'package:flame/sprite.dart';
 import '../component/tile.dart';
 import 'tile_positions.dart';
 
