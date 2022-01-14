@@ -1,6 +1,8 @@
 import 'dart:ui';
 import 'package:city_builder/component/map_quadrant.dart';
 import 'package:city_builder/component/selected_tile.dart';
+import 'package:city_builder/component/selected_tile_flat.dart';
+import 'package:city_builder/component/selected_tile_point.dart';
 import 'package:city_builder/world/selected_tile.dart';
 import 'package:city_builder/world/tapped_map.dart';
 import 'package:city_builder/world/update_tile_data.dart';
@@ -58,7 +60,12 @@ class World extends Component {
         mapQuadrants[rot] = mapQuad;
       });
     }
-    selectedTile = SelectedTile();
+    SelectedTileFlat selectedTileFlat = SelectedTileFlat();
+    SelectedTilePoint selectedTilePoint = SelectedTilePoint();
+    add(selectedTileFlat);
+    add(selectedTilePoint);
+
+    selectedTile = SelectedTile(selectedTileFlat, selectedTilePoint);
   }
 
   void tappedWorld(double mouseX, double mouseY) {
@@ -72,15 +79,14 @@ class World extends Component {
     int rArray = r + (tiles[0].length / 2).ceil();
     if (qArray >= 0 && qArray < tiles.length && rArray >= 0 && rArray < tiles[0].length) {
       if (tiles[qArray][rArray] != null) {
-        selectedTile.setPosition(tiles[qArray][rArray]!.getPos(rotate));
+        selectedTile.setPosition(tiles[qArray][rArray]!.getPos(rotate), rotate);
         print("position selected tile: ${tiles[qArray][rArray]!.getPos(rotate)}");
       }
     }
   }
 
   void clearSelectedTile() {
-    // TODO: Remove selection when moving
-    // selectedTile = null;
+    selectedTile.clearSelection();
   }
 
   @override
@@ -88,7 +94,6 @@ class World extends Component {
     super.render(canvas);
 
     renderQuadrants(canvas, mapQuadrants[rotate], leftScreen, rightScreen, topScreen, bottomScreen);
-
   }
 
   updateWorld(Vector2 cameraPos, double zoomLevel, Vector2 size) {
@@ -117,6 +122,7 @@ class World extends Component {
   }
 
   rotateWorld() {
+    selectedTile.clearSelection();
     if (rotate == 0) {
       rotate = 1;
     } else if (rotate == 1) {

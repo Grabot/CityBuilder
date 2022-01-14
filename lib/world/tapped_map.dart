@@ -1,9 +1,6 @@
 import 'dart:math';
 import '../component/tile.dart';
-
-// Don't forget to update these size if you update the sizes in the tile object.
-double xSize = 16;
-double ySize = 8;
+import '../global.dart';
 
 List<int> tappedMap(List<List<Tile?>>tiles, double mouseX, double mouseY, int rotate) {
   double qDetailed = -1;

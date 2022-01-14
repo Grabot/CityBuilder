@@ -11,13 +11,13 @@ class DirtTile extends Tile {
   renderTile(SpriteBatch spriteBatch, int rotate, int variant) {
     if (rotate == 0 || rotate == 2) {
       spriteBatch.add(
-          source: const Rect.fromLTWH(32, 0, 32, 14),
+          source: const Rect.fromLTWH(1, 1, 32, 14),
           offset: getPos(rotate),
           scale: scaleX
       );
     } else {
       spriteBatch.add(
-          source: const Rect.fromLTWH(28, 0, 28, 16),
+          source: const Rect.fromLTWH(1, 1, 28, 16),
           offset: getPos(rotate),
           scale: scaleY
       );

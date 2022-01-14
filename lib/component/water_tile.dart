@@ -12,13 +12,13 @@ class WaterTile extends Tile {
     if (rotate == 0 || rotate == 2) {
       if (variant == 0) {
         spriteBatch.add(
-            source: const Rect.fromLTWH(160, 0, 32, 14),
+            source: const Rect.fromLTWH(137, 1, 32, 14),
             offset: getPos(rotate),
             scale: scaleX
         );
       } else {
         spriteBatch.add(
-          source: const Rect.fromLTWH(192, 0, 32, 14),
+          source: const Rect.fromLTWH(171, 1, 32, 14),
           offset: getPos(rotate),
           scale: scaleX
         );
@@ -26,13 +26,13 @@ class WaterTile extends Tile {
     } else {
       if (variant == 0) {
         spriteBatch.add(
-            source: const Rect.fromLTWH(140, 0, 28, 16),
+            source: const Rect.fromLTWH(1, 73, 28, 16),
             offset: getPos(rotate),
             scale: scaleY
         );
       } else {
         spriteBatch.add(
-            source: const Rect.fromLTWH(168, 0, 28, 16),
+            source: const Rect.fromLTWH(1, 91, 28, 16),
             offset: getPos(rotate),
             scale: scaleY
         );

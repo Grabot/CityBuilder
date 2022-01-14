@@ -4,6 +4,8 @@ import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/sprite.dart';
 
+import '../global.dart';
+
 class Tile {
 
   late Vector2 position;
@@ -11,11 +13,8 @@ class Tile {
   late int r;
   late int s;
 
-  double xSize = 16;
-  double ySize = 8;
-
-  double scaleX = 0.99;
-  double scaleY = 0.99;
+  double scaleX = 1;
+  double scaleY = 1.05;
 
   late MapQuadrant mapQuadrant;
 

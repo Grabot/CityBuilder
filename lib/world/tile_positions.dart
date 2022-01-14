@@ -18,7 +18,7 @@ int quadrantSizeY = 540; // 1080/2 (standard monitor height)
 
 List<List<Tile?>> setTileDetails() {
 
-  List<List<int>> worldDetail = worldDetailSmall;
+  List<List<int>> worldDetail = worldDetailTiny;
 
   List<List<Tile?>> tiles = List.generate(
       worldDetail.length,

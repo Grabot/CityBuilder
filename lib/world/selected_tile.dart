@@ -3,10 +3,7 @@ import 'dart:typed_data';
 import 'dart:ui';
 import 'package:flame/components.dart';
 import '../component/tile.dart';
-
-// Don't forget to update these size if you update the sizes in the tile object.
-double xSize = 16;
-double ySize = 8;
+import '../global.dart';
 
 Vector2 pointyHexCorner(double i, Vector2 center, int rotate) {
   double angleDeg = 60 * i;
