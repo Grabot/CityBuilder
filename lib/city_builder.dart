@@ -2,7 +2,6 @@ import 'package:city_builder/world/world.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
-import 'package:flame/palette.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -12,8 +11,6 @@ class CityBuilder extends FlameGame
     with
         HasTappables,
         HasDraggables,
-        MultiTouchTapDetector,
-        MultiTouchDragDetector,
         ScrollDetector,
         MouseMovementDetector,
         KeyboardEvents {
@@ -42,6 +39,8 @@ class CityBuilder extends FlameGame
   late final TextComponent speedText;
   late final TextComponent directionText;
 
+  bool touchedJoystick = false;
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -49,7 +48,7 @@ class CityBuilder extends FlameGame
     camera.followVector2(cameraPosition, relativeOffset: Anchor.center);
     add(_world);
 
-    final image = await images.load('joystick.png');
+    final image = await images.load('joystick_rotate.png');
     final sheet = SpriteSheet.fromColumnsAndRows(
       image: image,
       columns: 6,
@@ -64,13 +63,12 @@ class CityBuilder extends FlameGame
         sprite: sheet.getSpriteById(0),
         size: Vector2.all(150),
       ),
-      margin: const EdgeInsets.only(left: 40, bottom: 40),
+      margin: const EdgeInsets.only(left: 20, bottom: 20)
     );
 
     final buttonSize = Vector2.all(80);
-    // A button with margin from the edge of the viewport that flips the
-    // rendering of the player on the X-axis.
-    final flipButton = HudButtonComponent(
+
+    final rotateLeftButton = HudButtonComponent(
       button: SpriteComponent(
         sprite: sheet.getSpriteById(2),
         size: buttonSize,
@@ -80,17 +78,14 @@ class CityBuilder extends FlameGame
         size: buttonSize,
       ),
       margin: const EdgeInsets.only(
-        right: 80,
-        bottom: 60,
+          left: 10,
+          bottom: 180
       ),
       onPressed: () {
-        print("pressed something");
+        _world.rotateWorldRight();
       },
     );
-
-    // A button with margin from the edge of the viewport that flips the
-    // rendering of the player on the Y-axis.
-    final flopButton = HudButtonComponent(
+    final rotateRightButton = HudButtonComponent(
       button: SpriteComponent(
         sprite: sheet.getSpriteById(3),
         size: buttonSize,
@@ -100,78 +95,32 @@ class CityBuilder extends FlameGame
         size: buttonSize,
       ),
       margin: const EdgeInsets.only(
-        right: 160,
-        bottom: 60,
+          left: 110,
+          bottom: 180
       ),
       onPressed: () {
-        print("pressed another thing");
+        _world.rotateWorldLeft();
       },
     );
-
-    // A button, created from a shape, that adds a rotation effect to the player
-    // when it is pressed.
-    final shapeButton = HudButtonComponent(
-      button: CircleComponent(radius: 35),
-      buttonDown: RectangleComponent(
-        size: buttonSize,
-        paint: BasicPalette.blue.paint(),
-      ),
-      margin: const EdgeInsets.only(
-        right: 85,
-        bottom: 150,
-      ),
-      onPressed: () {
-        print("pressed yet another thing");
-      },
-    );
-
-    final _regular = TextPaint(
-      style: TextStyle(color: BasicPalette.white.color),
-    );
-    speedText = TextComponent(
-      text: 'Speed: 0',
-      textRenderer: _regular,
-    )..positionType = PositionType.viewport;
-    directionText = TextComponent(
-      text: 'Direction: idle',
-      textRenderer: _regular,
-    )..positionType = PositionType.viewport;
 
     add(joystick);
-    add(flipButton);
-    add(flopButton);
-    add(shapeButton);
+    add(rotateLeftButton);
+    add(rotateRightButton);
   }
-
-  static final _text = TextPaint(
-    style: TextStyle(color: BasicPalette.red.color, fontSize: 12),
-  );
 
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-
-    Paint buttonPaint = Paint();
-    buttonPaint.style = PaintingStyle.fill;
-    buttonPaint.color = const Color.fromRGBO(126, 0, 255, 1.0);
-
-    Rect worldRect = Rect.fromLTRB(0, 0, 50, 50);
-    canvas.drawRect(worldRect, buttonPaint);
-    _text.render(
-      canvas,
-      "rotate",
-      Vector2(25, 25),
-      anchor: Anchor.center
-    );
-
   }
 
   @override
   void onMouseMove(PointerHoverInfo info) {
+    super.onMouseMove(info);
   }
 
   @override
   void onScroll(PointerScrollInfo info) {
+    super.onScroll(info);
     double zoomIncrease = (info.raw.scrollDelta.dy/1000);
     camera.zoom *= (1 - zoomIncrease);
     if (camera.zoom <= 0.5) {
@@ -184,9 +133,8 @@ class CityBuilder extends FlameGame
 
   @override
   void onTapUp(int pointerId, TapUpInfo info) {
-    if (info.eventPosition.global.x < 50 && info.eventPosition.global.y < 50) {
-      print("pressed ugly button thing");
-      _world.rotateWorld();
+    if (info.eventPosition.global.x < 200 && info.eventPosition.global.y > (size.y - 300)) {
+      super.onTapUp(pointerId, info);
     } else {
       _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);
     }
@@ -194,41 +142,50 @@ class CityBuilder extends FlameGame
 
   @override
   void onTapDown(int pointerId, TapDownInfo info) {
+    super.onTapDown(pointerId, info);
   }
 
   @override
   void onDragStart(int pointerId, DragStartInfo info) {
-    if (singleTap) {
-      multiTap = true;
-      multiPointer2Id = pointerId;
+    if (info.eventPosition.global.x < 200 && info.eventPosition.global.y > (size.y - 300)) {
+      super.onDragStart(pointerId, info);
+      touchedJoystick = true;
     } else {
-      singleTap = true;
-      multiPointer1Id = pointerId;
+      if (singleTap) {
+        multiTap = true;
+        multiPointer2Id = pointerId;
+      } else {
+        singleTap = true;
+        multiPointer1Id = pointerId;
+      }
+      dragTo = Vector2(cameraPosition.x, cameraPosition.y);
+      dragFrom = info.eventPosition.game;
+      _world.clearSelectedTile();
     }
-    dragTo = Vector2(cameraPosition.x, cameraPosition.y);
-    dragFrom = info.eventPosition.game;
-    _world.clearSelectedTile();
   }
 
   @override
   void onDragUpdate(int pointerId, DragUpdateInfo info) {
-
-    if (multiTap) {
-      if (pointerId == multiPointer1Id) {
-        multiPointer1 = info.eventPosition.game;
-      } else if (pointerId == multiPointer2Id) {
-        multiPointer2 = info.eventPosition.game;
+    super.onDragUpdate(pointerId, info);
+    if (!touchedJoystick) {
+      if (multiTap) {
+        if (pointerId == multiPointer1Id) {
+          multiPointer1 = info.eventPosition.game;
+        } else if (pointerId == multiPointer2Id) {
+          multiPointer2 = info.eventPosition.game;
+        } else {
+          // A third finger is touching the screen?
+        }
+        if ((multiPointer1.x != 0 && multiPointer1.y != 0) &&
+            (multiPointer2.x != 0 && multiPointer2.y != 0)) {
+          handlePinchZoom();
+        }
       } else {
-        // A third finger is touching the screen?
-      }
-      if ((multiPointer1.x != 0 && multiPointer1.y != 0) && (multiPointer2.x != 0 && multiPointer2.y != 0))  {
-        handlePinchZoom();
-      }
-    } else {
-      // The user is zooming, so not moving around
-      if (movementBlock <= 0) {
-        dragTo.sub(info.eventPosition.game - dragFrom);
-        dragFrom = info.eventPosition.game;
+        // The user is zooming, so not moving around
+        if (movementBlock <= 0) {
+          dragTo.sub(info.eventPosition.game - dragFrom);
+          dragFrom = info.eventPosition.game;
+        }
       }
     }
   }
@@ -254,6 +211,9 @@ class CityBuilder extends FlameGame
 
   @override
   void onDragEnd(int pointerId, DragEndInfo info) {
+    super.onDragEnd(pointerId, info);
+    touchedJoystick = false;
+    dragAccelerate = Vector2.zero();
     singleTap = false;
     if (multiTap) {
       multiTap = false;
@@ -308,6 +268,10 @@ class CityBuilder extends FlameGame
       movementBlock = 0;
     }
 
+    if (touchedJoystick) {
+      dragAccelerate.x = -joystick.delta.x / 10;
+      dragAccelerate.y = -joystick.delta.y / 10;
+    }
   }
 
   void updateMapScroll() {
@@ -335,13 +299,13 @@ class CityBuilder extends FlameGame
     final isKeyDown = event is RawKeyDownEvent;
 
     if (event.logicalKey == LogicalKeyboardKey.keyA) {
-      dragAccelerate.x = isKeyDown ? -10 : 0;
-    } else if (event.logicalKey == LogicalKeyboardKey.keyD) {
       dragAccelerate.x = isKeyDown ? 10 : 0;
+    } else if (event.logicalKey == LogicalKeyboardKey.keyD) {
+      dragAccelerate.x = isKeyDown ? -10 : 0;
     } else if (event.logicalKey == LogicalKeyboardKey.keyW) {
-      dragAccelerate.y = isKeyDown ? -10 : 0;
-    } else if (event.logicalKey == LogicalKeyboardKey.keyS) {
       dragAccelerate.y = isKeyDown ? 10 : 0;
+    } else if (event.logicalKey == LogicalKeyboardKey.keyS) {
+      dragAccelerate.y = isKeyDown ? -10 : 0;
     }
 
     return KeyEventResult.handled;

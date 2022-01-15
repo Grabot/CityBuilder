@@ -65,7 +65,7 @@ flutter:
     - assets/images/flat_selection.png
     - assets/images/point_selection.png
     - assets/images/buttons.png
-    - assets/images/joystick.png
+    - assets/images/joystick_rotate.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware.

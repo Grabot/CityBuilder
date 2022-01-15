@@ -118,7 +118,7 @@ class World extends Component {
     }
   }
 
-  rotateWorld() {
+  rotateWorldRight() {
     selectedTile.clearSelection();
     if (rotate == 0) {
       rotate = 1;
@@ -128,6 +128,19 @@ class World extends Component {
       rotate = 3;
     } else {
       rotate = 0;
+    }
+  }
+
+  rotateWorldLeft() {
+    selectedTile.clearSelection();
+    if (rotate == 0) {
+      rotate = 3;
+    } else if (rotate == 1) {
+      rotate = 0;
+    } else if (rotate == 2) {
+      rotate = 1;
+    } else {
+      rotate = 2;
     }
   }
 }
