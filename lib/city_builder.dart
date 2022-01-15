@@ -2,9 +2,12 @@ import 'package:city_builder/world/world.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
 import 'package:flame/input.dart';
+import 'package:flame/palette.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+
+import 'component/mini_map.dart';
 
 
 class CityBuilder extends FlameGame
@@ -54,19 +57,33 @@ class CityBuilder extends FlameGame
       columns: 6,
       rows: 1,
     );
+
+    Sprite mapSprite = await loadSprite('map_outline_flat.png');
+
+    final knobPaint = BasicPalette.white.withAlpha(50).paint();
+    MiniMapComponent miniMap = MiniMapComponent(
+        focussedArea: RectangleComponent(size: Vector2(30, 20), paint: knobPaint),
+        totalArea: SpriteComponent(
+          sprite: mapSprite,
+          size: Vector2.all(180),
+        ),
+        margin: const EdgeInsets.only(left: 10, top: 10)
+    );
+    add(miniMap);
+
     joystick = JoystickComponent(
       knob: SpriteComponent(
         sprite: sheet.getSpriteById(1),
-        size: Vector2.all(100),
+        size: Vector2.all(50),
       ),
       background: SpriteComponent(
         sprite: sheet.getSpriteById(0),
-        size: Vector2.all(150),
+        size: Vector2.all(80),
       ),
       margin: const EdgeInsets.only(left: 20, bottom: 20)
     );
 
-    final buttonSize = Vector2.all(80);
+    final buttonSize = Vector2.all(40);
 
     final rotateLeftButton = HudButtonComponent(
       button: SpriteComponent(
@@ -79,7 +96,7 @@ class CityBuilder extends FlameGame
       ),
       margin: const EdgeInsets.only(
           left: 10,
-          bottom: 180
+          bottom: 100
       ),
       onPressed: () {
         _world.rotateWorldRight();
@@ -95,8 +112,8 @@ class CityBuilder extends FlameGame
         size: buttonSize,
       ),
       margin: const EdgeInsets.only(
-          left: 110,
-          bottom: 180
+          left: 70,
+          bottom: 100
       ),
       onPressed: () {
         _world.rotateWorldLeft();
@@ -133,7 +150,7 @@ class CityBuilder extends FlameGame
 
   @override
   void onTapUp(int pointerId, TapUpInfo info) {
-    if (info.eventPosition.global.x < 200 && info.eventPosition.global.y > (size.y - 300)) {
+    if (info.eventPosition.global.x < 200) {
       super.onTapUp(pointerId, info);
     } else {
       _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);
@@ -147,7 +164,7 @@ class CityBuilder extends FlameGame
 
   @override
   void onDragStart(int pointerId, DragStartInfo info) {
-    if (info.eventPosition.global.x < 200 && info.eventPosition.global.y > (size.y - 300)) {
+    if (info.eventPosition.global.x < 200) {
       super.onDragStart(pointerId, info);
       touchedJoystick = true;
     } else {
