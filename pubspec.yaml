@@ -65,7 +65,7 @@ flutter:
     - assets/images/flat_selection.png
     - assets/images/point_selection.png
     - assets/images/joystick_rotate.png
-    - assets/images/map_outline_flat.png
+    - assets/images/map_outline_flat_test.png
     - assets/images/map_outline_point.png
 
   # An image asset can refer to one or more resolution-specific "variants", see

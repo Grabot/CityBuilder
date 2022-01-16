@@ -47,15 +47,17 @@ class CityBuilder extends FlameGame
       rows: 1,
     );
 
-    Sprite mapSprite = await loadSprite('map_outline_flat.png');
+    Sprite mapSprite = await loadSprite('map_outline_flat_test.png');
 
     final knobPaint = BasicPalette.white.withAlpha(50).paint();
+    Vector2 miniMapSize = Vector2(180, 90);
     miniMap = MiniMapComponent(
         focussedArea: RectangleComponent(size: Vector2(30, 20), paint: knobPaint),
         totalArea: SpriteComponent(
           sprite: mapSprite,
-          size: Vector2(180, 90),
+          size: miniMapSize,
         ),
+        rotate: 0,
         margin: const EdgeInsets.only(left: 10, top: 10)
     );
     add(miniMap);
@@ -74,7 +76,7 @@ class CityBuilder extends FlameGame
 
     final buttonSize = Vector2.all(40);
 
-    final rotateLeftButton = HudButtonComponent(
+    final rotateRightButton = HudButtonComponent(
       button: SpriteComponent(
         sprite: sheet.getSpriteById(2),
         size: buttonSize,
@@ -88,10 +90,10 @@ class CityBuilder extends FlameGame
           bottom: 100
       ),
       onPressed: () {
-        _world.rotateWorldRight();
+        rotateRight();
       },
     );
-    final rotateRightButton = HudButtonComponent(
+    final rotateLeftButton = HudButtonComponent(
       button: SpriteComponent(
         sprite: sheet.getSpriteById(3),
         size: buttonSize,
@@ -105,13 +107,25 @@ class CityBuilder extends FlameGame
           bottom: 100
       ),
       onPressed: () {
-        _world.rotateWorldLeft();
+        rotateLeft();
       },
     );
 
     add(joystick);
     add(rotateLeftButton);
     add(rotateRightButton);
+  }
+
+  rotateRight() {
+    _world.rotateWorldRight();
+    miniMap.rotateMiniMapRight();
+    dragTo = Vector2(dragTo.y * 2, -dragTo.x / 2);
+  }
+
+  rotateLeft() {
+    _world.rotateWorldLeft();
+    miniMap.rotateMiniMapLeft();
+    dragTo = Vector2(-dragTo.y * 2, dragTo.x / 2);
   }
 
   @override

@@ -1,3 +1,5 @@
+import 'dart:math';
+
 import 'package:flame/components.dart';
 import 'package:flutter/rendering.dart' show EdgeInsets;
 import 'package:meta/meta.dart';
@@ -11,11 +13,15 @@ class MiniMapComponent extends HudMarginComponent {
   double startX = -1;
   double startY = -1;
 
+  // TODO: focussedArea moet met de zoom en de groote van de map mee gaan.
+  int rotate;
+
   Vector2 normalizedPosition = Vector2.zero();
 
   MiniMapComponent({
     required this.focussedArea,
     required this.totalArea,
+    required this.rotate,
     EdgeInsets? margin,
     Vector2? position,
     double? size,
@@ -31,6 +37,74 @@ class MiniMapComponent extends HudMarginComponent {
     // We will assume, for now, that the mini map is always on the top left.
     startX = margin!.left;
     startY = margin.top;
+  }
+
+  rotate3() {
+    focussedArea.angle = pi/2;
+    totalArea.angle = pi/2;
+    focussedArea.position = Vector2(width, 0);
+    focussedArea.size = Vector2(focussedArea.size.y, focussedArea.size.x);
+    totalArea.position = Vector2(width, 0);
+    totalArea.size = Vector2(totalArea.size.y, totalArea.size.x);
+  }
+
+  rotate0() {
+    focussedArea.angle = 0;
+    totalArea.angle = 0;
+    focussedArea.position = Vector2(-180, 0);
+    focussedArea.size = Vector2(focussedArea.size.y, focussedArea.size.x);
+    totalArea.position = Vector2(0, 0);
+    totalArea.size = Vector2(totalArea.size.y, totalArea.size.x);
+  }
+
+  rotate1() {
+    focussedArea.angle = pi + pi/2;
+    totalArea.angle = pi + pi/2;
+    focussedArea.position = Vector2(0, 90);
+    focussedArea.size = Vector2(focussedArea.size.y, focussedArea.size.x);
+    totalArea.position = Vector2(0, 90);
+    totalArea.size = Vector2(totalArea.size.y, totalArea.size.x);
+  }
+
+  rotate2() {
+    focussedArea.angle = pi;
+    totalArea.angle = pi;
+    focussedArea.position = Vector2(180, 90);
+    focussedArea.size = Vector2(focussedArea.size.y, focussedArea.size.x);
+    totalArea.position = Vector2(180, 90);
+    totalArea.size = Vector2(totalArea.size.y, totalArea.size.x);
+  }
+
+  void rotateMiniMapLeft() {
+    if (rotate == 0) {
+      rotate = 3;
+      rotate3();
+    } else if (rotate == 1) {
+      rotate = 0;
+      rotate0();
+    } else if (rotate == 2) {
+      rotate = 1;
+      rotate1();
+    } else {
+      rotate = 2;
+      rotate2();
+    }
+  }
+
+  void rotateMiniMapRight() {
+    if (rotate == 0) {
+      rotate = 1;
+      rotate1();
+    } else if (rotate == 1) {
+      rotate = 2;
+      rotate2();
+    } else if (rotate == 2) {
+      rotate = 3;
+      rotate3();
+    } else {
+      rotate = 0;
+      rotate0();
+    }
   }
 
   @override
@@ -57,24 +131,6 @@ class MiniMapComponent extends HudMarginComponent {
     double yMap = normalizedPosition.y * (height/2) + (height/2);
     setFocussedAreaPosition(xMap, yMap);
   }
-
-  // @override
-  // bool onDragStart(int pointerId, DragStartInfo info) {
-  //   return false;
-  // }
-  //
-  // @override
-  // bool onDragUpdate(int pointerId, DragUpdateInfo info) {
-  //   double xMap = info.eventPosition.global.x - startX;
-  //   double yMap = info.eventPosition.global.y - startY;
-  //   // setFocussedAreaPosition(xMap, yMap);
-  //   return false;
-  // }
-  //
-  // @override
-  // bool onDragEnd(int pointerId, DragEndInfo info) {
-  //   return false;
-  // }
 
   Vector2 tappedMap(double posX, double posY) {
     double xMap = posX - startX;
