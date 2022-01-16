@@ -22,27 +22,16 @@ class CityBuilder extends FlameGame
   Vector2 cameraPosition = Vector2.zero();
   Vector2 cameraVelocity = Vector2.zero();
 
+  Vector2 dragAccelerateJoy = Vector2.zero();
+  Vector2 dragAccelerateKey = Vector2.zero();
+
   late final World _world;
 
   Vector2 dragFrom = Vector2.zero();
   Vector2 dragTo = Vector2.zero();
-  bool singleTap = false;
-  bool multiTap = false;
-  int multiPointer1Id = -1;
-  int multiPointer2Id = -1;
-  Vector2 multiPointer1 = Vector2.zero();
-  Vector2 multiPointer2 = Vector2.zero();
-  double multiPointerDist = 0.0;
-  int movementBlock = 0;
-
-  Vector2 multiTouch1 = Vector2.zero();
-  Vector2 multiTouch2 = Vector2.zero();
 
   late final JoystickComponent joystick;
-  late final TextComponent speedText;
-  late final TextComponent directionText;
-
-  bool touchedJoystick = false;
+  late final MiniMapComponent miniMap;
 
   @override
   Future<void> onLoad() async {
@@ -61,11 +50,11 @@ class CityBuilder extends FlameGame
     Sprite mapSprite = await loadSprite('map_outline_flat.png');
 
     final knobPaint = BasicPalette.white.withAlpha(50).paint();
-    MiniMapComponent miniMap = MiniMapComponent(
+    miniMap = MiniMapComponent(
         focussedArea: RectangleComponent(size: Vector2(30, 20), paint: knobPaint),
         totalArea: SpriteComponent(
           sprite: mapSprite,
-          size: Vector2.all(180),
+          size: Vector2(180, 90),
         ),
         margin: const EdgeInsets.only(left: 10, top: 10)
     );
@@ -150,8 +139,11 @@ class CityBuilder extends FlameGame
 
   @override
   void onTapUp(int pointerId, TapUpInfo info) {
-    if (info.eventPosition.global.x < 200) {
-      super.onTapUp(pointerId, info);
+    // TODO: better way to check if it pressed the minimap.
+    if (info.eventPosition.global.x < 200 && info.eventPosition.global.y < 120) {
+      // super.onTapUp(pointerId, info);
+      Vector2 normalized = miniMap.tappedMap(info.eventPosition.global.x, info.eventPosition.global.y);
+      setPosition(normalized);
     } else {
       _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);
     }
@@ -164,96 +156,38 @@ class CityBuilder extends FlameGame
 
   @override
   void onDragStart(int pointerId, DragStartInfo info) {
-    if (info.eventPosition.global.x < 200) {
-      super.onDragStart(pointerId, info);
-      touchedJoystick = true;
-    } else {
-      if (singleTap) {
-        multiTap = true;
-        multiPointer2Id = pointerId;
-      } else {
-        singleTap = true;
-        multiPointer1Id = pointerId;
-      }
-      dragTo = Vector2(cameraPosition.x, cameraPosition.y);
-      dragFrom = info.eventPosition.game;
-      _world.clearSelectedTile();
+    if (info.eventPosition.global.x < 200 && info.eventPosition.global.y < 120) {
+      Vector2 normalized = miniMap.tappedMap(info.eventPosition.global.x, info.eventPosition.global.y);
+      setPosition(normalized);
     }
+    super.onDragStart(pointerId, info);
   }
 
   @override
   void onDragUpdate(int pointerId, DragUpdateInfo info) {
+    if (info.eventPosition.global.x < 200 && info.eventPosition.global.y < 120) {
+      Vector2 normalized = miniMap.tappedMap(info.eventPosition.global.x, info.eventPosition.global.y);
+      setPosition(normalized);
+    }
     super.onDragUpdate(pointerId, info);
-    if (!touchedJoystick) {
-      if (multiTap) {
-        if (pointerId == multiPointer1Id) {
-          multiPointer1 = info.eventPosition.game;
-        } else if (pointerId == multiPointer2Id) {
-          multiPointer2 = info.eventPosition.game;
-        } else {
-          // A third finger is touching the screen?
-        }
-        if ((multiPointer1.x != 0 && multiPointer1.y != 0) &&
-            (multiPointer2.x != 0 && multiPointer2.y != 0)) {
-          handlePinchZoom();
-        }
-      } else {
-        // The user is zooming, so not moving around
-        if (movementBlock <= 0) {
-          dragTo.sub(info.eventPosition.game - dragFrom);
-          dragFrom = info.eventPosition.game;
-        }
-      }
-    }
-  }
-
-  void handlePinchZoom() {
-    double currentDistance = multiPointer1.distanceTo(multiPointer2);
-    double zoomIncrease = (currentDistance - multiPointerDist);
-    print("zoom increase: $zoomIncrease");
-    double cameraZoom = 1;
-    if (zoomIncrease > -50 && zoomIncrease <= -1) {
-      cameraZoom += (zoomIncrease / 400);
-    } else if (zoomIncrease < 50 && zoomIncrease >= 1) {
-      cameraZoom += (zoomIncrease / 400);
-    }
-    camera.zoom *= cameraZoom;
-    if (camera.zoom <= 0.5) {
-      camera.zoom = 0.5;
-    } else if (camera.zoom >= 4) {
-      camera.zoom = 4;
-    }
-    multiPointerDist = currentDistance;
   }
 
   @override
   void onDragEnd(int pointerId, DragEndInfo info) {
     super.onDragEnd(pointerId, info);
-    touchedJoystick = false;
-    dragAccelerate = Vector2.zero();
-    singleTap = false;
-    if (multiTap) {
-      multiTap = false;
-      movementBlock = 20;
+  }
+
+  setPosition(Vector2 normalized) {
+    if (normalized.x < 0) {
+      dragTo.x = -normalized.x * _world.getBoundLeft();
+    } else {
+      dragTo.x = normalized.x * _world.getBoundRight();
     }
-    multiPointer1Id = -1;
-    multiPointer2Id = -1;
-    multiPointer1 = Vector2.zero();
-    multiPointer2 = Vector2.zero();
-    multiPointerDist = 0.0;
-    // Check if it crossed the game boundaries and put it back if that is the case.
-    // TODO: Improve boundaries with zoom added.
-    // if (dragTo.x < -1000) {
-    //   dragTo.x = -1000;
-    // } else if (dragTo.x > 1000) {
-    //   dragTo.x = 1000;
-    // }
-    //
-    // if (dragTo.y < -1000) {
-    //   dragTo.y = -1000;
-    // } else if (dragTo.y > 1000) {
-    //   dragTo.y = 1000;
-    // }
+    if (normalized.y < 0) {
+      dragTo.y = normalized.y * _world.getBoundTop();
+    } else {
+      dragTo.y = -normalized.y * _world.getBoundBottom();
+    }
   }
 
   double frameTimes = 0.0;
@@ -261,8 +195,10 @@ class CityBuilder extends FlameGame
   @override
   void update(double dt) {
     super.update(dt);
-    dragTo.x += dragAccelerate.x;
-    dragTo.y += dragAccelerate.y;
+    dragTo += dragAccelerateJoy;
+    dragTo += dragAccelerateKey;
+
+    checkBounds();
 
     frameTimes += dt;
     frames += 1;
@@ -275,20 +211,10 @@ class CityBuilder extends FlameGame
 
     cameraPosition.add(cameraVelocity * dt * 10);
 
-    cameraPosition.x = cameraPosition.x;
-    cameraPosition.y = cameraPosition.y;
     updateMapScroll();
 
-    if (movementBlock > 0) {
-      movementBlock -= 1;
-    } else {
-      movementBlock = 0;
-    }
-
-    if (touchedJoystick) {
-      dragAccelerate.x = -joystick.delta.x / 10;
-      dragAccelerate.y = -joystick.delta.y / 10;
-    }
+    dragAccelerateJoy.x = joystick.delta.x / 2;
+    dragAccelerateJoy.y = joystick.delta.y / 2;
   }
 
   void updateMapScroll() {
@@ -307,7 +233,30 @@ class CityBuilder extends FlameGame
     }
   }
 
-  Vector2 dragAccelerate = Vector2.zero();
+  void checkBounds() {
+    if (dragTo.x < _world.getBoundLeft()) {
+      dragTo.x = _world.getBoundLeft();
+    } else if (dragTo.x > _world.getBoundRight()) {
+      dragTo.x = _world.getBoundRight();
+    }
+    if (dragTo.y > _world.getBoundTop()) {
+      dragTo.y = _world.getBoundTop();
+    } else if (dragTo.y < _world.getBoundBottom()) {
+      dragTo.y = _world.getBoundBottom();
+    }
+    // We normalize the camera position to a Vector where x: -1 is all the way to the left and x: 1 is all the way to the right (for the minimap)
+    if (dragTo.x < 0) {
+      miniMap.updateCameraPosX(-dragTo.x / _world.getBoundLeft());
+    } else {
+      miniMap.updateCameraPosX(dragTo.x / _world.getBoundRight());
+    }
+    if (dragTo.y < 0) {
+      miniMap.updateCameraPosY(-dragTo.y / _world.getBoundBottom());
+    } else {
+      miniMap.updateCameraPosY(dragTo.y / _world.getBoundTop());
+    }
+  }
+
   @override
   KeyEventResult onKeyEvent(
       RawKeyEvent event,
@@ -316,13 +265,13 @@ class CityBuilder extends FlameGame
     final isKeyDown = event is RawKeyDownEvent;
 
     if (event.logicalKey == LogicalKeyboardKey.keyA) {
-      dragAccelerate.x = isKeyDown ? 10 : 0;
+      dragAccelerateKey.x = isKeyDown ? -10 : 0;
     } else if (event.logicalKey == LogicalKeyboardKey.keyD) {
-      dragAccelerate.x = isKeyDown ? -10 : 0;
+      dragAccelerateKey.x = isKeyDown ? 10 : 0;
     } else if (event.logicalKey == LogicalKeyboardKey.keyW) {
-      dragAccelerate.y = isKeyDown ? 10 : 0;
+      dragAccelerateKey.y = isKeyDown ? -10 : 0;
     } else if (event.logicalKey == LogicalKeyboardKey.keyS) {
-      dragAccelerate.y = isKeyDown ? -10 : 0;
+      dragAccelerateKey.y = isKeyDown ? 10 : 0;
     }
 
     return KeyEventResult.handled;

@@ -18,7 +18,7 @@ int quadrantSizeY = 540; // 1080/2 (standard monitor height)
 
 List<List<Tile?>> setTileDetails() {
 
-  List<List<int>> worldDetail = worldDetailTiny;
+  List<List<int>> worldDetail = worldDetailNormal;
 
   List<List<Tile?>> tiles = List.generate(
       worldDetail.length,
@@ -47,27 +47,11 @@ List<List<Tile?>> setTileDetails() {
 
 Future<List<List<MapQuadrant?>>> getMapQuadrants(List<List<Tile?>> tiles, int rotate) async {
 
-  double left = tiles[0][(tiles.length / 2).floor()]!.getPos(rotate).x;
-  double right = tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).x;
-  double top = tiles[(tiles.length / 2).round()][0]!.getPos(rotate).y;
-  double bottom = tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).y;
-
-  if (rotate == 1) {
-    top = tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).y;
-    bottom = tiles[0][(tiles.length / 2).round()]!.getPos(rotate).y;
-    left = tiles[(tiles.length / 2).floor()][0]!.getPos(rotate).x;
-    right = tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).x;
-  } else if (rotate == 2) {
-    right = tiles[0][(tiles.length / 2).round()]!.getPos(rotate).x;
-    left = tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).x;
-    bottom = tiles[(tiles.length / 2).floor()][0]!.getPos(rotate).y;
-    top = tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).y;
-  } else if (rotate == 3) {
-    bottom = tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).y;
-    top = tiles[0][(tiles.length / 2).round()]!.getPos(rotate).y;
-    right = tiles[(tiles.length / 2).floor()][0]!.getPos(rotate).x;
-    left = tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).x;
-  }
+  List<double> bounds = getBounds(tiles, rotate);
+  double left = bounds[0];
+  double right = bounds[1];
+  double top = bounds[2];
+  double bottom = bounds[3];
 
   double totalWidth = left.abs() + right.abs();
   double totalHeight = top.abs() + bottom.abs();
@@ -130,4 +114,31 @@ updateQuadrants(List<List<MapQuadrant?>> mapQuadrants, double leftScreen, double
       }
     }
   }
+}
+
+List<double> getBounds(List<List<Tile?>> tiles, int rotate) {
+
+  double left = tiles[0][(tiles.length / 2).floor()]!.getPos(rotate).x;
+  double right = tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).x;
+  double top = tiles[(tiles.length / 2).round()][0]!.getPos(rotate).y;
+  double bottom = tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).y;
+
+  if (rotate == 1) {
+    top = tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).y;
+    bottom = tiles[0][(tiles.length / 2).round()]!.getPos(rotate).y;
+    left = tiles[(tiles.length / 2).floor()][0]!.getPos(rotate).x;
+    right = tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).x;
+  } else if (rotate == 2) {
+    right = tiles[0][(tiles.length / 2).round()]!.getPos(rotate).x;
+    left = tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).x;
+    bottom = tiles[(tiles.length / 2).floor()][0]!.getPos(rotate).y;
+    top = tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).y;
+  } else if (rotate == 3) {
+    bottom = tiles[tiles.length - 1][(tiles.length / 2).floor()]!.getPos(rotate).y;
+    top = tiles[0][(tiles.length / 2).round()]!.getPos(rotate).y;
+    right = tiles[(tiles.length / 2).floor()][0]!.getPos(rotate).x;
+    left = tiles[(tiles.length / 2).floor()][tiles.length - 1]!.getPos(rotate).x;
+  }
+
+  return [left, right, top, bottom];
 }

@@ -30,6 +30,8 @@ class World extends Component {
   double topScreen = 0;
   double bottomScreen = 0;
 
+  late List<List<double>> worldBounds;
+
   late SelectedTile selectedTile;
 
   @override
@@ -43,11 +45,8 @@ class World extends Component {
     borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
 
     tiles = setTileDetails();
-    mapQuadrants = [];
-    mapQuadrants.add([]);
-    mapQuadrants.add([]);
-    mapQuadrants.add([]);
-    mapQuadrants.add([]);
+    mapQuadrants = [[], [], [], []];
+    worldBounds = [[], [], [], []];
     for (int rot = 0; rot < 4; rot++) {
       print("rot $rot");
       getMapQuadrants(tiles, rot).then((mapQuad) {
@@ -56,6 +55,7 @@ class World extends Component {
         print("set tiles $rot");
         mapQuadrants[rot] = mapQuad;
       });
+      worldBounds[rot] = getBounds(tiles, rot);
     }
     SelectedTileFlat selectedTileFlat = SelectedTileFlat();
     SelectedTilePoint selectedTilePoint = SelectedTilePoint();
@@ -142,5 +142,18 @@ class World extends Component {
     } else {
       rotate = 2;
     }
+  }
+
+  double getBoundLeft() {
+    return worldBounds[rotate][0];
+  }
+  double getBoundRight() {
+    return worldBounds[rotate][1];
+  }
+  double getBoundTop() {
+    return worldBounds[rotate][2];
+  }
+  double getBoundBottom() {
+    return worldBounds[rotate][3];
   }
 }
