@@ -36,23 +36,13 @@ class CityBuilder extends FlameGame
   @override
   Future<void> onLoad() async {
     await super.onLoad();
-    _world = World();
-    camera.followVector2(cameraPosition, relativeOffset: Anchor.center);
-    add(_world);
 
-    final image = await images.load('joystick_rotate.png');
-    final sheet = SpriteSheet.fromColumnsAndRows(
-      image: image,
-      columns: 6,
-      rows: 1,
-    );
-
-    Sprite mapSprite = await loadSprite('map_outline_flat_test.png');
+    Sprite mapSprite = await loadSprite('map_outline_regions.png');
 
     final knobPaint = BasicPalette.white.withAlpha(50).paint();
     Vector2 miniMapSize = Vector2(180, 90);
     miniMap = MiniMapComponent(
-        focussedArea: RectangleComponent(size: Vector2(30, 20), paint: knobPaint),
+        focussedArea: RectangleComponent(size: miniMapSize, paint: knobPaint),
         totalArea: SpriteComponent(
           sprite: mapSprite,
           size: miniMapSize,
@@ -62,23 +52,58 @@ class CityBuilder extends FlameGame
     );
     add(miniMap);
 
+    _world = World(miniMap);
+    camera.followVector2(cameraPosition, relativeOffset: Anchor.center);
+    add(_world);
+
+    final image = await images.load('ui.png');
+    final sheet = SpriteSheet.fromColumnsAndRows(
+      image: image,
+      columns: 10,
+      rows: 1,
+    );
+    PositionComponent HudBackground = HudMarginComponent(
+      margin: const EdgeInsets.only(left: 10, top: 10),
+      size: Vector2(200, 900)
+    );
+
+    add(HudBackground);
+
     joystick = JoystickComponent(
       knob: SpriteComponent(
-        sprite: sheet.getSpriteById(1),
-        size: Vector2.all(50),
+        sprite: sheet.getSpriteById(5),
+        size: Vector2.all(100),
       ),
       background: SpriteComponent(
         sprite: sheet.getSpriteById(0),
-        size: Vector2.all(80),
+        size: Vector2.all(150),
       ),
       margin: const EdgeInsets.only(left: 20, bottom: 20)
     );
 
     final buttonSize = Vector2.all(40);
 
+    final rotateLeftButton = HudButtonComponent(
+      button: SpriteComponent(
+        sprite: sheet.getSpriteById(1),
+        size: buttonSize,
+      ),
+      buttonDown: SpriteComponent(
+        sprite: sheet.getSpriteById(2),
+        size: buttonSize,
+      ),
+      margin: const EdgeInsets.only(
+          left: 10,
+          bottom: 170
+      ),
+      onPressed: () {
+        rotateLeft();
+      },
+    );
+
     final rotateRightButton = HudButtonComponent(
       button: SpriteComponent(
-        sprite: sheet.getSpriteById(2),
+        sprite: sheet.getSpriteById(3),
         size: buttonSize,
       ),
       buttonDown: SpriteComponent(
@@ -86,34 +111,64 @@ class CityBuilder extends FlameGame
         size: buttonSize,
       ),
       margin: const EdgeInsets.only(
-          left: 10,
-          bottom: 100
+          left: 50,
+          bottom: 190
       ),
       onPressed: () {
         rotateRight();
       },
     );
-    final rotateLeftButton = HudButtonComponent(
+
+    final zoomInButton = HudButtonComponent(
       button: SpriteComponent(
-        sprite: sheet.getSpriteById(3),
+        sprite: sheet.getSpriteById(6),
         size: buttonSize,
       ),
       buttonDown: SpriteComponent(
-        sprite: sheet.getSpriteById(5),
+        sprite: sheet.getSpriteById(7),
         size: buttonSize,
       ),
       margin: const EdgeInsets.only(
-          left: 70,
-          bottom: 100
+          left: 105,
+          bottom: 190
       ),
       onPressed: () {
-        rotateLeft();
+        camera.zoom *= 1.1;
+        if (camera.zoom >= 4) {
+          camera.zoom = 4;
+        }
+        miniMap.updateZoom(size.x);
+      },
+    );
+
+    final zoomOutButton = HudButtonComponent(
+      button: SpriteComponent(
+        sprite: sheet.getSpriteById(8),
+        size: buttonSize,
+      ),
+      buttonDown: SpriteComponent(
+        sprite: sheet.getSpriteById(9),
+        size: buttonSize,
+      ),
+      margin: const EdgeInsets.only(
+          left: 145,
+          bottom: 170
+      ),
+      onPressed: () {
+        camera.zoom *= 0.9;
+        if (camera.zoom <= 1) {
+          camera.zoom = 1;
+        }
+        miniMap.updateZoom(size.x);
       },
     );
 
     add(joystick);
     add(rotateLeftButton);
     add(rotateRightButton);
+    add(zoomInButton);
+    add(zoomOutButton);
+    miniMap.updateZoom(size.x);
   }
 
   rotateRight() {
@@ -143,12 +198,12 @@ class CityBuilder extends FlameGame
     super.onScroll(info);
     double zoomIncrease = (info.raw.scrollDelta.dy/1000);
     camera.zoom *= (1 - zoomIncrease);
-    if (camera.zoom <= 0.5) {
-      camera.zoom = 0.5;
+    if (camera.zoom <= 1) {
+      camera.zoom = 1;
     } else if (camera.zoom >= 4) {
       camera.zoom = 4;
     }
-    print("current zoom: ${camera.zoom}");
+    miniMap.updateZoom(size.x);
   }
 
   @override
@@ -158,9 +213,12 @@ class CityBuilder extends FlameGame
       // super.onTapUp(pointerId, info);
       Vector2 normalized = miniMap.tappedMap(info.eventPosition.global.x, info.eventPosition.global.y);
       setPosition(normalized);
+    } else if (info.eventPosition.global.x < 200) {
+      // pressed HUD
     } else {
       _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);
     }
+    super.onTapUp(pointerId, info);
   }
 
   @override
@@ -173,6 +231,8 @@ class CityBuilder extends FlameGame
     if (info.eventPosition.global.x < 200 && info.eventPosition.global.y < 120) {
       Vector2 normalized = miniMap.tappedMap(info.eventPosition.global.x, info.eventPosition.global.y);
       setPosition(normalized);
+    } else if (info.eventPosition.global.x < 200) {
+      // pressed HUD
     }
     super.onDragStart(pointerId, info);
   }
@@ -182,6 +242,8 @@ class CityBuilder extends FlameGame
     if (info.eventPosition.global.x < 200 && info.eventPosition.global.y < 120) {
       Vector2 normalized = miniMap.tappedMap(info.eventPosition.global.x, info.eventPosition.global.y);
       setPosition(normalized);
+    } else if (info.eventPosition.global.x < 200) {
+      // pressed HUD
     }
     super.onDragUpdate(pointerId, info);
   }

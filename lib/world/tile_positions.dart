@@ -9,6 +9,7 @@ import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import '../component/dirt_tile.dart';
 import '../component/tile.dart';
+import 'map_details/map_details_medium.dart';
 import 'map_details/map_details_tiny.dart';
 
 
@@ -18,7 +19,7 @@ int quadrantSizeY = 540; // 1080/2 (standard monitor height)
 
 List<List<Tile?>> setTileDetails() {
 
-  List<List<int>> worldDetail = worldDetailLarge;
+  List<List<int>> worldDetail = worldDetailMedium;
 
   List<List<Tile?>> tiles = List.generate(
       worldDetail.length,

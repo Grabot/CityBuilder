@@ -16,6 +16,9 @@ class MiniMapComponent extends HudMarginComponent {
   // TODO: focussedArea moet met de zoom en de groote van de map mee gaan.
   int rotate;
 
+  // We keep track of the total width of every rotation, for the focussed area.
+  List<double> worldWidth = [0, 0, 0, 0];
+
   Vector2 normalizedPosition = Vector2.zero();
 
   MiniMapComponent({
@@ -37,6 +40,10 @@ class MiniMapComponent extends HudMarginComponent {
     // We will assume, for now, that the mini map is always on the top left.
     startX = margin!.left;
     startY = margin.top;
+  }
+
+  setWorldWidth(int rotate, double width) {
+    worldWidth[rotate] = width;
   }
 
   rotate3() {
@@ -123,6 +130,11 @@ class MiniMapComponent extends HudMarginComponent {
 
   void updateCameraPosY(double normalizedY) {
     normalizedPosition.y = normalizedY;
+  }
+
+  void updateZoom(double screenWidth) {
+    double percentage = screenWidth / worldWidth[rotate];
+    focussedArea.scale = Vector2(percentage, percentage);
   }
 
   @override

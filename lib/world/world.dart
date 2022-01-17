@@ -1,5 +1,6 @@
 import 'dart:ui';
 import 'package:city_builder/component/map_quadrant.dart';
+import 'package:city_builder/component/mini_map.dart';
 import 'package:city_builder/component/selected_tile.dart';
 import 'package:city_builder/component/sprite_button.dart';
 import 'package:city_builder/world/tapped_map.dart';
@@ -12,7 +13,8 @@ class World extends Component {
 
   late List<List<Tile?>> tiles;
 
-  World() : super();
+  MiniMapComponent miniMap;
+  World(this.miniMap) : super();
 
   Paint borderPaint = Paint();
 
@@ -55,7 +57,9 @@ class World extends Component {
         print("set tiles $rot");
         mapQuadrants[rot] = mapQuad;
       });
-      worldBounds[rot] = getBounds(tiles, rot);
+      List<double> bounds = getBounds(tiles, rot);
+      worldBounds[rot] = bounds;
+      miniMap.setWorldWidth(rot, (bounds[0].abs() + bounds[1].abs()));
     }
     SelectedTileFlat selectedTileFlat = SelectedTileFlat();
     SelectedTilePoint selectedTilePoint = SelectedTilePoint();
