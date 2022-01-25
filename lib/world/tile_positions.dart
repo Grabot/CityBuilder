@@ -14,8 +14,8 @@ import 'map_details/map_details_tiny.dart';
 
 
 // quadranten (these can be fairly high, they are x, y values not tile amounts
-int quadrantSizeX = 960; // 1920/2 (standard monitor width)
-int quadrantSizeY = 540; // 1080/2 (standard monitor height)
+int quadrantSizeX = 240; // 1920/8 (standard monitor width)
+int quadrantSizeY = 135; // 1080/8 (standard monitor height)
 
 List<List<Tile?>> setTileDetails() {
 

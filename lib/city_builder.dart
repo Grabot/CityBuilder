@@ -1,3 +1,4 @@
+import 'package:city_builder/user_interface/mini_map.dart';
 import 'package:city_builder/world/world.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
@@ -6,8 +7,6 @@ import 'package:flame/palette.dart';
 import 'package:flame/sprite.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-
-import 'component/mini_map.dart';
 
 
 class CityBuilder extends FlameGame
@@ -52,8 +51,9 @@ class CityBuilder extends FlameGame
     );
     add(miniMap);
 
-    _world = World(miniMap);
+    _world = World();
     camera.followVector2(cameraPosition, relativeOffset: Anchor.center);
+    camera.zoom = 1;
     add(_world);
 
     final image = await images.load('ui.png');
@@ -62,12 +62,6 @@ class CityBuilder extends FlameGame
       columns: 10,
       rows: 1,
     );
-    PositionComponent HudBackground = HudMarginComponent(
-      margin: const EdgeInsets.only(left: 10, top: 10),
-      size: Vector2(200, 900)
-    );
-
-    add(HudBackground);
 
     joystick = JoystickComponent(
       knob: SpriteComponent(
@@ -92,10 +86,7 @@ class CityBuilder extends FlameGame
         sprite: sheet.getSpriteById(2),
         size: buttonSize,
       ),
-      margin: const EdgeInsets.only(
-          left: 10,
-          bottom: 170
-      ),
+      margin: const EdgeInsets.only(left: 5, bottom: 160),
       onPressed: () {
         rotateLeft();
       },
@@ -110,10 +101,7 @@ class CityBuilder extends FlameGame
         sprite: sheet.getSpriteById(4),
         size: buttonSize,
       ),
-      margin: const EdgeInsets.only(
-          left: 50,
-          bottom: 190
-      ),
+      margin: const EdgeInsets.only(left: 45, bottom: 180),
       onPressed: () {
         rotateRight();
       },
@@ -128,16 +116,13 @@ class CityBuilder extends FlameGame
         sprite: sheet.getSpriteById(7),
         size: buttonSize,
       ),
-      margin: const EdgeInsets.only(
-          left: 105,
-          bottom: 190
-      ),
+      margin: const EdgeInsets.only(left: 105, bottom: 180),
       onPressed: () {
         camera.zoom *= 1.1;
         if (camera.zoom >= 4) {
           camera.zoom = 4;
         }
-        miniMap.updateZoom(size.x);
+        miniMap.updateZoom(size.x, _world.getWorldWidth());
       },
     );
 
@@ -150,16 +135,13 @@ class CityBuilder extends FlameGame
         sprite: sheet.getSpriteById(9),
         size: buttonSize,
       ),
-      margin: const EdgeInsets.only(
-          left: 145,
-          bottom: 170
-      ),
+      margin: const EdgeInsets.only(left: 145, bottom: 160),
       onPressed: () {
         camera.zoom *= 0.9;
         if (camera.zoom <= 1) {
           camera.zoom = 1;
         }
-        miniMap.updateZoom(size.x);
+        miniMap.updateZoom(size.x, _world.getWorldWidth());
       },
     );
 
@@ -168,7 +150,7 @@ class CityBuilder extends FlameGame
     add(rotateRightButton);
     add(zoomInButton);
     add(zoomOutButton);
-    miniMap.updateZoom(size.x);
+    miniMap.updateZoom(size.x, _world.getWorldWidth());
   }
 
   rotateRight() {
@@ -203,14 +185,13 @@ class CityBuilder extends FlameGame
     } else if (camera.zoom >= 4) {
       camera.zoom = 4;
     }
-    miniMap.updateZoom(size.x);
+    miniMap.updateZoom(size.x, _world.getWorldWidth());
   }
 
   @override
   void onTapUp(int pointerId, TapUpInfo info) {
     // TODO: better way to check if it pressed the minimap.
     if (info.eventPosition.global.x < 200 && info.eventPosition.global.y < 120) {
-      // super.onTapUp(pointerId, info);
       Vector2 normalized = miniMap.tappedMap(info.eventPosition.global.x, info.eventPosition.global.y);
       setPosition(normalized);
     } else if (info.eventPosition.global.x < 200) {
@@ -351,5 +332,14 @@ class CityBuilder extends FlameGame
     }
 
     return KeyEventResult.handled;
+  }
+
+  @override
+  void onGameResize(Vector2 canvasSize) {
+    // This needs to be done to position the HUD margin components correctly.
+    double previousZoom = camera.zoom;
+    camera.zoom = 1;
+    super.onGameResize(canvasSize);
+    camera.zoom = previousZoom;
   }
 }
