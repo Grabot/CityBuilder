@@ -1,4 +1,5 @@
 import 'package:city_builder/user_interface/mini_map.dart';
+import 'package:city_builder/user_interface/user_interface.dart';
 import 'package:city_builder/world/world.dart';
 import 'package:flame/components.dart';
 import 'package:flame/game.dart';
@@ -38,18 +39,7 @@ class CityBuilder extends FlameGame
 
     Sprite mapSprite = await loadSprite('map_outline_regions.png');
 
-    final knobPaint = BasicPalette.white.withAlpha(50).paint();
-    Vector2 miniMapSize = Vector2(180, 90);
-    miniMap = MiniMapComponent(
-        focussedArea: RectangleComponent(size: miniMapSize, paint: knobPaint),
-        totalArea: SpriteComponent(
-          sprite: mapSprite,
-          size: miniMapSize,
-        ),
-        rotate: 0,
-        margin: const EdgeInsets.only(left: 10, top: 10)
-    );
-    add(miniMap);
+    miniMap = getMiniMap(mapSprite);
 
     _world = World();
     camera.followVector2(cameraPosition, relativeOffset: Anchor.center);
@@ -63,93 +53,28 @@ class CityBuilder extends FlameGame
       rows: 1,
     );
 
-    joystick = JoystickComponent(
-      knob: SpriteComponent(
-        sprite: sheet.getSpriteById(5),
-        size: Vector2.all(100),
-      ),
-      background: SpriteComponent(
-        sprite: sheet.getSpriteById(0),
-        size: Vector2.all(150),
-      ),
-      margin: const EdgeInsets.only(left: 20, bottom: 20)
-    );
+    joystick = getJoystick(sheet);
+
+    final tileImages = await images.load('flat_1.png');
 
     final buttonSize = Vector2.all(40);
+    final rotateLeftButton = getRotateLeft(sheet, buttonSize, this);
+    final rotateRightButton = getRotateRight(sheet, buttonSize, this);
+    final zoomInButton = getZoomInButton(sheet, buttonSize, this);
+    final zoomOutButton = getZoomOutButton(sheet, buttonSize, this);
+    final hudBackgroundLeft = getHudBackgroundLeft();
+    final hudBackgroundBottom = getHudBackgroundBottom();
+    final grassTileButton = getGrassTileButton(tileImages, buttonSize, this);
 
-    final rotateLeftButton = HudButtonComponent(
-      button: SpriteComponent(
-        sprite: sheet.getSpriteById(1),
-        size: buttonSize,
-      ),
-      buttonDown: SpriteComponent(
-        sprite: sheet.getSpriteById(2),
-        size: buttonSize,
-      ),
-      margin: const EdgeInsets.only(left: 5, bottom: 160),
-      onPressed: () {
-        rotateLeft();
-      },
-    );
-
-    final rotateRightButton = HudButtonComponent(
-      button: SpriteComponent(
-        sprite: sheet.getSpriteById(3),
-        size: buttonSize,
-      ),
-      buttonDown: SpriteComponent(
-        sprite: sheet.getSpriteById(4),
-        size: buttonSize,
-      ),
-      margin: const EdgeInsets.only(left: 45, bottom: 180),
-      onPressed: () {
-        rotateRight();
-      },
-    );
-
-    final zoomInButton = HudButtonComponent(
-      button: SpriteComponent(
-        sprite: sheet.getSpriteById(6),
-        size: buttonSize,
-      ),
-      buttonDown: SpriteComponent(
-        sprite: sheet.getSpriteById(7),
-        size: buttonSize,
-      ),
-      margin: const EdgeInsets.only(left: 105, bottom: 180),
-      onPressed: () {
-        camera.zoom *= 1.1;
-        if (camera.zoom >= 4) {
-          camera.zoom = 4;
-        }
-        miniMap.updateZoom(size.x, _world.getWorldWidth());
-      },
-    );
-
-    final zoomOutButton = HudButtonComponent(
-      button: SpriteComponent(
-        sprite: sheet.getSpriteById(8),
-        size: buttonSize,
-      ),
-      buttonDown: SpriteComponent(
-        sprite: sheet.getSpriteById(9),
-        size: buttonSize,
-      ),
-      margin: const EdgeInsets.only(left: 145, bottom: 160),
-      onPressed: () {
-        camera.zoom *= 0.9;
-        if (camera.zoom <= 1) {
-          camera.zoom = 1;
-        }
-        miniMap.updateZoom(size.x, _world.getWorldWidth());
-      },
-    );
-
+    add(hudBackgroundLeft);
+    add(hudBackgroundBottom);
     add(joystick);
     add(rotateLeftButton);
     add(rotateRightButton);
     add(zoomInButton);
     add(zoomOutButton);
+    add(grassTileButton);
+    add(miniMap);
     miniMap.updateZoom(size.x, _world.getWorldWidth());
   }
 
@@ -163,6 +88,22 @@ class CityBuilder extends FlameGame
     _world.rotateWorldLeft();
     miniMap.rotateMiniMapLeft();
     dragTo = Vector2(-dragTo.y * 2, dragTo.x / 2);
+  }
+
+  zoomIn() {
+    camera.zoom *= 1.1;
+    if (camera.zoom >= 4) {
+      camera.zoom = 4;
+    }
+    miniMap.updateZoom(size.x, _world.getWorldWidth());
+  }
+
+  zoomOut() {
+    camera.zoom *= 0.9;
+    if (camera.zoom <= 1) {
+      camera.zoom = 1;
+    }
+    miniMap.updateZoom(size.x, _world.getWorldWidth());
   }
 
   @override
@@ -195,6 +136,8 @@ class CityBuilder extends FlameGame
       Vector2 normalized = miniMap.tappedMap(info.eventPosition.global.x, info.eventPosition.global.y);
       setPosition(normalized);
     } else if (info.eventPosition.global.x < 200) {
+      // pressed HUD
+    } else if (info.eventPosition.global.y > size.y - 200) {
       // pressed HUD
     } else {
       _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);

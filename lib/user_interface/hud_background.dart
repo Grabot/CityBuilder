@@ -6,12 +6,12 @@ import 'package:meta/meta.dart';
 import 'package:flame/input.dart';
 
 
-class HudBackground extends HudMarginComponent {
+class HudBackgroundLeft extends HudMarginComponent {
 
-  late final PositionComponent background;
+  late final PositionComponent backgroundLeft;
 
-  HudBackground({
-    required this.background,
+  HudBackgroundLeft({
+    required this.backgroundLeft,
     EdgeInsets? margin,
     Vector2? position,
     double? size,
@@ -21,17 +21,46 @@ class HudBackground extends HudMarginComponent {
         super(
         margin: margin,
         position: position,
-        size: background.size,
+        size: backgroundLeft.size,
         anchor: anchor,
       );
 
   @override
   @mustCallSuper
   void onMount() {
-    background.anchor = Anchor.center;
-    background.position = Vector2(0, 0);
+    backgroundLeft.position.sub(Vector2(10, -10));
+    add(backgroundLeft);
+  }
 
-    add(background);
+  @override
+  void update(double dt) {
+  }
+}
+
+class HudBackgroundBottom extends HudMarginComponent {
+
+  late final PositionComponent backgroundBottom;
+
+  HudBackgroundBottom({
+    required this.backgroundBottom,
+    EdgeInsets? margin,
+    Vector2? position,
+    double? size,
+    double? knobRadius,
+    Anchor anchor = Anchor.center,
+  })  :
+        super(
+        margin: margin,
+        position: position,
+        size: backgroundBottom.size,
+        anchor: anchor,
+      );
+
+  @override
+  @mustCallSuper
+  void onMount() {
+    backgroundBottom.position.sub(Vector2(10, -10));
+    add(backgroundBottom);
   }
 
   @override
