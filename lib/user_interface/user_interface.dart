@@ -1,3 +1,4 @@
+import 'package:city_builder/component/get_texture.dart';
 import 'package:city_builder/user_interface/hud_background.dart';
 import 'package:flame/components.dart';
 import 'package:flame/input.dart';
@@ -118,6 +119,7 @@ HudBackgroundLeft getHudBackgroundLeft() {
   HudBackgroundLeft hudBackground = HudBackgroundLeft(
       backgroundLeft: RectangleComponent(
           size: Vector2(200, 2000),
+          // paint: const PaletteEntry(Color(0xFF797979)).withAlpha(100).paint()
           paint: const PaletteEntry(Color(0xFF797979)).paint()
       ),
       margin: const EdgeInsets.only(left: 10, bottom: 10)
@@ -128,7 +130,8 @@ HudBackgroundLeft getHudBackgroundLeft() {
 HudBackgroundBottom getHudBackgroundBottom() {
   HudBackgroundBottom hudBackground = HudBackgroundBottom(
       backgroundBottom: RectangleComponent(
-          size: Vector2(2000, 200),
+          size: Vector2(2000, 100),
+          // paint: const PaletteEntry(Color(0xFF797979)).withAlpha(100).paint()
           paint: const PaletteEntry(Color(0xFF797979)).paint()
       ),
       margin: const EdgeInsets.only(left: 10, bottom: 10)
@@ -136,18 +139,24 @@ HudBackgroundBottom getHudBackgroundBottom() {
   return hudBackground;
 }
 
-HudButtonComponent getGrassTileButton(var tileImages, Vector2 buttonSize, CityBuilder cityBuilder) {
+HudButtonComponent getGrassTileButton(var tileImages, CityBuilder cityBuilder) {
 
+  Vector2 buttonSize = Vector2(64, 28);
+
+  Vector2 tilePos1 = Vector2(flatSmallGrass1.left, flatSmallGrass1.top);
+  Vector2 tileSize1 = Vector2(flatSmallGrass1.width, flatSmallGrass1.height);
   Sprite tileSprites1 = Sprite(
       tileImages,
-      srcPosition: Vector2(1, 1),
-      srcSize: Vector2(32, 14)
+      srcPosition: tilePos1,
+      srcSize: tileSize1
   );
 
+  Vector2 tilePos2 = Vector2(flatSmallGrass2.left, flatSmallGrass2.top);
+  Vector2 tileSize2 = Vector2(flatSmallGrass2.width, flatSmallGrass2.height);
   Sprite tileSprites2 = Sprite(
       tileImages,
-      srcPosition: Vector2(69, 1),
-      srcSize: Vector2(32, 14)
+      srcPosition: tilePos2,
+      srcSize: tileSize2
   );
 
   HudButtonComponent grassTileButton = HudButtonComponent(
@@ -159,10 +168,85 @@ HudButtonComponent getGrassTileButton(var tileImages, Vector2 buttonSize, CityBu
       sprite: tileSprites2,
       size: buttonSize,
     ),
-    margin: const EdgeInsets.only(left: 500, bottom: 60),
+    margin: const EdgeInsets.only(left: 250, bottom: 40),
     onPressed: () {
-      cityBuilder.zoomOut();
+      cityBuilder.pressedGrassTile();
     },
   );
   return grassTileButton;
 }
+
+HudButtonComponent getDirtTileButton(var tileImages, CityBuilder cityBuilder) {
+
+  Vector2 buttonSize = Vector2(64, 28);
+
+  Vector2 tilePos1 = Vector2(flatSmallDirt1.left, flatSmallDirt1.top);
+  Vector2 tileSize1 = Vector2(flatSmallDirt1.width, flatSmallDirt1.height);
+  Sprite tileSprites1 = Sprite(
+      tileImages,
+      srcPosition: tilePos1,
+      srcSize: tileSize1
+  );
+
+  Vector2 tilePos2 = Vector2(flatSmallDirt1.left, flatSmallDirt1.top);
+  Vector2 tileSize2 = Vector2(flatSmallDirt1.width, flatSmallDirt1.height);
+  Sprite tileSprites2 = Sprite(
+      tileImages,
+      srcPosition: tilePos2,
+      srcSize: tileSize2
+  );
+
+  HudButtonComponent grassTileButton = HudButtonComponent(
+    button: SpriteComponent(
+      sprite: tileSprites1,
+      size: buttonSize,
+    ),
+    buttonDown: SpriteComponent(
+      sprite: tileSprites2,
+      size: buttonSize,
+    ),
+    margin: const EdgeInsets.only(left: 350, bottom: 40),
+    onPressed: () {
+      cityBuilder.pressedDirtTile();
+    },
+  );
+  return grassTileButton;
+}
+
+HudButtonComponent getWaterTileButton(var tileImages, CityBuilder cityBuilder) {
+
+  Vector2 buttonSize = Vector2(64, 28);
+
+  Vector2 tilePos1 = Vector2(flatSmallWater1.left, flatSmallWater1.top);
+  Vector2 tileSize1 = Vector2(flatSmallWater1.width, flatSmallWater1.height);
+  Sprite tileSprites1 = Sprite(
+      tileImages,
+      srcPosition: tilePos1,
+      srcSize: tileSize1
+  );
+
+  Vector2 tilePos2 = Vector2(flatSmallWater2.left, flatSmallWater2.top);
+  Vector2 tileSize2 = Vector2(flatSmallWater2.width, flatSmallWater2.height);
+  Sprite tileSprites2 = Sprite(
+      tileImages,
+      srcPosition: tilePos2,
+      srcSize: tileSize2
+  );
+
+  HudButtonComponent waterTileButton = HudButtonComponent(
+    button: SpriteComponent(
+      sprite: tileSprites1,
+      size: buttonSize,
+    ),
+    buttonDown: SpriteComponent(
+      sprite: tileSprites2,
+      size: buttonSize,
+    ),
+    margin: const EdgeInsets.only(left: 450, bottom: 40),
+    onPressed: () {
+      cityBuilder.pressedWaterTile();
+    },
+  );
+  return waterTileButton;
+}
+

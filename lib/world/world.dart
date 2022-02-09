@@ -99,12 +99,14 @@ class World extends Component {
     worldSize = size;
     zoom = zoomLevel;
 
-    // We draw the border a bit further than what you're seeing, this is so the sections load before you scroll on them.
-    double borderOffset = 100;
-    leftScreen = cameraPosition.x - (worldSize.x / 2) - borderOffset;
+    // We draw the border a bit further (about 1 tile) than what you're seeing, this is so the sections load before you scroll on them.
+    double borderOffset = 32;
+    double hudLeft = 200 / zoomLevel;
+    double hudBottom = 100 / zoomLevel;
+    leftScreen = cameraPosition.x - (worldSize.x / 2) - borderOffset + hudLeft;
     rightScreen = cameraPosition.x + (worldSize.x / 2) + borderOffset;
     topScreen = cameraPosition.y - (worldSize.y / 2) - borderOffset;
-    bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset;
+    bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset - hudBottom;
 
     if (updateIndex == 30) {
       updateIndex = 0;

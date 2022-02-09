@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:city_builder/component/tile.dart';
 import 'package:flame/sprite.dart';
 
+import 'get_texture.dart';
+
 class WaterTile extends Tile {
 
   WaterTile(int q, int r, int s)
@@ -12,13 +14,13 @@ class WaterTile extends Tile {
     if (rotate == 0 || rotate == 2) {
       if (variant == 0) {
         spriteBatch.add(
-            source: const Rect.fromLTWH(137, 1, 32, 14),
+            source: flatSmallWater1,
             offset: getPos(rotate),
             scale: scaleX
         );
       } else {
         spriteBatch.add(
-          source: const Rect.fromLTWH(171, 1, 32, 14),
+          source: flatSmallWater2,
           offset: getPos(rotate),
           scale: scaleX
         );

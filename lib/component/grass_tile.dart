@@ -3,6 +3,8 @@ import 'package:city_builder/component/tile.dart';
 import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 
+import 'get_texture.dart';
+
 class GrassTile extends Tile {
 
   GrassTile(int q, int r, int s)
@@ -12,13 +14,13 @@ class GrassTile extends Tile {
   renderTile(SpriteBatch spriteBatch, int rotate, int variant) {
     if (rotate == 0 || rotate == 2) {
       spriteBatch.add(
-          source: const Rect.fromLTWH(69, 1, 32, 14),
+          source: flatSmallGrass1,
           offset: getPos(rotate),
           scale: scaleX
       );
     } else {
       spriteBatch.add(
-          source: const Rect.fromLTWH(1, 37, 28, 16),
+          source: pointSmallGrass1,
           offset: getPos(rotate),
           scale: scaleY
       );

@@ -2,6 +2,8 @@ import 'dart:ui';
 import 'package:city_builder/component/tile.dart';
 import 'package:flame/sprite.dart';
 
+import 'get_texture.dart';
+
 class DirtTile extends Tile {
 
   DirtTile(int q, int r, int s)
@@ -11,13 +13,13 @@ class DirtTile extends Tile {
   renderTile(SpriteBatch spriteBatch, int rotate, int variant) {
     if (rotate == 0 || rotate == 2) {
       spriteBatch.add(
-          source: const Rect.fromLTWH(1, 1, 32, 14),
+          source: flatSmallDirt1,
           offset: getPos(rotate),
           scale: scaleX
       );
     } else {
       spriteBatch.add(
-          source: const Rect.fromLTWH(1, 1, 28, 16),
+          source: pointSmallDirt1,
           offset: getPos(rotate),
           scale: scaleY
       );

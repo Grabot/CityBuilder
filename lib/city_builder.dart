@@ -64,7 +64,9 @@ class CityBuilder extends FlameGame
     final zoomOutButton = getZoomOutButton(sheet, buttonSize, this);
     final hudBackgroundLeft = getHudBackgroundLeft();
     final hudBackgroundBottom = getHudBackgroundBottom();
-    final grassTileButton = getGrassTileButton(tileImages, buttonSize, this);
+    final grassTileButton = getGrassTileButton(tileImages, this);
+    final dirtTileButton = getDirtTileButton(tileImages, this);
+    final waterTileButton = getWaterTileButton(tileImages, this);
 
     add(hudBackgroundLeft);
     add(hudBackgroundBottom);
@@ -74,6 +76,8 @@ class CityBuilder extends FlameGame
     add(zoomInButton);
     add(zoomOutButton);
     add(grassTileButton);
+    add(dirtTileButton);
+    add(waterTileButton);
     add(miniMap);
     miniMap.updateZoom(size.x, _world.getWorldWidth());
   }
@@ -106,6 +110,18 @@ class CityBuilder extends FlameGame
     miniMap.updateZoom(size.x, _world.getWorldWidth());
   }
 
+  pressedGrassTile() {
+    print("pressed grass tile");
+  }
+
+  pressedDirtTile() {
+    print("pressed dirt tile");
+  }
+
+  pressedWaterTile() {
+    print("pressed water tile");
+  }
+
   @override
   void render(Canvas canvas) {
     super.render(canvas);
@@ -131,13 +147,14 @@ class CityBuilder extends FlameGame
 
   @override
   void onTapUp(int pointerId, TapUpInfo info) {
+    print("on tapped up! ${info.eventPosition.global}");
     // TODO: better way to check if it pressed the minimap.
     if (info.eventPosition.global.x < 200 && info.eventPosition.global.y < 120) {
       Vector2 normalized = miniMap.tappedMap(info.eventPosition.global.x, info.eventPosition.global.y);
       setPosition(normalized);
     } else if (info.eventPosition.global.x < 200) {
       // pressed HUD
-    } else if (info.eventPosition.global.y > size.y - 200) {
+    } else if (info.eventPosition.global.y > (size.y * camera.zoom) - 100) {
       // pressed HUD
     } else {
       _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);
