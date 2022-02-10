@@ -91,63 +91,23 @@ renderTiles(Canvas canvas, List<List<Tile2?>> tiles, int q, int r, double leftSc
   int qArray = q + (tiles.length / 2).ceil();
   int rArray = r + (tiles[0].length / 2).ceil();
   Tile2? centerTile = tiles[qArray][rArray];
-  drawTile(canvas, centerTile);
+  int sArray = centerTile!.s;
 
-  final bagOfItems = characters('012'), perms = Amalgams(2, bagOfItems);
+  int radius = 4;
+  final bagOfItems = characters('012345678'), perms = Amalgams(2, bagOfItems);
   for (final perm in perms()) {
-    print("${int.parse(perm[0]) - 1}, ${int.parse(perm[1]) - 1}");
+    int qTile = int.parse(perm[0]) - radius;
+    int rTile = int.parse(perm[1]) - radius;
+    Tile2? tile = tiles[qArray + qTile][rArray + rTile];
+    drawTile(canvas, tile, sArray, radius);
   }
-
-  // second dry all the adjacent tiles.
-  // in the case for 0, 0
-  // +1, -1
-  // 0, -1
-  // -1, 0
-  // -1, +1
-  // 0, +1
-  // +1, 0
-  Tile2? tile1 = tiles[qArray+1][rArray-1];
-  Tile2? tile2 = tiles[qArray][rArray-1];
-  Tile2? tile3 = tiles[qArray-1][rArray];
-  Tile2? tile4 = tiles[qArray-1][rArray+1];
-  Tile2? tile5 = tiles[qArray][rArray+1];
-  Tile2? tile6 = tiles[qArray+1][rArray];
-  drawTile(canvas, tile1);
-  drawTile(canvas, tile2);
-  drawTile(canvas, tile3);
-  drawTile(canvas, tile4);
-  drawTile(canvas, tile5);
-  drawTile(canvas, tile6);
-
-  Tile2? tile7 = tiles[qArray+2][rArray-2];
-  Tile2? tile8 = tiles[qArray+1][rArray-2];
-  Tile2? tile9 = tiles[qArray][rArray-2];
-  Tile2? tile10 = tiles[qArray-1][rArray-1];
-  Tile2? tile11 = tiles[qArray-2][rArray];
-  Tile2? tile12 = tiles[qArray-2][rArray+1];
-  Tile2? tile13 = tiles[qArray-2][rArray+2];
-  Tile2? tile14 = tiles[qArray-1][rArray+2];
-  Tile2? tile15 = tiles[qArray][rArray+2];
-  Tile2? tile16 = tiles[qArray+1][rArray+1];
-  Tile2? tile17 = tiles[qArray+2][rArray];
-  Tile2? tile18 = tiles[qArray+2][rArray-1];
-  drawTile(canvas, tile7);
-  drawTile(canvas, tile8);
-  drawTile(canvas, tile9);
-  drawTile(canvas, tile10);
-  drawTile(canvas, tile11);
-  drawTile(canvas, tile12);
-  drawTile(canvas, tile13);
-  drawTile(canvas, tile14);
-  drawTile(canvas, tile15);
-  drawTile(canvas, tile16);
-  drawTile(canvas, tile17);
-  drawTile(canvas, tile18);
 }
 
-drawTile(Canvas canvas, Tile2? tile) {
+drawTile(Canvas canvas, Tile2? tile, int sArray, int radius) {
   if (tile != null) {
-    tile.render(canvas);
+    if ((sArray - tile.s) >= -radius && (sArray - tile.s) <= radius) {
+      tile.render(canvas);
+    }
   }
 }
 
