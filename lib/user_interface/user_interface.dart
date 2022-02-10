@@ -250,3 +250,67 @@ HudButtonComponent getWaterTileButton(var tileImages, CityBuilder cityBuilder) {
   return waterTileButton;
 }
 
+ActiveTile getActiveTileGrass(Sprite activeTileFlat) {
+
+  Vector2 activeTileSize = Vector2(64, 32);
+  ActiveTile activeTileGrass = ActiveTile(
+      activeTile: SpriteComponent(
+        sprite: activeTileFlat,
+        size: activeTileSize,
+      ),
+      margin: const EdgeInsets.only(left: 250, bottom: 40),
+  );
+  return activeTileGrass;
+}
+
+ActiveTile getActiveTileDirt(Sprite activeTileFlat) {
+
+  Vector2 activeTileSize = Vector2(64, 32);
+  ActiveTile activeTileDirt = ActiveTile(
+    activeTile: SpriteComponent(
+      sprite: activeTileFlat,
+      size: activeTileSize,
+    ),
+    margin: const EdgeInsets.only(left: 350, bottom: 40),
+  );
+  return activeTileDirt;
+}
+
+ActiveTile getActiveTileWater(Sprite activeTileFlat) {
+
+  Vector2 activeTileSize = Vector2(64, 32);
+  ActiveTile activeTileWater = ActiveTile(
+    activeTile: SpriteComponent(
+      sprite: activeTileFlat,
+      size: activeTileSize,
+    ),
+    margin: const EdgeInsets.only(left: 450, bottom: 40),
+  );
+  return activeTileWater;
+}
+
+class ActiveTile extends HudMarginComponent {
+  late final PositionComponent activeTile;
+
+  ActiveTile({
+    required this.activeTile,
+    EdgeInsets? margin,
+    Vector2? position,
+    double? size,
+    Anchor anchor = Anchor.center,
+  })  :
+        super(
+        margin: margin,
+        position: position,
+        size: activeTile.size,
+        anchor: anchor,
+      );
+
+  @override
+  @mustCallSuper
+  void onMount() {
+    add(activeTile);
+    super.onMount();
+  }
+}
+

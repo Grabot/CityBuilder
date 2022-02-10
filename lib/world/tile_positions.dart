@@ -1,6 +1,8 @@
 import 'dart:ui';
+import 'package:city_builder/component/empty_tile.dart';
 import 'package:city_builder/component/grass_tile.dart';
 import 'package:city_builder/component/map_quadrant.dart';
+import 'package:city_builder/component/tile2.dart';
 import 'package:city_builder/component/water_tile.dart';
 import 'package:city_builder/world/map_details/map_details_large.dart';
 import 'package:city_builder/world/map_details/map_details_normal.dart';
@@ -11,17 +13,18 @@ import '../component/dirt_tile.dart';
 import '../component/tile.dart';
 import 'map_details/map_details_medium.dart';
 import 'map_details/map_details_tiny.dart';
+import 'package:trotter/trotter.dart';
 
 
 // quadranten (these can be fairly high, they are x, y values not tile amounts
 int quadrantSizeX = 240; // 1920/8 (standard monitor width)
 int quadrantSizeY = 135; // 1080/8 (standard monitor height)
 
-List<List<Tile?>> setTileDetails() {
+Future<List<List<Tile2?>>> setTileDetails() async {
 
   List<List<int>> worldDetail = worldDetailMedium;
 
-  List<List<Tile?>> tiles = List.generate(
+  List<List<Tile2?>> tiles = List.generate(
       worldDetail.length,
           (_) => List.filled(worldDetail[0].length, null),
       growable: false);
@@ -31,19 +34,17 @@ List<List<Tile?>> setTileDetails() {
       int s = (q + r) * -1;
       int qArray = q + (tiles.length / 2).ceil();
       int rArray = r + (tiles[0].length / 2).ceil();
-      if (worldDetail[qArray][rArray] == 0) {
-        WaterTile tile = WaterTile(q, r, s);
-        tiles[qArray][rArray] = tile;
-      } else if (worldDetail[qArray][rArray] == 1) {
-        DirtTile tile = DirtTile(q, r, s);
-        tiles[qArray][rArray] = tile;
-      } else if (worldDetail[qArray][rArray] == 2) {
-        GrassTile tile = GrassTile(q, r, s);
+      if (worldDetail[qArray][rArray] != -1) {
+        Tile2 tile = Tile2(q, r, s, worldDetail[qArray][rArray], await SpriteBatch.load('flat_1.png'));
         tiles[qArray][rArray] = tile;
       }
     }
   }
   return tiles;
+}
+
+Future test() async {
+
 }
 
 Future<List<List<MapQuadrant?>>> getMapQuadrants(List<List<Tile?>> tiles, int rotate) async {
@@ -85,6 +86,71 @@ Future<List<List<MapQuadrant?>>> getMapQuadrants(List<List<Tile?>> tiles, int ro
   return mapQuadrants;
 }
 
+renderTiles(Canvas canvas, List<List<Tile2?>> tiles, int q, int r, double leftScreen, double rightScreen, double topScreen, double bottomScreen) {
+  // first a test with drawing only 1 tiles wide
+  int qArray = q + (tiles.length / 2).ceil();
+  int rArray = r + (tiles[0].length / 2).ceil();
+  Tile2? centerTile = tiles[qArray][rArray];
+  drawTile(canvas, centerTile);
+
+  final bagOfItems = characters('012'), perms = Amalgams(2, bagOfItems);
+  for (final perm in perms()) {
+    print("${int.parse(perm[0]) - 1}, ${int.parse(perm[1]) - 1}");
+  }
+
+  // second dry all the adjacent tiles.
+  // in the case for 0, 0
+  // +1, -1
+  // 0, -1
+  // -1, 0
+  // -1, +1
+  // 0, +1
+  // +1, 0
+  Tile2? tile1 = tiles[qArray+1][rArray-1];
+  Tile2? tile2 = tiles[qArray][rArray-1];
+  Tile2? tile3 = tiles[qArray-1][rArray];
+  Tile2? tile4 = tiles[qArray-1][rArray+1];
+  Tile2? tile5 = tiles[qArray][rArray+1];
+  Tile2? tile6 = tiles[qArray+1][rArray];
+  drawTile(canvas, tile1);
+  drawTile(canvas, tile2);
+  drawTile(canvas, tile3);
+  drawTile(canvas, tile4);
+  drawTile(canvas, tile5);
+  drawTile(canvas, tile6);
+
+  Tile2? tile7 = tiles[qArray+2][rArray-2];
+  Tile2? tile8 = tiles[qArray+1][rArray-2];
+  Tile2? tile9 = tiles[qArray][rArray-2];
+  Tile2? tile10 = tiles[qArray-1][rArray-1];
+  Tile2? tile11 = tiles[qArray-2][rArray];
+  Tile2? tile12 = tiles[qArray-2][rArray+1];
+  Tile2? tile13 = tiles[qArray-2][rArray+2];
+  Tile2? tile14 = tiles[qArray-1][rArray+2];
+  Tile2? tile15 = tiles[qArray][rArray+2];
+  Tile2? tile16 = tiles[qArray+1][rArray+1];
+  Tile2? tile17 = tiles[qArray+2][rArray];
+  Tile2? tile18 = tiles[qArray+2][rArray-1];
+  drawTile(canvas, tile7);
+  drawTile(canvas, tile8);
+  drawTile(canvas, tile9);
+  drawTile(canvas, tile10);
+  drawTile(canvas, tile11);
+  drawTile(canvas, tile12);
+  drawTile(canvas, tile13);
+  drawTile(canvas, tile14);
+  drawTile(canvas, tile15);
+  drawTile(canvas, tile16);
+  drawTile(canvas, tile17);
+  drawTile(canvas, tile18);
+}
+
+drawTile(Canvas canvas, Tile2? tile) {
+  if (tile != null) {
+    tile.render(canvas);
+  }
+}
+
 renderQuadrants(Canvas canvas, List<List<MapQuadrant?>> mapQuadrants, double leftScreen, double rightScreen, double topScreen, double bottomScreen) {
   for (int x = 0; x < mapQuadrants.length; x++) {
     for (int y = 0; y < mapQuadrants[x].length; y++) {
@@ -114,6 +180,13 @@ updateQuadrants(List<List<MapQuadrant?>> mapQuadrants, double leftScreen, double
         }
       }
     }
+  }
+}
+
+updateQuadrant(MapQuadrant mapQuadrant, int rotate) {
+  mapQuadrant.spriteBatch.clear();
+  for (Tile tile in mapQuadrant.quadrantTiles) {
+    tile.renderTile(mapQuadrant.spriteBatch, rotate, 0);
   }
 }
 

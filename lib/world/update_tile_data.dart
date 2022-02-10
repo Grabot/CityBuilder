@@ -19,7 +19,7 @@ List<List<MapQuadrant?>> setTilesToQuadrants(List<List<Tile?>> tiles, List<List<
                 if (tilePos.y >= mapQuadrant.fromY && tilePos.y < mapQuadrant.toY) {
                   // The tile is within this quadrant.
                   mapQuadrant.addTileToQuadrant(tile);
-                  tile.setQuadrant(mapQuadrant);
+                  tile.setQuadrant(mapQuadrant, rotate);
                   tileFound = true;
                   break;
                 }

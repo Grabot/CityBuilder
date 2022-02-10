@@ -1,8 +1,10 @@
 import 'dart:math';
+import 'package:city_builder/component/tile2.dart';
+
 import '../component/tile.dart';
 import '../global.dart';
 
-List<int> tappedMap(List<List<Tile?>>tiles, double mouseX, double mouseY, int rotate) {
+List<int> getTileFromPos(double mouseX, double mouseY, int rotate) {
   double qDetailed = -1;
   double rDetailed = -1;
   double sDetailed = -1;

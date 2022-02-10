@@ -33,6 +33,11 @@ class CityBuilder extends FlameGame
   late final JoystickComponent joystick;
   late final MiniMapComponent miniMap;
 
+  late ActiveTile activeTileGrass;
+  late ActiveTile activeTileDirt;
+  late ActiveTile activeTileWater;
+  String currentTileActive = "Grass";
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -68,6 +73,12 @@ class CityBuilder extends FlameGame
     final dirtTileButton = getDirtTileButton(tileImages, this);
     final waterTileButton = getWaterTileButton(tileImages, this);
 
+    Sprite activeTileFlat = await loadSprite('flat_selection.png');
+
+    activeTileGrass = getActiveTileGrass(activeTileFlat);
+    activeTileDirt = getActiveTileDirt(activeTileFlat);
+    activeTileWater = getActiveTileWater(activeTileFlat);
+
     add(hudBackgroundLeft);
     add(hudBackgroundBottom);
     add(joystick);
@@ -79,6 +90,7 @@ class CityBuilder extends FlameGame
     add(dirtTileButton);
     add(waterTileButton);
     add(miniMap);
+    add(activeTileGrass);
     miniMap.updateZoom(size.x, _world.getWorldWidth());
   }
 
@@ -111,15 +123,30 @@ class CityBuilder extends FlameGame
   }
 
   pressedGrassTile() {
-    print("pressed grass tile");
+    if (currentTileActive != "Grass") {
+      add(activeTileGrass);
+      remove(activeTileDirt);
+      remove(activeTileWater);
+      currentTileActive = "Grass";
+    }
   }
 
   pressedDirtTile() {
-    print("pressed dirt tile");
+    if (currentTileActive != "Dirt") {
+      remove(activeTileGrass);
+      add(activeTileDirt);
+      remove(activeTileWater);
+      currentTileActive = "Dirt";
+    }
   }
 
   pressedWaterTile() {
-    print("pressed water tile");
+    if (currentTileActive != "Water") {
+      remove(activeTileGrass);
+      remove(activeTileDirt);
+      add(activeTileWater);
+      currentTileActive = "Water";
+    }
   }
 
   @override
@@ -157,7 +184,7 @@ class CityBuilder extends FlameGame
     } else if (info.eventPosition.global.y > (size.y * camera.zoom) - 100) {
       // pressed HUD
     } else {
-      _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y);
+      _world.tappedWorld(info.eventPosition.game.x, info.eventPosition.game.y, currentTileActive);
     }
     super.onTapUp(pointerId, info);
   }
@@ -215,7 +242,7 @@ class CityBuilder extends FlameGame
     dragTo += dragAccelerateJoy;
     dragTo += dragAccelerateKey;
 
-    checkBounds();
+    // checkBounds();
 
     frameTimes += dt;
     frames += 1;

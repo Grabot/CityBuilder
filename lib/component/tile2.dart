@@ -1,25 +1,30 @@
 import 'dart:math';
+import 'dart:ui';
 import 'package:city_builder/component/map_quadrant.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
 import 'package:flame/sprite.dart';
 
 import '../global.dart';
+import 'get_texture.dart';
 
-class Tile {
+class Tile2 {
 
   late Vector2 position;
   late int q;
   late int r;
   late int s;
+  late int tileType;
 
   double scaleX = 1;
   double scaleY = 1.05;
 
-  late List<MapQuadrant?> mapQuadrant = [null, null, null, null];
+  late SpriteBatch spriteBatch;
+
+  late Rect type;
 
   // We assume the condition r + s + q = 0 is true.
-  Tile(this.q, this.r, this.s) {
+  Tile2(this.q, this.r, this.s, this.tileType, this.spriteBatch) {
     double xPos = xSize * 3 / 2 * q - xSize;
     double yTr1 = ySize * (sqrt(3) / 2 * q);
     yTr1 *= -1; // The y axis gets positive going down, so we flip it.
@@ -27,6 +32,7 @@ class Tile {
     yTr2 *= -1; // The y axis gets positive going down, so we flip it.
     double yPos = yTr1 + yTr2 - ySize;
     position = Vector2(xPos, yPos);
+    type = Rect.zero;
   }
 
   Vector2 getPos(int rotate) {
@@ -59,24 +65,38 @@ class Tile {
   }
 
   int getTileType() {
-    return -1;
+    return tileType;
   }
 
-  renderTile(SpriteBatch spriteBatch, int rotate, int variant) {
+  updateTile(int rotate, int variant) {
+    spriteBatch.clear();
+
+    if (tileType == 0) {
+      type = flatSmallWater1;
+    } else {
+      type = flatSmallGrass1;
+    }
+
+    if (rotate == 0 || rotate == 2) {
+      spriteBatch.add(
+          source: type,
+          offset: getPos(rotate),
+          scale: scaleX
+      );
+    } else {
+      spriteBatch.add(
+          source: pointSmallGrass1,
+          offset: getPos(rotate),
+          scale: scaleY
+      );
+    }
   }
 
-  renderAttribute(SpriteBatch spriteBatch, int rotate) {
+  render(Canvas canvas) {
+    spriteBatch.render(canvas, blendMode: BlendMode.srcOver);
   }
 
-  setQuadrant(MapQuadrant mapQuadrantOfTile, int rotate) {
-    mapQuadrant[rotate] = mapQuadrantOfTile;
+  renderAttribute(int rotate) {
   }
 
-  MapQuadrant getQuadrant(int rotate) {
-    return mapQuadrant[rotate]!;
-  }
-
-  tileSelected() {
-
-  }
 }
