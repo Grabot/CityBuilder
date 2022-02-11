@@ -19,12 +19,10 @@ class Tile2 {
   double scaleX = 1;
   double scaleY = 1.05;
 
-  late SpriteBatch spriteBatch;
-
   late Rect type;
 
   // We assume the condition r + s + q = 0 is true.
-  Tile2(this.q, this.r, this.s, this.tileType, this.spriteBatch) {
+  Tile2(this.q, this.r, this.s, this.tileType) {
     double xPos = xSize * 3 / 2 * q - xSize;
     double yTr1 = ySize * (sqrt(3) / 2 * q);
     yTr1 *= -1; // The y axis gets positive going down, so we flip it.
@@ -68,8 +66,7 @@ class Tile2 {
     return tileType;
   }
 
-  updateTile(int rotate, int variant) {
-    spriteBatch.clear();
+  updateTile(SpriteBatch spriteBatch, int rotate, int variant) {
 
     if (tileType == 0) {
       type = flatSmallWater1;
@@ -90,13 +87,6 @@ class Tile2 {
           scale: scaleY
       );
     }
-  }
-
-  render(Canvas canvas) {
-    spriteBatch.render(canvas, blendMode: BlendMode.srcOver);
-  }
-
-  renderAttribute(int rotate) {
   }
 
 }

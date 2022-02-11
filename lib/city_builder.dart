@@ -33,9 +33,6 @@ class CityBuilder extends FlameGame
   late final JoystickComponent joystick;
   late final MiniMapComponent miniMap;
 
-  late ActiveTile activeTileGrass;
-  late ActiveTile activeTileDirt;
-  late ActiveTile activeTileWater;
   String currentTileActive = "Grass";
 
   @override
@@ -75,10 +72,6 @@ class CityBuilder extends FlameGame
 
     Sprite activeTileFlat = await loadSprite('flat_selection.png');
 
-    activeTileGrass = getActiveTileGrass(activeTileFlat);
-    activeTileDirt = getActiveTileDirt(activeTileFlat);
-    activeTileWater = getActiveTileWater(activeTileFlat);
-
     add(hudBackgroundLeft);
     add(hudBackgroundBottom);
     add(joystick);
@@ -90,7 +83,6 @@ class CityBuilder extends FlameGame
     add(dirtTileButton);
     add(waterTileButton);
     add(miniMap);
-    add(activeTileGrass);
     miniMap.updateZoom(size.x, _world.getWorldWidth());
   }
 
@@ -124,27 +116,18 @@ class CityBuilder extends FlameGame
 
   pressedGrassTile() {
     if (currentTileActive != "Grass") {
-      add(activeTileGrass);
-      remove(activeTileDirt);
-      remove(activeTileWater);
       currentTileActive = "Grass";
     }
   }
 
   pressedDirtTile() {
     if (currentTileActive != "Dirt") {
-      remove(activeTileGrass);
-      add(activeTileDirt);
-      remove(activeTileWater);
       currentTileActive = "Dirt";
     }
   }
 
   pressedWaterTile() {
     if (currentTileActive != "Water") {
-      remove(activeTileGrass);
-      remove(activeTileDirt);
-      add(activeTileWater);
       currentTileActive = "Water";
     }
   }

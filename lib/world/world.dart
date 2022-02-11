@@ -1,15 +1,10 @@
 import 'dart:ui';
-import 'package:city_builder/component/dirt_tile.dart';
-import 'package:city_builder/component/grass_tile.dart';
-import 'package:city_builder/component/map_quadrant.dart';
-import 'package:city_builder/component/selected_tile.dart';
+
+import 'package:city_builder/component/hexagon.dart';
 import 'package:city_builder/component/tile2.dart';
-import 'package:city_builder/component/water_tile.dart';
 import 'package:city_builder/world/tapped_map.dart';
-import 'package:city_builder/world/update_tile_data.dart';
 import 'package:flame/components.dart';
-import 'package:flame/sprite.dart';
-import '../component/tile.dart';
+
 import 'tile_positions.dart';
 
 class World extends Component {
@@ -35,6 +30,8 @@ class World extends Component {
 
   late List<List<double>> worldBounds;
 
+  late List<Hexagon> hexagons;
+
   // late SelectedTile selectedTile;
 
   @override
@@ -51,6 +48,15 @@ class World extends Component {
 
     tiles = await setTileDetails();
     worldBounds = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+    for (int rot = 0; rot < 4; rot++) {
+      getHexagons(tiles, rot).then((hex) {
+        hexagons = hex;
+
+        for (Hexagon hexagon in hexagons) {
+          hexagon.updateHexagon();
+        }
+      });
+    }
     // for (int rot = 0; rot < 4; rot++) {
     //   print("rot $rot");
     //   getMapQuadrants(tiles, rot).then((mapQuad) {
@@ -69,16 +75,6 @@ class World extends Component {
     // add(selectedTilePoint);
     //
     // selectedTile = SelectedTile(selectedTileFlat, selectedTilePoint);
-
-    // test stuff
-    for (int q = 0; q < tiles.length; q++) {
-      for (int r = 0; r < tiles[q].length; r++) {
-        Tile2? tile = tiles[q][r];
-        if (tile != null) {
-          tile.updateTile(rotate, 0);
-        }
-      }
-    }
   }
 
   void tappedWorld(double mouseX, double mouseY, String currentTileActive) {
@@ -106,15 +102,10 @@ class World extends Component {
     int r = tileProperties[1];
     int s = tileProperties[2];
 
-    renderTiles(
-        canvas,
-        tiles,
-        q,
-        r,
-        leftScreen,
-        rightScreen,
-        topScreen,
-        bottomScreen);
+    renderHexagons(
+      canvas,
+      hexagons
+    );
   }
 
   updateWorld(Vector2 cameraPos, double zoomLevel, Vector2 size) {
