@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:city_builder/component/hexagon.dart';
 import 'package:city_builder/component/tile2.dart';
+import 'package:city_builder/util/hexagon_list.dart';
 import 'package:city_builder/world/tapped_map.dart';
 import 'package:flame/components.dart';
 
@@ -28,10 +29,7 @@ class World extends Component {
   double topScreen = 0;
   double bottomScreen = 0;
 
-  late List<List<double>> worldBounds;
-
-  late List<Hexagon> hexagons;
-
+  late HexagonList hexagonList;
   // late SelectedTile selectedTile;
 
   @override
@@ -43,20 +41,9 @@ class World extends Component {
     borderPaint.style = PaintingStyle.stroke;
     borderPaint.strokeWidth = 5;
     borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
-
+    hexagonList = HexagonList();
     // SpriteBatch batchTest = await SpriteBatch.load('flat_1.png');
 
-    tiles = await setTileDetails();
-    worldBounds = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
-    for (int rot = 0; rot < 4; rot++) {
-      getHexagons(tiles, rot).then((hex) {
-        hexagons = hex;
-
-        for (Hexagon hexagon in hexagons) {
-          hexagon.updateHexagon();
-        }
-      });
-    }
     // for (int rot = 0; rot < 4; rot++) {
     //   print("rot $rot");
     //   getMapQuadrants(tiles, rot).then((mapQuad) {
@@ -104,7 +91,7 @@ class World extends Component {
 
     renderHexagons(
       canvas,
-      hexagons
+      hexagonList.hexagons
     );
   }
 
@@ -160,19 +147,19 @@ class World extends Component {
   }
 
   double getBoundLeft() {
-    return worldBounds[rotate][0];
+    return hexagonList.worldBounds[rotate][0];
   }
   double getBoundRight() {
-    return worldBounds[rotate][1];
+    return hexagonList.worldBounds[rotate][1];
   }
   double getBoundTop() {
-    return worldBounds[rotate][2];
+    return hexagonList.worldBounds[rotate][2];
   }
   double getBoundBottom() {
-    return worldBounds[rotate][3];
+    return hexagonList.worldBounds[rotate][3];
   }
 
   double getWorldWidth() {
-    return worldBounds[rotate][0].abs() + worldBounds[rotate][1].abs();
+    return hexagonList.worldBounds[rotate][0].abs() + hexagonList.worldBounds[rotate][1].abs();
   }
 }

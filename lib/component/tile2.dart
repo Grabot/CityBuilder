@@ -68,6 +68,10 @@ class Tile2 {
 
   updateTile(SpriteBatch spriteBatch, int rotate, int variant) {
 
+    if (tileType == -1) {
+      return;
+    }
+
     if (tileType == 0) {
       type = flatSmallWater1;
     } else {
