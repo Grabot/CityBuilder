@@ -1,6 +1,7 @@
 import 'package:city_builder/component/hexagon.dart';
 import 'package:city_builder/component/tile2.dart';
 import 'package:city_builder/world/map_details/map_details_normal.dart';
+import 'package:city_builder/world/map_details/map_details_small.dart';
 import 'package:city_builder/world/tile_positions.dart';
 
 class HexagonList {
@@ -14,7 +15,7 @@ class HexagonList {
   HexagonList._internal() {
     worldBounds = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 
-    List<List<int>> worldDetail = worldDetailNormal;
+    List<List<int>> worldDetail = worldDetailSmall;
     tiles = List.generate(
         worldDetail.length,
             (_) => List.filled(worldDetail[0].length, null),

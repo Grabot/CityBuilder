@@ -14,7 +14,11 @@ class Hexagon {
 
   List<Tile2> hexagonTiles = [];
 
-  Hexagon(this.spriteBatch, this.center, this.rotation);
+  late int hexQ;
+  late int hexR;
+  late int hexS;
+
+  Hexagon(this.spriteBatch, this.center, this.rotation, this.hexQ, this.hexR, this.hexS);
 
   addTileToHexagon(Tile2 tile) {
     hexagonTiles.add(tile);
@@ -30,6 +34,10 @@ class Hexagon {
     for (Tile2 tile in hexagonTiles) {
       tile.updateTile(spriteBatch, 0, 0);
     }
+  }
+
+  getPos(int rotate) {
+    return center;
   }
 
   renderHexagon(Canvas canvas) {
