@@ -14,7 +14,7 @@ import 'package:flame/components.dart';
 import 'package:flame/sprite.dart';
 import '../component/dirt_tile.dart';
 import '../component/tile.dart';
-import 'map_details/map_details_medium.dart';
+import '../world/map_details/map_details_medium.dart';
 
 
 // quadranten (these can be fairly high, they are x, y values not tile amounts
@@ -37,8 +37,7 @@ Future getHexagons(List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList
     hexagonList.hexagons[hexQ][hexR] = hexagon;
     // First we get a straight line from the center up to the left
     // and from the center to the right down.
-    await getAll6HexVariants(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList);
-    return;
+    return getAll6HexVariants(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList);
   } else {
     return;
   }
@@ -277,123 +276,9 @@ Hexagon createHexagon(int hexQ, int hexR, List<List<Tile2?>> tiles, int q, int r
       }
     }
   }
+  hexagon.getBoundaries();
   return hexagon;
 }
-
-// Future<List<List<MapQuadrant?>>> getMapQuadrants(List<List<Tile2?>> tiles, int rotate) async {
-//
-//   List<double> bounds = getBounds(tiles, rotate);
-//   double left = bounds[0];
-//   double right = bounds[1];
-//   double top = bounds[2];
-//   double bottom = bounds[3];
-//
-//   double totalWidth = left.abs() + right.abs();
-//   double totalHeight = top.abs() + bottom.abs();
-//
-//   int quadrantsX = (totalWidth / quadrantSizeX).ceil();
-//   int quadrantsY = (totalHeight / quadrantSizeY).ceil();
-//   List<List<MapQuadrant?>> mapQuadrants = List.generate(
-//       quadrantsX, (_) => List.filled(quadrantsY, null),
-//       growable: false);
-//   for (int x = 0; x < quadrantsX; x++) {
-//     for (int y = 0; y < quadrantsY; y++) {
-//       double fromX = left + (x * quadrantSizeX);
-//       double toX = left + ((x + 1) * quadrantSizeX);
-//       double fromY = bottom + (y * quadrantSizeY);
-//       double toY = bottom + ((y + 1) * quadrantSizeY);
-//       Vector2 quadrantCenter = Vector2((fromX + (quadrantSizeX/2)), (fromY + (quadrantSizeY/2)));
-//       if (rotate == 0 || rotate == 2) {
-//         MapQuadrant mapQuadrant = MapQuadrant(
-//             await SpriteBatch.load('flat_1.png'), fromX, toX, fromY, toY,
-//             quadrantCenter, rotate);
-//         mapQuadrants[x][y] = mapQuadrant;
-//       } else {
-//         MapQuadrant mapQuadrant = MapQuadrant(
-//             await SpriteBatch.load('point_1.png'), fromX, toX, fromY, toY,
-//             quadrantCenter, rotate);
-//         mapQuadrants[x][y] = mapQuadrant;
-//       }
-//     }
-//   }
-//   return mapQuadrants;
-// }
-
-renderHexagons(Canvas canvas, Tile2 cameraTile, List<List<Hexagon?>> hexagons) {
-
-  if (cameraTile.hexagon != null) {
-    for (int q = -4; q <= 4; q++ ) {
-      for (int r = -4; r <= 4; r++ ) {
-        if ((q + r) > -5) {
-          if ((q + r) < 5) {
-            if (hexagons[cameraTile.hexagon!.hexQArray + q][cameraTile.hexagon!
-                .hexRArray + r] != null) {
-              hexagons[cameraTile.hexagon!.hexQArray + q][cameraTile.hexagon!
-                  .hexRArray + r]!.renderHexagon(canvas);
-            }
-          }
-        }
-      }
-    }
-  }
-  // for (int q = 0; q < hexagons.length; q++) {
-  //   for (int r = 0; r < hexagons[q].length; r++) {
-  //     if (hexagons[q][r] != null) {
-  //       hexagons[q][r]!.renderHexagon(canvas);
-  //     }
-  //   }
-  // }
-}
-
-updateHexagons(int rotate, int currentVariants, Tile2 cameraTile, List<List<Hexagon?>> hexagons) {
-  if (cameraTile.hexagon != null) {
-    for (int q = -4; q <= 4; q++) {
-      for (int r = -4; r <= 4; r++) {
-        // We exclude some so that we get the hexagon tiling
-        if ((q + r) > -5) {
-          if ((q + r) < 5) {
-            if (hexagons[cameraTile.hexagon!.hexQArray + q][cameraTile.hexagon!
-                .hexRArray + r] != null) {
-              if (q == 0 && r == 0) {
-                // The hexagon where the camera is focussed will be updated 60 times per second. This is where the character will be.
-                hexagons[cameraTile.hexagon!.hexQArray + q][cameraTile.hexagon!
-                    .hexRArray + r]!.updateHexagon(0, 0);
-              }
-            }
-          }
-        }
-      }
-    }
-  }
-}
-
-// renderTiles(Canvas canvas, List<List<Tile2?>> tiles, int q, int r, double leftScreen, double rightScreen, double topScreen, double bottomScreen) {
-//   // first a test with drawing only 2 tiles wide
-//   int qArray = q + (tiles.length / 2).ceil();
-//   int rArray = r + (tiles[0].length / 2).ceil();
-//   Tile2? centerTile = tiles[qArray][rArray];
-//   int sArray = centerTile!.s;
-//
-//   int radius = 4;
-//   for (int qTile = -radius; qTile <= radius; qTile++) {
-//     for (int rTile = -radius; rTile <= radius; rTile++) {
-//       Tile2? tile = tiles[qArray + qTile][rArray + rTile];
-//       drawTile(canvas, tile, sArray, radius, leftScreen, rightScreen, topScreen, bottomScreen);
-//     }
-//   }
-// }
-
-// drawTile(Canvas canvas, Tile2? tile, int sArray, int radius, double leftScreen, double rightScreen, double topScreen, double bottomScreen) {
-//   if (tile != null) {
-//     if ((sArray - tile.s) >= -radius && (sArray - tile.s) <= radius) {
-//       if (tile.getPos(0).x > leftScreen && tile.getPos(0).x < rightScreen) {
-//         if (tile.getPos(0).y > topScreen && tile.getPos(0).y < bottomScreen) {
-//           tile.render(canvas);
-//         }
-//       }
-//     }
-//   }
-// }
 
 List<double> getBounds(List<List<Tile2?>> tiles, int rotate) {
 

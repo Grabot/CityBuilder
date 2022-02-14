@@ -3,10 +3,11 @@ import 'dart:ui';
 import 'package:city_builder/component/hexagon.dart';
 import 'package:city_builder/component/tile2.dart';
 import 'package:city_builder/util/hexagon_list.dart';
-import 'package:city_builder/world/tapped_map.dart';
+import 'package:city_builder/util/render_hexagons.dart';
+import 'package:city_builder/util/tapped_map.dart';
 import 'package:flame/components.dart';
 
-import 'tile_positions.dart';
+import '../util/tile_positions.dart';
 
 class World extends Component {
 
@@ -22,6 +23,7 @@ class World extends Component {
   late Vector2 worldSize;
   int updateIndex = 0;
   int currentVariant = 0;
+  bool updateSprites = false;
   double leftScreen = 0;
   double rightScreen = 0;
   double topScreen = 0;
@@ -111,6 +113,7 @@ class World extends Component {
     rightScreen = cameraPosition.x + (worldSize.x / 2) + borderOffset;
     topScreen = cameraPosition.y - (worldSize.y / 2) - borderOffset;
     bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset - hudBottom;
+    Rect screen = Rect.fromLTRB(leftScreen, topScreen, rightScreen, bottomScreen);
 
     List<int> tileProperties = getTileFromPos(cameraPosition.x, cameraPosition.y, 0);
     int q = tileProperties[0];
@@ -120,22 +123,20 @@ class World extends Component {
     int rArray = r + (hexagonList.tiles[0].length / 2).ceil();
     Tile2? tileCamera = hexagonList.tiles[qArray][rArray];
 
-    if (tileCamera != null) {
-      updateHexagons(rotate, currentVariant, tileCamera, hexagonList.hexagons);
-    }
-    if (updateIndex == 30) {
-      updateIndex = 0;
-      if (tileCamera != null) {
-      }
-      // updateQuadrants(mapQuadrants[rotate], leftScreen, rightScreen, topScreen, bottomScreen, rotate, currentVariant);
-      if (currentVariant == 1) {
-        currentVariant = 0;
-      } else {
-        currentVariant += 1;
-      }
-    } else {
-      updateIndex += 1;
-    }
+    // if (tileCamera != null) {
+    //   if (updateSprites) {
+    //     updateHexagons(rotate, currentVariant, tileCamera, hexagonList.hexagons, screen);
+    //     updateSprites = false;
+    //   } else {
+    //     updateMain(rotate, currentVariant, tileCamera, hexagonList.hexagons);
+    //   }
+    // }
+  }
+
+  // For now we use the variant to determine which animation sprite has to be drawn
+  updateVariant(int variant) {
+    currentVariant = variant;
+    updateSprites = true;
   }
 
   rotateWorldRight() {

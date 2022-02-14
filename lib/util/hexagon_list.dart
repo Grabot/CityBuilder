@@ -5,7 +5,7 @@ import 'package:city_builder/world/map_details/map_details_medium.dart';
 import 'package:city_builder/world/map_details/map_details_normal.dart';
 import 'package:city_builder/world/map_details/map_details_small.dart';
 import 'package:city_builder/world/map_details/map_details_tiny.dart';
-import 'package:city_builder/world/tile_positions.dart';
+import 'package:city_builder/util/tile_positions.dart';
 
 class HexagonList {
   static final HexagonList _instance = HexagonList._internal();
@@ -13,7 +13,7 @@ class HexagonList {
   late List<List<double>> worldBounds;
   late List<List<Tile2?>> tiles;
   late List<List<Hexagon?>> hexagons;
-  int radius = 4;
+  int radius = 2;
 
   HexagonList._internal() {
     worldBounds = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
@@ -30,9 +30,7 @@ class HexagonList {
         growable: false);
     getTileDetails(worldDetail);
     for (int rot = 0; rot < 4; rot++) {
-      getHexagons(tiles, rot, this).then((val) {
-        print("hexagons got!");
-      });
+      getHexagons(tiles, rot, this);
       List<double> bounds = getBounds(tiles, rot);
       worldBounds[rot] = bounds;
     }

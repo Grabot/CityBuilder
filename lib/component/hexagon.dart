@@ -31,7 +31,7 @@ class Hexagon {
   updateHexagon(int rotate, int variation) {
     spriteBatch.clear();
     for (Tile2 tile in hexagonTiles) {
-      tile.updateTile(spriteBatch, 0, 0);
+      tile.updateTile(spriteBatch, rotate, variation);
     }
   }
 
@@ -41,5 +41,15 @@ class Hexagon {
 
   renderHexagon(Canvas canvas) {
     spriteBatch.render(canvas, blendMode: BlendMode.srcOver);
+  }
+
+  getBoundaries() {
+    double left = center.x;
+    double right = center.x;
+    double top = center.y;
+    double bottom = center.y;
+    for (Tile2 tile in hexagonTiles) {
+
+    }
   }
 }

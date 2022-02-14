@@ -80,7 +80,11 @@ class Tile2 {
     }
 
     if (tileType == 0) {
-      type = flatSmallWater1;
+      if (variant % 2 == 0) {
+        type = flatSmallWater1;
+      } else {
+        type = flatSmallWater2;
+      }
     } else {
       type = flatSmallGrass1;
     }
