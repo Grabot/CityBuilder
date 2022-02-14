@@ -14,11 +14,10 @@ class Hexagon {
 
   List<Tile2> hexagonTiles = [];
 
-  late int hexQ;
-  late int hexR;
-  late int hexS;
+  late int hexQArray;
+  late int hexRArray;
 
-  Hexagon(this.spriteBatch, this.center, this.rotation, this.hexQ, this.hexR, this.hexS);
+  Hexagon(this.spriteBatch, this.center, this.rotation, this.hexQArray, this.hexRArray);
 
   addTileToHexagon(Tile2 tile) {
     hexagonTiles.add(tile);
@@ -29,7 +28,7 @@ class Hexagon {
     hexagonTiles.sort((a, b) => a.getPos(rotation).y.compareTo(b.getPos(rotation).y));
   }
 
-  updateHexagon() {
+  updateHexagon(int rotate, int variation) {
     spriteBatch.clear();
     for (Tile2 tile in hexagonTiles) {
       tile.updateTile(spriteBatch, 0, 0);

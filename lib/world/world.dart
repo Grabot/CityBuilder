@@ -10,8 +10,6 @@ import 'tile_positions.dart';
 
 class World extends Component {
 
-  late List<List<Tile2?>> tiles;
-
   World() : super();
 
   Paint borderPaint = Paint();
@@ -71,12 +69,12 @@ class World extends Component {
     int s = tileProperties[2];
 
     print("q: $q  r: $r  s: $s");
-    int qArray = q + (tiles.length / 2).ceil();
-    int rArray = r + (tiles[0].length / 2).ceil();
-    if (qArray >= 0 && qArray < tiles.length && rArray >= 0 && rArray < tiles[0].length) {
-      if (tiles[qArray][rArray] != null) {
+    int qArray = q + (hexagonList.tiles.length / 2).ceil();
+    int rArray = r + (hexagonList.tiles[0].length / 2).ceil();
+    if (qArray >= 0 && qArray < hexagonList.tiles.length && rArray >= 0 && rArray < hexagonList.tiles[0].length) {
+      if (hexagonList.tiles[qArray][rArray] != null) {
         // selectedTile.setPosition(tiles[qArray][rArray]!.getPos(rotate), rotate);
-        print("position selected tile: ${tiles[qArray][rArray]!.getPos(rotate)}");
+        print("position selected tile: ${hexagonList.tiles[qArray][rArray]!.getPos(rotate)}");
       }
     }
   }
@@ -88,11 +86,16 @@ class World extends Component {
     int q = tileProperties[0];
     int r = tileProperties[1];
     int s = tileProperties[2];
-
-    renderHexagons(
-      canvas,
-      hexagonList.hexagons
-    );
+    int qArray = q + (hexagonList.tiles.length / 2).ceil();
+    int rArray = r + (hexagonList.tiles[0].length / 2).ceil();
+    Tile2? tileCamera = hexagonList.tiles[qArray][rArray];
+    if (tileCamera != null) {
+      renderHexagons(
+          canvas,
+          tileCamera,
+          hexagonList.hexagons
+      );
+    }
   }
 
   updateWorld(Vector2 cameraPos, double zoomLevel, Vector2 size) {
@@ -109,17 +112,30 @@ class World extends Component {
     topScreen = cameraPosition.y - (worldSize.y / 2) - borderOffset;
     bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset - hudBottom;
 
-    // if (updateIndex == 30) {
-    //   updateIndex = 0;
-    //   updateQuadrants(mapQuadrants[rotate], leftScreen, rightScreen, topScreen, bottomScreen, rotate, currentVariant);
-    //   if (currentVariant == 1) {
-    //     currentVariant = 0;
-    //   } else {
-    //     currentVariant += 1;
-    //   }
-    // } else {
-    //   updateIndex += 1;
-    // }
+    List<int> tileProperties = getTileFromPos(cameraPosition.x, cameraPosition.y, 0);
+    int q = tileProperties[0];
+    int r = tileProperties[1];
+    int s = tileProperties[2];
+    int qArray = q + (hexagonList.tiles.length / 2).ceil();
+    int rArray = r + (hexagonList.tiles[0].length / 2).ceil();
+    Tile2? tileCamera = hexagonList.tiles[qArray][rArray];
+
+    if (tileCamera != null) {
+      updateHexagons(rotate, currentVariant, tileCamera, hexagonList.hexagons);
+    }
+    if (updateIndex == 30) {
+      updateIndex = 0;
+      if (tileCamera != null) {
+      }
+      // updateQuadrants(mapQuadrants[rotate], leftScreen, rightScreen, topScreen, bottomScreen, rotate, currentVariant);
+      if (currentVariant == 1) {
+        currentVariant = 0;
+      } else {
+        currentVariant += 1;
+      }
+    } else {
+      updateIndex += 1;
+    }
   }
 
   rotateWorldRight() {

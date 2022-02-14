@@ -1,5 +1,6 @@
 import 'dart:math';
 import 'dart:ui';
+import 'package:city_builder/component/hexagon.dart';
 import 'package:city_builder/component/map_quadrant.dart';
 import 'package:flame/components.dart';
 import 'package:flame/extensions.dart';
@@ -21,6 +22,8 @@ class Tile2 {
 
   late Rect type;
 
+  Hexagon? hexagon;
+
   // We assume the condition r + s + q = 0 is true.
   Tile2(this.q, this.r, this.s, this.tileType) {
     double xPos = xSize * 3 / 2 * q - xSize;
@@ -31,6 +34,10 @@ class Tile2 {
     double yPos = yTr1 + yTr2 - ySize;
     position = Vector2(xPos, yPos);
     type = Rect.zero;
+  }
+
+  setHexagon(Hexagon hexagonTile) {
+    hexagon = hexagonTile;
   }
 
   Vector2 getPos(int rotate) {

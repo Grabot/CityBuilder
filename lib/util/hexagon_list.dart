@@ -18,7 +18,7 @@ class HexagonList {
   HexagonList._internal() {
     worldBounds = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 
-    List<List<int>> worldDetail = worldDetailLarge;
+    List<List<int>> worldDetail = worldDetailMedium;
     tiles = List.generate(
         worldDetail.length,
             (_) => List.filled(worldDetail[0].length, null),
@@ -30,14 +30,9 @@ class HexagonList {
         growable: false);
     getTileDetails(worldDetail);
     for (int rot = 0; rot < 4; rot++) {
-      getHexagons(tiles, rot, this);
-      // for (int q = 0; q < hexagons.length; q++) {
-      //   for (int r = 0; r < hexagons[q].length; r++) {
-      //     if (hexagons[q][r] != null) {
-      //       hexagons[q][r]!.updateHexagon();
-      //     }
-      //   }
-      // }
+      getHexagons(tiles, rot, this).then((val) {
+        print("hexagons got!");
+      });
       List<double> bounds = getBounds(tiles, rot);
       worldBounds[rot] = bounds;
     }
