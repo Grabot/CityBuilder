@@ -119,8 +119,8 @@ HudBackgroundLeft getHudBackgroundLeft() {
   HudBackgroundLeft hudBackground = HudBackgroundLeft(
       backgroundLeft: RectangleComponent(
           size: Vector2(200, 2000),
-          // paint: const PaletteEntry(Color(0xFF797979)).withAlpha(100).paint()
-          paint: const PaletteEntry(Color(0xFF797979)).paint()
+          paint: const PaletteEntry(Color(0xFF797979)).withAlpha(100).paint()
+          // paint: const PaletteEntry(Color(0xFF797979)).paint()
       ),
       margin: const EdgeInsets.only(left: 10, bottom: 10)
   );
@@ -131,8 +131,8 @@ HudBackgroundBottom getHudBackgroundBottom() {
   HudBackgroundBottom hudBackground = HudBackgroundBottom(
       backgroundBottom: RectangleComponent(
           size: Vector2(2000, 100),
-          // paint: const PaletteEntry(Color(0xFF797979)).withAlpha(100).paint()
-          paint: const PaletteEntry(Color(0xFF797979)).paint()
+          paint: const PaletteEntry(Color(0xFF797979)).withAlpha(100).paint()
+          // paint: const PaletteEntry(Color(0xFF797979)).paint()
       ),
       margin: const EdgeInsets.only(left: 10, bottom: 10)
   );

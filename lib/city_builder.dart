@@ -152,6 +152,7 @@ class CityBuilder extends FlameGame
     } else if (camera.zoom >= 4) {
       camera.zoom = 4;
     }
+    print("current zoom: ${camera.zoom}");
     miniMap.updateZoom(size.x, _world.getWorldWidth());
   }
 

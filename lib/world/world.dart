@@ -24,10 +24,7 @@ class World extends Component {
   int updateIndex = 0;
   int currentVariant = 0;
   bool updateSprites = false;
-  double leftScreen = 0;
-  double rightScreen = 0;
-  double topScreen = 0;
-  double bottomScreen = 0;
+  Rect screen = Rect.fromLTRB(0, 0, 0, 0);
 
   late HexagonList hexagonList;
   // late SelectedTile selectedTile;
@@ -95,7 +92,8 @@ class World extends Component {
       renderHexagons(
           canvas,
           tileCamera,
-          hexagonList.hexagons
+          hexagonList,
+          screen
       );
     }
   }
@@ -109,11 +107,11 @@ class World extends Component {
     double borderOffset = 32;
     double hudLeft = 200 / zoomLevel;
     double hudBottom = 100 / zoomLevel;
-    leftScreen = cameraPosition.x - (worldSize.x / 2) - borderOffset + hudLeft;
-    rightScreen = cameraPosition.x + (worldSize.x / 2) + borderOffset;
-    topScreen = cameraPosition.y - (worldSize.y / 2) - borderOffset;
-    bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset - hudBottom;
-    Rect screen = Rect.fromLTRB(leftScreen, topScreen, rightScreen, bottomScreen);
+    double leftScreen = cameraPosition.x - (worldSize.x / 2) - borderOffset + hudLeft;
+    double rightScreen = cameraPosition.x + (worldSize.x / 2) + borderOffset;
+    double topScreen = cameraPosition.y - (worldSize.y / 2) - borderOffset;
+    double bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset - hudBottom;
+    screen = Rect.fromLTRB(leftScreen, topScreen, rightScreen, bottomScreen);
 
     List<int> tileProperties = getTileFromPos(cameraPosition.x, cameraPosition.y, 0);
     int q = tileProperties[0];

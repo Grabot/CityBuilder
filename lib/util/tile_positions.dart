@@ -280,6 +280,7 @@ Hexagon createHexagon(int hexQ, int hexR, List<List<Tile2?>> tiles, int q, int r
   return hexagon;
 }
 
+// TODO: rewrite
 List<double> getBounds(List<List<Tile2?>> tiles, int rotate) {
 
   double left = tiles[0][(tiles.length / 2).floor()]!.getPos(rotate).x;

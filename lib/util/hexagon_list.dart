@@ -13,7 +13,7 @@ class HexagonList {
   late List<List<double>> worldBounds;
   late List<List<Tile2?>> tiles;
   late List<List<Hexagon?>> hexagons;
-  int radius = 2;
+  int radius = 4;
 
   HexagonList._internal() {
     worldBounds = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
