@@ -43,13 +43,7 @@ class Hexagon {
     spriteBatch.render(canvas, blendMode: BlendMode.srcOver);
   }
 
-  getBoundaries() {
-    double left = center.x;
-    double right = center.x;
-    double top = center.y;
-    double bottom = center.y;
-    for (Tile2 tile in hexagonTiles) {
-
-    }
+  String toString() {
+    return "hex q: $hexQArray r: $hexRArray on pos: $center}";
   }
 }

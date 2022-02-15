@@ -232,21 +232,14 @@ class CityBuilder extends FlameGame
     frameTimes += dt;
     frames += 1;
     // ugly way to determine animation variants. We have have 5 animation variants per seconds
-    if ((frameTimes > 0 && frameTimes <= 0.2) && variant != 0) {
+    if ((frameTimes > 0 && frameTimes <= 0.5) && variant != 0) {
       variant = 0;
       _world.updateVariant(variant);
-    } else if ((frameTimes > 0.2 && frameTimes <= 0.4) && variant != 1) {
+      // print("variant 0");
+    } else if ((frameTimes > 0.5 && frameTimes <= 1) && variant != 1) {
       variant = 1;
       _world.updateVariant(variant);
-    } else if ((frameTimes > 0.4 && frameTimes <= 0.6) && variant != 2) {
-      variant = 2;
-      _world.updateVariant(variant);
-    } else if ((frameTimes > 0.6 && frameTimes <= 0.8) && variant != 3) {
-      variant = 3;
-      _world.updateVariant(variant);
-    } else if ((frameTimes > 0.8 && frameTimes <= 1) && variant != 4) {
-      variant = 4;
-      _world.updateVariant(variant);
+      // print("variant 1");
     }
     if (frameTimes > 1) {
       print("fps: $frames");

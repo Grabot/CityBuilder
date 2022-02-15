@@ -15,10 +15,13 @@ class HexagonList {
   late List<List<Hexagon?>> hexagons;
   int radius = 4;
 
+  double halfWidthHex = 100;
+  double halfHeightHex = 0;
+
   HexagonList._internal() {
     worldBounds = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 
-    List<List<int>> worldDetail = worldDetailMedium;
+    List<List<int>> worldDetail = worldDetailLarge;
     tiles = List.generate(
         worldDetail.length,
             (_) => List.filled(worldDetail[0].length, null),

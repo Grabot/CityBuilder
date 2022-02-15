@@ -276,7 +276,6 @@ Hexagon createHexagon(int hexQ, int hexR, List<List<Tile2?>> tiles, int q, int r
       }
     }
   }
-  hexagon.getBoundaries();
   return hexagon;
 }
 

@@ -81,21 +81,8 @@ class World extends Component {
   @override
   void render(Canvas canvas) {
     super.render(canvas);
-    List<int> tileProperties = getTileFromPos(cameraPosition.x, cameraPosition.y, 0);
-    int q = tileProperties[0];
-    int r = tileProperties[1];
-    int s = tileProperties[2];
-    int qArray = q + (hexagonList.tiles.length / 2).ceil();
-    int rArray = r + (hexagonList.tiles[0].length / 2).ceil();
-    Tile2? tileCamera = hexagonList.tiles[qArray][rArray];
-    if (tileCamera != null) {
-      renderHexagons(
-          canvas,
-          tileCamera,
-          hexagonList,
-          screen
-      );
-    }
+
+    renderHexagons(canvas, cameraPosition, hexagonList, screen);
   }
 
   updateWorld(Vector2 cameraPos, double zoomLevel, Vector2 size) {
@@ -113,22 +100,10 @@ class World extends Component {
     double bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset - hudBottom;
     screen = Rect.fromLTRB(leftScreen, topScreen, rightScreen, bottomScreen);
 
-    List<int> tileProperties = getTileFromPos(cameraPosition.x, cameraPosition.y, 0);
-    int q = tileProperties[0];
-    int r = tileProperties[1];
-    int s = tileProperties[2];
-    int qArray = q + (hexagonList.tiles.length / 2).ceil();
-    int rArray = r + (hexagonList.tiles[0].length / 2).ceil();
-    Tile2? tileCamera = hexagonList.tiles[qArray][rArray];
-
-    // if (tileCamera != null) {
-    //   if (updateSprites) {
-    //     updateHexagons(rotate, currentVariant, tileCamera, hexagonList.hexagons, screen);
-    //     updateSprites = false;
-    //   } else {
-    //     updateMain(rotate, currentVariant, tileCamera, hexagonList.hexagons);
-    //   }
-    // }
+    if (updateSprites) {
+      updateHexagons(rotate, currentVariant, cameraPosition, hexagonList, screen);
+      updateSprites = false;
+    }
   }
 
   // For now we use the variant to determine which animation sprite has to be drawn
