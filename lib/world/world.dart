@@ -24,10 +24,9 @@ class World extends Component {
   int updateIndex = 0;
   int currentVariant = 0;
   bool updateSprites = false;
-  Rect screen = Rect.fromLTRB(0, 0, 0, 0);
+  Rect screen = const Rect.fromLTRB(0, 0, 0, 0);
 
   late HexagonList hexagonList;
-  // late SelectedTile selectedTile;
 
   @override
   Future<void> onLoad() async {
@@ -39,26 +38,6 @@ class World extends Component {
     borderPaint.strokeWidth = 5;
     borderPaint.color = const Color.fromRGBO(0, 255, 255, 1.0);
     hexagonList = HexagonList();
-    // SpriteBatch batchTest = await SpriteBatch.load('flat_1.png');
-
-    // for (int rot = 0; rot < 4; rot++) {
-    //   print("rot $rot");
-    //   getMapQuadrants(tiles, rot).then((mapQuad) {
-    //     print("value $rot");
-    //     mapQuad = setTilesToQuadrants(tiles, mapQuad, rot);
-    //     print("set tiles $rot");
-    //     mapQuadrants[rot] = mapQuad;
-    //   });
-    //   List<double> bounds = getBounds(tiles, rot);
-    //   worldBounds[rot] = bounds;
-    //   // miniMap.setWorldWidth(rot, (bounds[0].abs() + bounds[1].abs()));
-    // }
-    // SelectedTileFlat selectedTileFlat = SelectedTileFlat();
-    // SelectedTilePoint selectedTilePoint = SelectedTilePoint();
-    // add(selectedTileFlat);
-    // add(selectedTilePoint);
-    //
-    // selectedTile = SelectedTile(selectedTileFlat, selectedTilePoint);
   }
 
   void tappedWorld(double mouseX, double mouseY, String currentTileActive) {
@@ -82,7 +61,7 @@ class World extends Component {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    renderHexagons(canvas, cameraPosition, hexagonList, screen);
+    renderHexagons(canvas, cameraPosition, hexagonList, screen, currentVariant);
   }
 
   updateWorld(Vector2 cameraPos, double zoomLevel, Vector2 size) {
@@ -99,11 +78,6 @@ class World extends Component {
     double topScreen = cameraPosition.y - (worldSize.y / 2) - borderOffset;
     double bottomScreen = cameraPosition.y + (worldSize.y / 2) + borderOffset - hudBottom;
     screen = Rect.fromLTRB(leftScreen, topScreen, rightScreen, bottomScreen);
-
-    if (updateSprites) {
-      updateHexagons(rotate, currentVariant, cameraPosition, hexagonList, screen);
-      updateSprites = false;
-    }
   }
 
   // For now we use the variant to determine which animation sprite has to be drawn

@@ -35,6 +35,9 @@ class CityBuilder extends FlameGame
 
   String currentTileActive = "Grass";
 
+  double maxZoom = 4;
+  double minZoom = 1;
+
   @override
   Future<void> onLoad() async {
     await super.onLoad();
@@ -45,7 +48,7 @@ class CityBuilder extends FlameGame
 
     _world = World();
     camera.followVector2(cameraPosition, relativeOffset: Anchor.center);
-    camera.zoom = 1;
+    camera.zoom = minZoom;
     add(_world);
 
     final image = await images.load('ui.png');
@@ -100,16 +103,16 @@ class CityBuilder extends FlameGame
 
   zoomIn() {
     camera.zoom *= 1.1;
-    if (camera.zoom >= 4) {
-      camera.zoom = 4;
+    if (camera.zoom >= maxZoom) {
+      camera.zoom = maxZoom;
     }
     miniMap.updateZoom(size.x, _world.getWorldWidth());
   }
 
   zoomOut() {
     camera.zoom *= 0.9;
-    if (camera.zoom <= 1) {
-      camera.zoom = 1;
+    if (camera.zoom <= minZoom) {
+      camera.zoom = minZoom;
     }
     miniMap.updateZoom(size.x, _world.getWorldWidth());
   }
@@ -147,10 +150,10 @@ class CityBuilder extends FlameGame
     super.onScroll(info);
     double zoomIncrease = (info.raw.scrollDelta.dy/1000);
     camera.zoom *= (1 - zoomIncrease);
-    if (camera.zoom <= 1) {
-      camera.zoom = 1;
-    } else if (camera.zoom >= 4) {
-      camera.zoom = 4;
+    if (camera.zoom <= minZoom) {
+      camera.zoom = minZoom;
+    } else if (camera.zoom >= maxZoom) {
+      camera.zoom = maxZoom;
     }
     print("current zoom: ${camera.zoom}");
     miniMap.updateZoom(size.x, _world.getWorldWidth());
@@ -227,7 +230,7 @@ class CityBuilder extends FlameGame
     dragTo += dragAccelerateJoy;
     dragTo += dragAccelerateKey;
 
-    // checkBounds();
+    checkBounds();
 
     frameTimes += dt;
     frames += 1;

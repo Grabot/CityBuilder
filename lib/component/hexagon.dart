@@ -10,14 +10,15 @@ class Hexagon {
 
   late Vector2 center;
 
-  late SpriteBatch spriteBatch;
+  late SpriteBatch spriteBatch1;
+  late SpriteBatch spriteBatch2;
 
   List<Tile2> hexagonTiles = [];
 
   late int hexQArray;
   late int hexRArray;
 
-  Hexagon(this.spriteBatch, this.center, this.rotation, this.hexQArray, this.hexRArray);
+  Hexagon(this.spriteBatch1, this.spriteBatch2, this.center, this.rotation, this.hexQArray, this.hexRArray);
 
   addTileToHexagon(Tile2 tile) {
     hexagonTiles.add(tile);
@@ -29,9 +30,13 @@ class Hexagon {
   }
 
   updateHexagon(int rotate, int variation) {
-    spriteBatch.clear();
+    spriteBatch1.clear();
     for (Tile2 tile in hexagonTiles) {
-      tile.updateTile(spriteBatch, rotate, variation);
+      tile.updateTile(spriteBatch1, rotate, 0);
+    }
+    spriteBatch2.clear();
+    for (Tile2 tile in hexagonTiles) {
+      tile.updateTile(spriteBatch2, rotate, 1);
     }
   }
 
@@ -39,8 +44,12 @@ class Hexagon {
     return center;
   }
 
-  renderHexagon(Canvas canvas) {
-    spriteBatch.render(canvas, blendMode: BlendMode.srcOver);
+  renderHexagon(Canvas canvas, int variation) {
+    if (variation == 0) {
+      spriteBatch1.render(canvas, blendMode: BlendMode.srcOver);
+    } else {
+      spriteBatch2.render(canvas, blendMode: BlendMode.srcOver);
+    }
   }
 
   String toString() {
