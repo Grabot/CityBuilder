@@ -21,7 +21,7 @@ class HexagonList {
   HexagonList._internal() {
     worldBounds = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
 
-    List<List<int>> worldDetail = worldDetailMedium;
+    List<List<int>> worldDetail = worldDetailLarge;
     tiles = List.generate(
         worldDetail.length,
             (_) => List.filled(worldDetail[0].length, null),
@@ -76,7 +76,7 @@ class HexagonList {
       }
     }
     // We add a bit to every boundary, this is because the hexagons are tiled and don't have the same boundaries
-    return [left+200, right-200, top-100, bottom+100];
+    return [left+100, right-100, top-200, bottom+200];
   }
 
 }

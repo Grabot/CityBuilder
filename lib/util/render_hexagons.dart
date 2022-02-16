@@ -17,7 +17,12 @@ renderHexagons(Canvas canvas, Vector2 camera, HexagonList hexagonList, Rect scre
   if (qArray >= 0 && qArray < hexagonList.tiles.length && rArray >= 0 && rArray < hexagonList.tiles[0].length) {
     Tile2? cameraTile = hexagonList.tiles[qArray][rArray];
     // We assume there will be a tile in the center of the screen
-    drawField(hexagonList, cameraTile!.hexagon!.hexQArray, cameraTile.hexagon!.hexRArray, screen, canvas, variation);
+    // But it's possible the tile is not linked to a hexagon.
+    // TODO: what to do if there is no hexagon? fix with boundaries and padding?
+    if (cameraTile != null && cameraTile.hexagon != null) {
+      drawField(hexagonList, cameraTile.hexagon!.hexQArray,
+          cameraTile.hexagon!.hexRArray, screen, canvas, variation);
+    }
   }
 }
 
@@ -27,9 +32,6 @@ drawField(HexagonList hexagonList, hexQ, hexR, Rect screen, Canvas canvas, int v
       hexR < hexagonList.hexagons[0].length) {
 
     // go up
-    if (hexagonList.hexagons[hexQ][hexR] == null) {
-      print("wut");
-    }
     double hexX = hexagonList.hexagons[hexQ][hexR]!.getPos(0).x;
     double hexY = hexagonList.hexagons[hexQ][hexR]!.getPos(0).y;
     int offset = -1;
@@ -81,6 +83,7 @@ drawField(HexagonList hexagonList, hexQ, hexR, Rect screen, Canvas canvas, int v
     qAdd = 0;
     rAdd = 0;
     // We check if the hexagon is outside of the screen and we also check if it cannot find any hexagons to draw (stuck in loop)
+    // TODO: change the 'rAdd' check. This is bad for performance with huge maps
     while (hexY < screen.bottom - hexagonList.halfHeightHex && rAdd < hexagonList.hexagons.length) {
       if ((hexQ + qAdd) >= 0 && (hexQ + qAdd) < hexagonList.hexagons.length
           && (hexR + rAdd) >= 0 && (hexR + rAdd) < hexagonList.hexagons[0].length) {
@@ -112,6 +115,7 @@ goRight(HexagonList hexagonList, hexQ, hexR, Rect screen, Canvas canvas, int var
   if (hexagonList.hexagons[hexQ][hexR] != null) {
     hexX = hexagonList.hexagons[hexQ][hexR]!.getPos(0).x;
   }
+  // TODO: change the 'qAdd' check. This is bad for performance with huge maps
   while (hexX < screen.right-hexagonList.halfWidthHex && qAdd < hexagonList.hexagons.length) {
     if ((hexQ + qAdd) >= 0 && (hexQ + qAdd) < hexagonList.hexagons.length && hexR >= 0 &&
         hexR < hexagonList.hexagons[0].length) {
@@ -134,6 +138,7 @@ goLeft(HexagonList hexagonList, hexQ, hexR, Rect screen, Canvas canvas, int vari
   if (hexagonList.hexagons[hexQ][hexR] != null) {
     hexX = hexagonList.hexagons[hexQ][hexR]!.getPos(0).x;
   }
+  // TODO: change the 'qSubtract' check. This is bad for performance with huge maps
   while (hexX > screen.left + hexagonList.halfWidthHex && qSubtract < hexagonList.hexagons.length) {
     if ((hexQ + qSubtract) >= 0 && (hexQ + qSubtract) < hexagonList.hexagons.length && hexR >= 0 &&
         hexR < hexagonList.hexagons[0].length) {
