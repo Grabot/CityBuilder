@@ -111,19 +111,23 @@ class World extends Component {
   }
 
   double getBoundLeft() {
-    return hexagonList.worldBounds[rotate][0];
+    return hexagonList.hexagonBounds[rotate][1].x;
   }
   double getBoundRight() {
-    return hexagonList.worldBounds[rotate][1];
+    return hexagonList.hexagonBounds[rotate][4].x;
   }
   double getBoundTop() {
-    return hexagonList.worldBounds[rotate][2];
+    return hexagonList.hexagonBounds[rotate][3].y;
   }
   double getBoundBottom() {
-    return hexagonList.worldBounds[rotate][3];
+    return hexagonList.hexagonBounds[rotate][0].y;
+  }
+
+  List<Vector2> getHexagonPoints() {
+    return hexagonList.hexagonBounds[rotate];
   }
 
   double getWorldWidth() {
-    return hexagonList.worldBounds[rotate][0].abs() + hexagonList.worldBounds[rotate][1].abs();
+    return hexagonList.hexagonBounds[rotate][1].x.abs() + hexagonList.hexagonBounds[rotate][4].x.abs();
   }
 }

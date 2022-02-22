@@ -227,10 +227,7 @@ class CityBuilder extends FlameGame
   @override
   void update(double dt) {
     super.update(dt);
-    dragTo += dragAccelerateJoy;
-    dragTo += dragAccelerateKey;
-
-    checkBounds();
+    updateCameraPosition();
 
     frameTimes += dt;
     frames += 1;
@@ -275,17 +272,30 @@ class CityBuilder extends FlameGame
     }
   }
 
-  void checkBounds() {
-    if (dragTo.x < _world.getBoundLeft()) {
-      dragTo.x = _world.getBoundLeft();
-    } else if (dragTo.x > _world.getBoundRight()) {
-      dragTo.x = _world.getBoundRight();
+  bool isLeft(Vector2 line1, Vector2 line2, Vector2 point){
+    return ((line2.x - line1.x)*(point.y - line1.y) - (line2.y - line1.y)*(point.x - line1.x)) >= 0;
+  }
+
+  void updateCameraPosition() {
+    dragTo += dragAccelerateJoy;
+    dragTo += dragAccelerateKey;
+
+    List<Vector2> hexagonPoints = _world.getHexagonPoints();
+    // If it's left of the 2 left line segments
+    // or right of the 2 right line segments or it is out of the square bound
+    // It is out of the hexagonal map bounds and we reverse the position change.
+    if (isLeft(hexagonPoints[0], hexagonPoints[1], dragTo)
+        || isLeft(hexagonPoints[2], hexagonPoints[3], dragTo)
+        || !isLeft(hexagonPoints[4], hexagonPoints[3], dragTo)
+        || !isLeft(hexagonPoints[0], hexagonPoints[5], dragTo)
+        || dragTo.x < _world.getBoundLeft()
+        || dragTo.x > _world.getBoundRight()
+        || dragTo.y < _world.getBoundBottom()
+        || dragTo.y > _world.getBoundTop()) {
+      dragTo -= dragAccelerateJoy;
+      dragTo -= dragAccelerateKey;
     }
-    if (dragTo.y > _world.getBoundTop()) {
-      dragTo.y = _world.getBoundTop();
-    } else if (dragTo.y < _world.getBoundBottom()) {
-      dragTo.y = _world.getBoundBottom();
-    }
+
     // We normalize the camera position to a Vector where x: -1 is all the way to the left and x: 1 is all the way to the right (for the minimap)
     if (dragTo.x < 0) {
       miniMap.updateCameraPosX(-dragTo.x / _world.getBoundLeft());

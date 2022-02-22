@@ -6,11 +6,13 @@ import 'package:city_builder/world/map_details/map_details_normal.dart';
 import 'package:city_builder/world/map_details/map_details_small.dart';
 import 'package:city_builder/world/map_details/map_details_tiny.dart';
 import 'package:city_builder/util/tile_positions.dart';
+import 'package:flame/components.dart';
 
 class HexagonList {
   static final HexagonList _instance = HexagonList._internal();
 
-  late List<List<double>> worldBounds;
+  // For every rotation we keep track of 6 hexagon points
+  late List<List<Vector2>> hexagonBounds;
   late List<List<Tile2?>> tiles;
   late List<List<Hexagon?>> hexagons;
   int radius = 4;
@@ -19,7 +21,9 @@ class HexagonList {
   double halfHeightHex = 0;
 
   HexagonList._internal() {
-    worldBounds = [[0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]];
+    // We initialize the bounds with 0, 0
+    Vector2 z = Vector2(0, 0);
+    hexagonBounds = [[z, z, z, z, z, z], [z, z, z, z, z, z], [z, z, z, z, z, z], [z, z, z, z, z, z]];
 
     List<List<int>> worldDetail = worldDetailLarge;
     tiles = List.generate(
@@ -31,12 +35,9 @@ class HexagonList {
         tiles.length~/radius,
             (_) => List.filled(tiles[0].length~/radius, null),
         growable: false);
-    List<double> bounds = getTileDetails(worldDetail);
-    worldBounds[0] = bounds;
+    getTileDetails(worldDetail);
     for (int rot = 0; rot < 4; rot++) {
       getHexagons(tiles, rot, this);
-      // List<double> bounds = getBounds(hexagons, rot);
-      // worldBounds[rot] = bounds;
     }
   }
 
@@ -45,7 +46,7 @@ class HexagonList {
   }
 
   // TODO: rotation?
-  List<double> getTileDetails(List<List<int>> worldDetail) {
+  getTileDetails(List<List<int>> worldDetail) {
 
     double left = 0;
     double right = 0;
@@ -75,8 +76,14 @@ class HexagonList {
         }
       }
     }
-    // We add a bit to every boundary, this is because the hexagons are tiled and don't have the same boundaries
-    return [left+100, right-100, top-200, bottom+200];
+    // Also get all 6 hexagon points from the bottom rotating to the left
+    Vector2 pBottom = Vector2(0, bottom);
+    Vector2 pLeftBottom = Vector2(left, bottom/2);
+    Vector2 pLeftUp = Vector2(left, top/2);
+    Vector2 pTop = Vector2(0, top);
+    Vector2 pRightTop = Vector2(right, top/2);
+    Vector2 pRightBottom = Vector2(right, bottom/2);
+    hexagonBounds[0] = [pBottom, pLeftBottom, pLeftUp, pTop, pRightTop, pRightBottom];
   }
 
 }

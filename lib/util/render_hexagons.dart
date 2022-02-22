@@ -22,6 +22,8 @@ renderHexagons(Canvas canvas, Vector2 camera, HexagonList hexagonList, Rect scre
     if (cameraTile != null && cameraTile.hexagon != null) {
       drawField(hexagonList, cameraTile.hexagon!.hexQArray,
           cameraTile.hexagon!.hexRArray, screen, canvas, variation);
+      // TODO: Maybe add a height and width to the hexagon list, which is filled when creating a hexagon. Use this to determine when it's not possible to be in the screen. You know the current width from the screen object.
+      // TODO: Goes wrong with, for instance, large map top left and bottom right corners.
     }
   }
 }
