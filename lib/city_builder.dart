@@ -163,6 +163,7 @@ class CityBuilder extends FlameGame
   void onTapUp(int pointerId, TapUpInfo info) {
     print("on tapped up! ${info.eventPosition.global}");
     // TODO: better way to check if it pressed the minimap.
+    //  Also make sure that it can't go out of bounds
     if (info.eventPosition.global.x < 200 && info.eventPosition.global.y < 120) {
       Vector2 normalized = miniMap.tappedMap(info.eventPosition.global.x, info.eventPosition.global.y);
       setPosition(normalized);
@@ -210,8 +211,8 @@ class CityBuilder extends FlameGame
 
   setPosition(Vector2 normalized) {
     if (normalized.x < 0) {
-      dragTo.x = -normalized.x * _world.getBoundLeft();
     } else {
+      dragTo.x = -normalized.x * _world.getBoundLeft();
       dragTo.x = normalized.x * _world.getBoundRight();
     }
     if (normalized.y < 0) {

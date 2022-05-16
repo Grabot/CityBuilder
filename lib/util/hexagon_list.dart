@@ -25,7 +25,7 @@ class HexagonList {
     Vector2 z = Vector2(0, 0);
     hexagonBounds = [[z, z, z, z, z, z], [z, z, z, z, z, z], [z, z, z, z, z, z], [z, z, z, z, z, z]];
 
-    List<List<int>> worldDetail = worldDetailLarge;
+    List<List<int>> worldDetail = worldDetailSmall;
     tiles = List.generate(
         worldDetail.length,
             (_) => List.filled(worldDetail[0].length, null),

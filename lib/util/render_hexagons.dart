@@ -59,6 +59,12 @@ drawField(HexagonList hexagonList, hexQ, hexR, Rect screen, Canvas canvas, int v
 
         if (hexagonList.hexagons[hexQ+ qAdd][hexR + rAdd] != null) {
           hexY = hexagonList.hexagons[hexQ + qAdd][hexR + rAdd]!.getPos(0).y;
+        } else {
+          // No hexagon above, so we will try above right?
+          qAdd += 1;
+          // We add one to 'r' because we want to keep the value the same
+          // and in the loop we will always subtract one
+          rAdd += 1;
         }
 
       } else {
@@ -94,18 +100,32 @@ drawField(HexagonList hexagonList, hexQ, hexR, Rect screen, Canvas canvas, int v
           hexagonList.hexagons[hexQ + qAdd][hexR + rAdd]!.renderHexagon(canvas, variation);
 
           hexY = hexagonList.hexagons[hexQ + qAdd][hexR + rAdd]!.getPos(0).y;
+        } else {
+          // No hexagon above, so we will try bottom left?
+          qAdd -= 1;
+          // We subtract one to 'r' because we want to keep the value the same
+          // and in the loop we will always add one
+          rAdd -= 1;
         }
-        goRight(hexagonList, hexQ + qAdd, hexR + rAdd, screen, canvas, variation);
-        goLeft(hexagonList, hexQ + qAdd, hexR + rAdd, screen, canvas, variation);
+
+        if (hexQ + qAdd > 0 && hexQ + qAdd < hexagonList.hexagons.length
+            && hexR + rAdd > 0 && hexR + rAdd < hexagonList.hexagons[0].length) {
+          goRight(
+              hexagonList, hexQ + qAdd, hexR + rAdd, screen, canvas, variation);
+        }
+        if (hexQ + qAdd > 0 && hexQ + qAdd < hexagonList.hexagons.length
+            && hexR + rAdd > 0 && hexR + rAdd < hexagonList.hexagons[0].length) {
+          goLeft(
+              hexagonList, hexQ + qAdd, hexR + rAdd, screen, canvas, variation);
+        }
       }
       if (offset == 0) {
         qAdd -= 1;
-        rAdd += 1;
         offset = 1;
       } else {
         offset = 0;
-        rAdd += 1;
       }
+      rAdd += 1;
     }
   }
 }
@@ -116,6 +136,8 @@ goRight(HexagonList hexagonList, hexQ, hexR, Rect screen, Canvas canvas, int var
   double hexX = screen.left;
   if (hexagonList.hexagons[hexQ][hexR] != null) {
     hexX = hexagonList.hexagons[hexQ][hexR]!.getPos(0).x;
+  } else {
+    return;
   }
   // TODO: change the 'qAdd' check. This is bad for performance with huge maps
   while (hexX < screen.right-hexagonList.halfWidthHex && qAdd < hexagonList.hexagons.length) {
