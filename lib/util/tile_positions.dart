@@ -24,6 +24,8 @@ int quadrantSizeY = 135; // 1080/8 (standard monitor height)
 Future getHexagons(List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList) async {
   if (rotate == 0) {
 
+    SpriteBatch flat_1 = await SpriteBatch.load('flat_1.png');
+    SpriteBatch flat_2 = await SpriteBatch.load('flat_2.png');
     int qRot = 0;
     int rRot = 0;
     int sRot = 0;
@@ -32,18 +34,18 @@ Future getHexagons(List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList
     int hexR = rRot + (hexagonList.hexagons[0].length / 2).ceil();
 
     Hexagon hexagon = createHexagon(hexQ, hexR,
-        tiles, qRot, rRot, sRot, hexagonList.radius, rotate, await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_1.png'));
+        tiles, qRot, rRot, sRot, hexagonList.radius, rotate, flat_1, flat_2);
     hexagon.updateHexagon(0, 0);
     hexagonList.hexagons[hexQ][hexR] = hexagon;
     // First we get a straight line from the center up to the left
     // and from the center to the right down.
-    return getAll6HexVariants(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList);
+    return getAll6HexVariants(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList, flat_1, flat_2);
   } else {
     return;
   }
 }
 
-Future getHexagonsLeftDown(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList) async {
+Future getHexagonsLeftDown(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList, SpriteBatch flat_1, SpriteBatch flat_2) async {
   int qRot1 = (2 * hexagonList.radius) + 1;
   int rRot1 = -hexagonList.radius;
   int sRot1 = -hexagonList.radius - 1;
@@ -68,16 +70,16 @@ Future getHexagonsLeftDown(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tile
         && rArray >= 0) {
       Hexagon hexagonRot5 = createHexagon(hexQ - 1, hexR + 1,
           tiles, hexRotQ5, hexRotR5, hexRotS5, hexagonList.radius, rotate,
-          await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_1.png'));
+          await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_2.png'));
       hexagonRot5.updateHexagon(0, 0);
       hexagonList.hexagons[hexQ - 1][hexR + 1] = hexagonRot5;
 
-      await getAll6HexVariants(hexQ - 1, hexR + 1, hexRotQ5, hexRotR5, hexRotS5, tiles, rotate, hexagonList);
+      await getAll6HexVariants(hexQ - 1, hexR + 1, hexRotQ5, hexRotR5, hexRotS5, tiles, rotate, hexagonList, flat_1, flat_2);
     }
   }
 }
 
-Future getHexagonsRightUp(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList) async {
+Future getHexagonsRightUp(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList, SpriteBatch flat_1, SpriteBatch flat_2) async {
   int qRot1 = (2 * hexagonList.radius) + 1;
   int rRot1 = -hexagonList.radius;
   int sRot1 = -hexagonList.radius - 1;
@@ -98,16 +100,16 @@ Future getHexagonsRightUp(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles
     if (qArray < tiles.length && rArray < tiles[0].length) {
       Hexagon hexagonRot2 = createHexagon(hexQ + 1, hexR - 1,
           tiles, hexRotQ2, hexRotR2, hexRotS2, hexagonList.radius, rotate,
-          await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_1.png'));
+          await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_2.png'));
       hexagonRot2.updateHexagon(0, 0);
       hexagonList.hexagons[hexQ + 1][hexR - 1] = hexagonRot2;
 
-      await getAll6HexVariants(hexQ + 1, hexR - 1, hexRotQ2, hexRotR2, hexRotS2, tiles, rotate, hexagonList);
+      await getAll6HexVariants(hexQ + 1, hexR - 1, hexRotQ2, hexRotR2, hexRotS2, tiles, rotate, hexagonList, flat_1, flat_2);
     }
   }
 }
 
-Future getHexagonsLeftUp(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList) async {
+Future getHexagonsLeftUp(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList, SpriteBatch flat_1, SpriteBatch flat_2) async {
   int qRot1 = (2 * hexagonList.radius) + 1;
   int rRot1 = -hexagonList.radius;
   int sRot1 = -hexagonList.radius - 1;
@@ -129,16 +131,16 @@ Future getHexagonsLeftUp(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles,
         && rArray >= 0) {
       Hexagon hexagonRot3 = createHexagon(hexQ, hexR - 1,
           tiles, hexRotQ3, hexRotR3, hexRotS3, hexagonList.radius, rotate,
-          await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_1.png'));
+          await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_2.png'));
       hexagonRot3.updateHexagon(0, 0);
       hexagonList.hexagons[hexQ][hexR - 1] = hexagonRot3;
 
-      await getAll6HexVariants(hexQ, hexR - 1, hexRotQ3, hexRotR3, hexRotS3, tiles, rotate, hexagonList);
+      await getAll6HexVariants(hexQ, hexR - 1, hexRotQ3, hexRotR3, hexRotS3, tiles, rotate, hexagonList, flat_1, flat_2);
     }
   }
 }
 
-Future getHexagonsRightDown(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList) async {
+Future getHexagonsRightDown(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList, SpriteBatch flat_1, SpriteBatch flat_2) async {
   int qRot1 = (2 * hexagonList.radius) + 1;
   int rRot1 = -hexagonList.radius;
   int sRot1 = -hexagonList.radius - 1;
@@ -162,16 +164,16 @@ Future getHexagonsRightDown(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> til
         && rArray >= 0) {
       Hexagon hexagonRot4 = createHexagon(hexQ, hexR + 1,
           tiles, hexRotQ4, hexRotR4, hexRotS4, hexagonList.radius, rotate,
-          await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_1.png'));
+          await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_2.png'));
       hexagonRot4.updateHexagon(0, 0);
       hexagonList.hexagons[hexQ][hexR + 1] = hexagonRot4;
 
-      await getAll6HexVariants(hexQ, hexR + 1, hexRotQ4, hexRotR4, hexRotS4, tiles, rotate, hexagonList);
+      await getAll6HexVariants(hexQ, hexR + 1, hexRotQ4, hexRotR4, hexRotS4, tiles, rotate, hexagonList, flat_1, flat_2);
     }
   }
 }
 
-Future getHexagonsStraightRight(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList) async {
+Future getHexagonsStraightRight(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList, SpriteBatch flat_1, SpriteBatch flat_2) async {
   int qRot1 = (2 * hexagonList.radius) + 1;
   int rRot1 = -hexagonList.radius;
   int sRot1 = -hexagonList.radius - 1;
@@ -191,16 +193,16 @@ Future getHexagonsStraightRight(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>>
         && rArray >= 0) {
       Hexagon hexagonRot1 = createHexagon(hexQ + 1, hexR,
           tiles, hexRotQ1, hexRotR1, hexRotS1, hexagonList.radius, rotate,
-          await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_1.png'));
+          await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_2.png'));
       hexagonRot1.updateHexagon(0, 0);
       hexagonList.hexagons[hexQ+1][hexR] = hexagonRot1;
 
-      await getAll6HexVariants(hexQ + 1, hexR, hexRotQ1, hexRotR1, hexRotS1, tiles, rotate, hexagonList);
+      await getAll6HexVariants(hexQ + 1, hexR, hexRotQ1, hexRotR1, hexRotS1, tiles, rotate, hexagonList, flat_1, flat_2);
     }
   }
 }
 
-Future getHexagonsStraightLeft(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList) async {
+Future getHexagonsStraightLeft(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList, SpriteBatch flat_1, SpriteBatch flat_2) async {
   int qRot1 = (2 * hexagonList.radius) + 1;
   int rRot1 = -hexagonList.radius;
   int sRot1 = -hexagonList.radius - 1;
@@ -224,16 +226,16 @@ Future getHexagonsStraightLeft(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> 
         && rArray >= 0) {
       Hexagon hexagonRot6 = createHexagon(hexQ - 1, hexR,
           tiles, hexRotQ6, hexRotR6, hexRotS6, hexagonList.radius, rotate,
-          await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_1.png'));
+          await SpriteBatch.load('flat_1.png'), await SpriteBatch.load('flat_2.png'));
       hexagonRot6.updateHexagon(0, 0);
       hexagonList.hexagons[hexQ - 1][hexR] = hexagonRot6;
 
-      await getAll6HexVariants(hexQ - 1, hexR, hexRotQ6, hexRotR6, hexRotS6, tiles, rotate, hexagonList);
+      await getAll6HexVariants(hexQ - 1, hexR, hexRotQ6, hexRotR6, hexRotS6, tiles, rotate, hexagonList, flat_1, flat_2);
     }
   }
 }
 
-Future getAll6HexVariants(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList) async {
+Future getAll6HexVariants(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles, int rotate, HexagonList hexagonList, SpriteBatch flat_1, SpriteBatch flat_2) async {
 
   // a hex section with radius r is Cube(2*r+1, -r, -r-1)
   // with 6 rotations
@@ -244,12 +246,12 @@ Future getAll6HexVariants(hexQ, hexR, qRot, rRot, sRot, List<List<Tile2?>> tiles
   // [r,  s,  q]
   // [ -q, -r,  -s]
 
-  await getHexagonsStraightLeft(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList);
-  await getHexagonsLeftUp(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList);
-  await getHexagonsLeftDown(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList);
-  await getHexagonsRightDown(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList);
-  await getHexagonsRightUp(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList);
-  await getHexagonsStraightRight(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList);
+  await getHexagonsStraightLeft(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList, flat_1, flat_2);
+  await getHexagonsLeftUp(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList, flat_1, flat_2);
+  await getHexagonsLeftDown(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList, flat_1, flat_2);
+  await getHexagonsRightDown(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList, flat_1, flat_2);
+  await getHexagonsRightUp(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList, flat_1, flat_2);
+  await getHexagonsStraightRight(hexQ, hexR, qRot, rRot, sRot, tiles, rotate, hexagonList, flat_1, flat_2);
 }
 
 Hexagon createHexagon(int hexQ, int hexR, List<List<Tile2?>> tiles, int q, int r, int s, int radius, int rotate, SpriteBatch batch1, SpriteBatch batch2) {

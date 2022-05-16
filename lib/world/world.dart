@@ -61,7 +61,7 @@ class World extends Component {
   void render(Canvas canvas) {
     super.render(canvas);
 
-    renderHexagons(canvas, cameraPosition, hexagonList, screen, currentVariant);
+    renderHexagons(canvas, cameraPosition, hexagonList, screen, rotate, currentVariant);
   }
 
   updateWorld(Vector2 cameraPos, double zoomLevel, Vector2 size) {

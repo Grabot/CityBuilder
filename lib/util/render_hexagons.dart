@@ -6,7 +6,7 @@ import 'package:city_builder/util/hexagon_list.dart';
 import 'package:city_builder/util/tapped_map.dart';
 import 'package:flame/components.dart';
 
-renderHexagons(Canvas canvas, Vector2 camera, HexagonList hexagonList, Rect screen, int variation) {
+renderHexagons(Canvas canvas, Vector2 camera, HexagonList hexagonList, Rect screen, int rotate, int variation) {
   List<int> tileProperties = getTileFromPos(camera.x, camera.y, 0);
   int q = tileProperties[0];
   int r = tileProperties[1];
@@ -14,16 +14,25 @@ renderHexagons(Canvas canvas, Vector2 camera, HexagonList hexagonList, Rect scre
 
   int qArray = q + (hexagonList.tiles.length / 2).ceil();
   int rArray = r + (hexagonList.tiles[0].length / 2).ceil();
-  if (qArray >= 0 && qArray < hexagonList.tiles.length && rArray >= 0 && rArray < hexagonList.tiles[0].length) {
-    Tile2? cameraTile = hexagonList.tiles[qArray][rArray];
-    // We assume there will be a tile in the center of the screen
-    // But it's possible the tile is not linked to a hexagon.
-    // TODO: what to do if there is no hexagon? fix with boundaries and padding?
-    if (cameraTile != null && cameraTile.hexagon != null) {
-      drawField(hexagonList, cameraTile.hexagon!.hexQArray,
-          cameraTile.hexagon!.hexRArray, screen, canvas, variation);
-      // TODO: Maybe add a height and width to the hexagon list, which is filled when creating a hexagon. Use this to determine when it's not possible to be in the screen. You know the current width from the screen object.
-      // TODO: Goes wrong with, for instance, large map top left and bottom right corners.
+  if (rotate == 0) {
+    if (qArray >= 0 && qArray < hexagonList.tiles.length && rArray >= 0 &&
+        rArray < hexagonList.tiles[0].length) {
+      Tile2? cameraTile = hexagonList.tiles[qArray][rArray];
+      // We assume there will be a tile in the center of the screen
+      // But it's possible the tile is not linked to a hexagon.
+      if (cameraTile != null && cameraTile.hexagon != null) {
+        drawField(hexagonList, cameraTile.hexagon!.hexQArray,
+            cameraTile.hexagon!.hexRArray, screen, canvas, variation);
+      }
+    }
+  } else if (rotate == 1) {
+    print("rotated");
+    if (qArray >= 0 && qArray < hexagonList.tiles.length && rArray >= 0 &&
+        rArray < hexagonList.tiles[0].length) {
+      Tile2? cameraTile = hexagonList.tiles[qArray][rArray];
+      if (cameraTile != null && cameraTile.hexagon != null) {
+        cameraTile.hexagon!.renderHexagon(canvas, variation);
+      }
     }
   }
 }
